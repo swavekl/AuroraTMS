@@ -1,0 +1,19 @@
+<div>
+Tournament Director - Manage your tournaments here 
+<md-list ng-show="tournamentList.length > 0"> <md-list-item class="md-3-line"
+			ng-repeat="tournament in tournamentList"
+			ng-click="editTournament(tournament.id, $event)">
+		<div class="md-list-item-text">
+			<h3>{{ tournament.name }}</h3>
+		<h4 ng-show="tournament.startDate != tournament.endDate">
+		<span date-range start-date="{{tournament.startDate}}" end-date="{{tournament.endDate}}"></span>
+		</h4>
+		<h4 ng-show="tournament.startDate == tournament.endDate">{{
+			tournament.startDate | date }}</h4>
+		<h4>{{ tournament.city }}, {{tournament.state}} &nbsp; 
+		</div>
+	<ng-md-icon icon="chevron_right"></ng-md-icon>
+	<md-divider></md-divider>
+		</md-list-item> </md-list>
+
+</div>

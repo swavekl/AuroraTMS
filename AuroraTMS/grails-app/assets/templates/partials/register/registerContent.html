@@ -1,0 +1,65 @@
+<div layout="column" layout-align-gt-sm="center center" layout-align-sm="start center" layout-fill 
+    ng-controller="RegisterCtrl">
+	<form name="registrationForm" ng-submit="doRegisterUser()" novalidate>
+		<div id="errors">
+			<ul>
+				<li ng-repeat="error in registrationInfo.errors">{{error}}</li>
+			</ul>
+		</div>
+		<div ng-show="registering" layout="column" layout-align="center center">
+			<span>Registering.  Please wait...</span>
+			<md-progress-circular md-mode="indeterminate"></md-progress-circular>
+		</div>
+		<div ng-hide="registering">
+		<md-input-container> <label>Username</label> <input
+			name="username" ng-model="registrationInfo.username" required
+			size="25" maxlength="40">
+		<div ng-messages="registrationForm.username.$error" ng-show="registrationForm.username.$dirty">
+			<div ng-message="required">Username is required.</div>
+		</div>
+		</md-input-container>
+
+		<md-input-container> <label>Email</label> 
+		<input
+			name="email" type="email" ng-model="registrationInfo.email" required
+			size="25" maxlength="40">
+		<div ng-messages="registrationForm.email.$error" ng-show="registrationForm.email.$dirty">
+			<div ng-message="required">Email is required.</div>
+			<div ng-message="email">Email is invalid.</div>
+		</div>
+		</md-input-container>
+
+		<md-input-container
+			md-is-error="registrationForm.password.$invalid && !registrationForm.password.$pristine">
+		<label>Password</label> <input name="password" type="password"
+			ng-model="registrationInfo.password" size="25" maxlength="40"
+			required ng-minlength="8" ng-pattern="/^[a-zA-Z0-9!@#$%^&]*$/">
+		<div ng-messages="registrationForm.password.$error" ng-show="registrationForm.password.$dirty">
+			<div ng-message="required">Password is required.</div>
+			<div ng-message="minlength">Password must be at least 8 characters long</div>
+			<div ng-message="pattern">Password must contain letters, digits and special characters: !@#$%^&</div>
+		</div>
+		</md-input-container>
+
+		<md-input-container
+			md-is-error="registrationForm.password2.$invalid && !registrationForm.password2.$pristine">
+		<label>Confirm Password</label> <input name="password2" type="password" 
+		    ng-model="registrationInfo.password2" size="25" maxlength="40"
+			required ng-minlength="8" ng-pattern="/^[a-zA-Z0-9!@#$%^&]*$/" compare-to="registrationInfo.password">
+		<div 
+			ng-messages="registrationForm.password2.$error" ng-show="registrationForm.password2.$dirty">
+			<div ng-message="required">Password 2 is required.</div>
+			<div ng-message="minlength">Password must be at least 8 characters long</div>
+			<div ng-message="pattern">Password must contain letters, digits and special characters: !@#$%^&</div>
+			<div ng-message="compareTo">Passwords must match</div>
+		</div>
+		</md-input-container>
+		<section layout="row" layout-align="space-around center">
+			<md-button class="md-raised" ui-sref="home">Cancel</md-button>
+			<md-button class="md-raised md-primary" type="submit"
+				ng-disabled="registrationForm.$invalid">Register</md-button>
+		</section>
+		</div>
+		
+	</form>
+</div>

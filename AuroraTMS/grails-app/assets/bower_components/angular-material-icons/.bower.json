@@ -1,0 +1,43 @@
+{
+  "name": "angular-material-icons",
+  "authors": [
+    "Urmil Parikh <urmil@klarsys.com>"
+  ],
+  "description": "AngularJS directive to use Material Design icons with custom fill color and size.",
+  "main": "angular-material-icons.min.js",
+  "keywords": [
+    "angular",
+    "material",
+    "design",
+    "icon",
+    "fill",
+    "size",
+    "color",
+    "white",
+    "morph",
+    "svg",
+    "custom"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/klarsys/angular-material-icons",
+  "dependencies": {
+    "angular": "1.3.x"
+  },
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "_release": "fc3bb284ab",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "fc3bb284ab6ae87ecbed5a5c654882234a00ba91"
+  },
+  "_source": "git://github.com/klarsys/angular-material-icons.git",
+  "_target": "master",
+  "_originalSource": "angular-material-icons",
+  "_direct": true
+}

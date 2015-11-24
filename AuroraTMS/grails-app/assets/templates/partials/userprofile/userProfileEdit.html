@@ -1,0 +1,165 @@
+<div layout="column" layout-align="start center" layout-align-md="start center" layout-fill>
+	<form name="userProfileForm" ng-submit="save()" novalidate>
+		<!-- show server side errors -->
+		<div id="errors">
+			<ul>
+				<li ng-repeat="error in profile.errors">{{error}}</li>
+			</ul>
+		</div>
+		<md-content layout-gt-md="row" layout="column"> <md-input-container 
+			md-is-error="userProfileForm.firstName.$invalid && !userProfileForm.firstName.$pristine">
+		<label>First Name</label> <input name="firstName"
+			ng-model="profile.firstName" required size="25" maxlength="40" />
+		<div ng-messages="userProfileForm.firstName.$error"
+			ng-show="userProfileForm.firstName.$dirty">
+			<div ng-message="required">First name is required.</div>
+		</div>
+		</md-input-container> 
+		<md-input-container 
+			md-is-error="userProfileForm.lastName.$invalid && !userProfileForm.lastName.$pristine">
+		<label>Last Name</label> <input name="lastName"
+			ng-model="profile.lastName" required size="25" maxlength="40" />
+		<div ng-messages="userProfileForm.lastName.$error"
+			ng-show="userProfileForm.lastName.$dirty">
+			<div ng-message="required">Last name is required.</div>
+		</div>
+		</md-input-container>
+		</md-content>
+
+		<md-content layout-gt-md="row" layout="column"> 
+		<md-input-container>
+		<label>USATT Member Id</label> <input name="usattID"
+			ng-model="profile.usattID" disabled size="10" maxlength="10" />
+		</md-input-container> 
+		 
+		<md-input-container
+			md-is-error="userProfileForm.gender.$invalid && !userProfileForm.gender.$pristine"
+			>
+		<md-radio-group ng-model="profile.gender"><span class="md-caption">Gender</span>
+		<table>
+		<tr>
+		<td>
+		<md-radio-button
+			value="M" class="md-primary">Male</md-radio-button> 
+		</td>
+		<td>
+		<md-radio-button
+			value="F" class="md-primary">Female</md-radio-button>
+		</td>
+		</tr>
+		
+		</table>
+		 </md-radio-group>
+			</md-input-container>
+		</md-content>
+		
+		<md-content layout-gt-md="row" layout="column"> 
+		<!-- date for small devices -->
+		<md-input-container hide-gt-sm 
+			md-is-error="userProfileForm.dateOfBirth.$invalid && !userProfileForm.dateOfBirth.$pristine">
+		<label>Date of Birth</label> <input name="dateOfBirth" type="date"
+			ng-model="profile.dateOfBirth" placeholder="yyyy-MM-dd" required
+			size="30" maxlength="40" />
+		<div ng-messages="userProfileForm.dateOfBirth.$error">
+			<div ng-message="required">Date of Birth is required.</div>
+		</div>
+		</md-input-container>
+		
+		<md-input-container  
+		md-is-error="userProfileForm.dateOfBirthText.$invalid && !userProfileForm.dateOfBirthText.$pristine"> 
+		<!-- date for larger than small devices --> <mdc-date-picker hide-sm
+			model="dateOfBirthText" label="Birth date">
+		<div ng-messages="userProfileForm.dateOfBirthText.$error"
+			ng-show="userProfileForm.dateOfBirthText.$dirty">
+			<div ng-message="required">Date of Birth is required.</div>
+		</div>
+		</mdc-date-picker> 
+		
+		</md-content>
+
+		<md-content layout-gt-md="row" layout="column"> 
+		<md-input-container 
+			md-is-error="userProfileForm.email.$invalid && !userProfileForm.email.$pristine">
+		<label>Email</label> <input name="email" type="email"
+			ng-model="profile.email" required size="30"  maxlength="40"/>
+		<div ng-messages="userProfileForm.email.$error"
+			ng-show="userProfileForm.email.$dirty">
+			<div ng-message="required">Email is required.</div>
+			<div ng-message="email">Email is invalid.</div>
+		</div>
+		</md-input-container> <md-input-container 
+			md-is-error="userProfileForm.phone.$invalid && !userProfileForm.phone.$pristine">
+		<label>Mobile Phone (630-111-2222)</label> <input name="phone"
+			ng-model="profile.phone" required size="12" maxlength="12"
+			/>
+		<div ng-messages="userProfileForm.phone.$error"
+			ng-show="userProfileForm.phone.$dirty">
+			<div ng-message="required">Mobile phone is required.</div>
+		</div>
+		</md-input-container> </md-content>
+
+		<md-content layout-gt-md="row" layout="column"> <md-input-container
+			flex-gt-md="70"
+			md-is-error="userProfileForm.streetAddress.$invalid && !userProfileForm.streetAddress.$pristine">
+		<label>Street Address</label> <input name="streetAddress"
+			ng-model="profile.streetAddress" required size="30" maxlength="40" />
+		<div ng-messages="userProfileForm.streetAddress.$error"
+			ng-show="userProfileForm.streetAddress.$dirty">
+			<div ng-message="required">Street Address is required.</div>
+		</div>
+		</md-input-container> </md-content>
+
+		<md-content layout-gt-md="row" layout="column"> 
+		<md-input-container flex-gt-md="40"
+			md-is-error="userProfileForm.city.$invalid && !userProfileForm.city.$pristine">
+		<label>City</label> <input name="city" ng-model="profile.city"
+			required size="30" maxlength="40" />
+		<div ng-messages="userProfileForm.city.$error"
+			ng-show="userProfileForm.city.$dirty">
+			<div ng-message="required">City is required.</div>
+		</div>
+		</md-input-container> 
+		
+		<md-input-container flex-gt-md="10"
+			md-is-error="userProfileForm.state.$invalid && !userProfileForm.state.$pristine">
+		<label>State</label> <input name="state" ng-model="profile.state"
+			required size="2" maxlength="2" />
+		<div ng-messages="userProfileForm.state.$error"
+			ng-show="userProfileForm.state.$dirty">
+			<div ng-message="required">State is required.</div>
+		</div>
+		</md-input-container> 
+		
+		<md-input-container flex-gt-md="20"
+			md-is-error="userProfileForm.zipCode.$invalid && !userProfileForm.zipCode.$pristine">
+		<label>Zip Code</label> <input name="zipCode"
+			ng-model="profile.zipCode" required size="10" maxlength="10" />
+		<div ng-messages="userProfileForm.zipCode.$error"
+			ng-show="userProfileForm.zipCode.$dirty">
+			<div ng-message="required">Zip Code is required.</div>
+		</div>
+		</md-input-container> </md-content>
+		
+		<md-content layout-gt-md="row" layout="column"> 
+		<md-input-container flex-gt-md="40"
+			md-is-error="userProfileForm.club.$invalid && !userProfileForm.club.$pristine">
+		<label>Club you play at most</label> <input name="club" ng-model="profile.club"
+			required size="30" maxlength="40" />
+		<div ng-messages="userProfileForm.club.$error"
+			ng-show="userProfileForm.club.$dirty">
+			<div ng-message="required">Club is required.</div>
+		</div>
+		</md-content>
+		
+		<md-content layout="row" layout-align="center center" layout-padding>
+			<md-button class="md-raised" ui-sref="home">Cancel</md-button>
+			<span>&nbsp;&nbsp;</span>
+			<md-button type="submit" class="md-raised md-primary"
+				ng-disabled="userProfileForm.$invalid">Save</md-button>
+		</md-content>
+
+<!-- 		<md-content layout-gt-md="row" layout="column"> 
+		<p>debug whole form: {{userProfileForm.$error | json}}</p>
+ 		</md-content>
+ -->	</form>
+</div>

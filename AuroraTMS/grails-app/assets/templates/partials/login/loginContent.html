@@ -1,0 +1,23 @@
+<div layout="column" layout-align-gt-sm="center center" layout-align-sm="start center" layout-fill
+	ng-controller="LoginCtrl">
+		<form name="loginForm" ng-submit="doLogin()" novalidate>
+				<md-input-container> <label>Username</label>
+				<input name="username" ng-model="login.username" required size="25"
+					maxlength="40">
+				<div ng-messages="loginForm.username.$error">
+					<div ng-message="required">Username is required.</div>
+				</div>
+				</md-input-container>
+				<md-input-container> <label>Password</label> <input
+					name="password" ng-model="login.password" required size="25" maxlength="40">
+				<div ng-messages="loginForm.password.$error">
+					<div ng-message="required">This is required.</div>
+				</div>
+				<div>{{login.errorMessage}}</div>
+				</md-input-container>
+				<section layout="row" layout-align="space-around center">
+					<md-button class="md-raised" ui-sref="home.registerUser">Register</md-button>
+					<md-button class="md-raised md-primary" type="submit" ng-disabled="loginForm.$invalid">Login</md-button>
+				</section>
+		</form>
+</div>

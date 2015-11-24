@@ -1,0 +1,44 @@
+{
+  "name": "angular-material-components",
+  "version": "0.0.1",
+  "homepage": "https://github.com/Toilal/angular-material-components",
+  "authors": [
+    "Rémi Alvergnat <toilal.dev@gmail.com> (http://www.pragmasphere.com)"
+  ],
+  "description": "Additional components for Angular Material",
+  "main": [
+    "dist/angular-material-components.js",
+    "dist/angular-material-components.css"
+  ],
+  "keywords": [
+    "angular",
+    "material",
+    "components"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-material": "~0.7.1",
+    "moment": "~2.9.0",
+    "mdi": "~0.8.82-alpha"
+  },
+  "devDependencies": {
+    "bourbon": "~4.1.1"
+  },
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "b2744cd94b0b26499e952d87dfe146e4773743de"
+  },
+  "_source": "git://github.com/Toilal/angular-material-components.git",
+  "_target": "~0.0.1",
+  "_originalSource": "angular-material-components",
+  "_direct": true
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html class="no-js" ng-app="demoApp">
+<head>
+  <meta charset="utf-8">
+  <title>Material Design Components</title>
+  <meta name="description" content="">
+  <meta name="viewport" content="width=device-width">
+
+  <link rel="stylesheet" href="app/vendor.css">
+
+  <link rel="stylesheet" href="lib/angular-material.min.css" />
+  <link rel="stylesheet" href="lib/materialdesignicons.css" />
+  <link rel="stylesheet" href="../dist/angular-material-components.css" />
+  <link rel="stylesheet" href="css/demo.css" />
+</head>
+<body>
+
+<script src="lib/angular.min.js"></script>
+<script src="lib/angular-aria.min.js"></script>
+<script src="lib/angular-animate.min.js"></script>
+<script src="lib/angular-material.min.js"></script>
+<script src="lib/moment.min.js"></script>
+<script src="../dist/angular-material-components.js"></script>
+
+<script src="js/index.js"></script>
+
+<md-toolbar>
+  <div class="md-toolbar-tools" layout="row" layout-align="space-between center">
+    <div>Angular Material Components</div>
+    <div><a href="https://github.com/Toilal/angular-material-components"><i class="mdi mdi-github-box"></i> GitHub</a></div>
+  </div>
+</md-toolbar>
+
+<md-subheader>Additional components for <a href="https://material.angularjs.org/">angular-material</a></md-subheader>
+
+<md-card id="date-picker" ng-controller="datePickerCtrl">
+  <md-toolbar class="md-hue-2">
+    <div class="md-toolbar-tools">Date Picker</div>
+  </md-toolbar>
+  <md-subheader>A date picker inspired by <a href="http://ui.lumapps.com/">Lumx</a>.</md-subheader>
+  <md-card-content>
+    <code>
+      &lt;mdc-date-picker model="date" label="Pick a date" dialog-md-theme="datePickerTheme"&gt;&lt;/mdc-date-picker&gt;
+    </code>
+    <mdc-date-picker model="date" label="Pick a date" dialog-md-theme="datePickerTheme"></mdc-date-picker>
+  </md-card-content>
+</md-card>
+
+</body>
+</html>

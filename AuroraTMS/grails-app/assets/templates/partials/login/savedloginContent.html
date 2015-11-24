@@ -1,0 +1,23 @@
+<div layout-fill style="border: 3px solid green; height: 100%; background-color:gray">
+<div ng-controller="LoginController" md-theme="docs-dark" layout="column" layout-align="center center" >
+	<md-content>
+	<form name="loginForm">
+		<md-input-container> <label>Username</label> <input
+			name="username" ng-model="login.username" required size="30" maxlength="40">
+		<div ng-messages="loginForm.username.$error">
+			<div ng-message="required">Username is required.</div>
+		</md-input-container>
+		<md-input-container> <label>Password</label> <input
+			name="password" ng-model="login.password" required size="30">
+		<div ng-messages="loginForm.password.$error">
+			<div ng-message="required">This is required.</div>
+		</div>
+		</md-input-container>
+ 		<section layout="row" layout-align="space-around center">
+			<md-button class="md-raised md-primary">Register</md-button>
+			<md-button class="md-raised md-primary" ng-click="doLogin($event)">Login</md-button>
+		</section>
+	</form>
+	</md-content>
+ </div>
+</div>
