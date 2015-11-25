@@ -182,7 +182,7 @@ class BootStrap {
 	def importPlayerData() {
 		Date start = new Date();
 		println "Importing USATT player data"
-		def xmlFile = "C:\\grails\\gitrepository\\AuroraTMS\\USATT_Membership.xml"
+		def xmlFile = "C:\\grails\\data\\USATT_Membership.xml"
 		//def xmlFile = "C:\\grails\\newworkspace\\AuroraTMS\\USATT_Membership_Medium.xml"
 		def parsedFile = new XmlSlurper().parse(xmlFile)
 		assert parsedFile instanceof groovy.util.slurpersupport.GPathResult
