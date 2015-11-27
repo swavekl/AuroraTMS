@@ -247,6 +247,12 @@
 			$scope.eventInfoList.push(eventInfo);
 		}
 		
+		// calculate total number of players
+		$scope.totalPlayers = 0;
+		for (var i = 0; i < $scope.eventInfoList.length; i++) {
+			$scope.totalPlayers += $scope.eventInfoList[i].players;
+		}
+
 		//
 		// show details of event to be edited
 		//
