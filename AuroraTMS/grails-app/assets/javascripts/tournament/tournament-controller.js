@@ -21,13 +21,13 @@
 									return tournamentResource.view({id: $stateParams.id}).$promise;
 								},
 							    
-//								eventResource: 'eventResource',
-//								events: function (eventResource, $stateParams, session, tournament) {
-//									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 0, username: session.getUser()};
-//									var events = eventResource.query(queryOptions).$promise;
-//									events = events || [];
-//									return events;
-//								}
+								eventResource: 'eventResource',
+								events: function (eventResource, $stateParams, session, tournament) {
+									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 0, username: session.getUser()};
+									var events = eventResource.query(queryOptions).$promise;
+									events = events || [];
+									return events;
+								}
 							},
 							controller : 'tournamentController'
 						}
@@ -97,11 +97,11 @@
 									return tournamentResource.create({}).$promise;
 								},
 							    
-//								eventResource: 'eventResource',
-//								events: function (eventResource, $stateParams, session) {
-//									// new tournament has no events
-//									return [];
-//								}
+								eventResource: 'eventResource',
+								events: function (eventResource, $stateParams, session) {
+									// new tournament has no events
+									return [];
+								}
 							},
 							controller : 'tournamentController'
 						}
