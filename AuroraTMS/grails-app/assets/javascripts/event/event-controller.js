@@ -164,8 +164,25 @@
 		// called when successfully saved event
 		//
 		$scope.successEventSave = function (value, responseHeaders) {
-			console.log ('saved event successfully');
 			$state.go ('home.tournamentEdit', {id: $scope.tournament.id, selectedTab: 1});
+		}
+		
+		//
+		// called when save fails
+		//
+		$scope.errorEventSave = function (httpResponse) {
+			var alert = $mdDialog
+			.alert()
+			.title('Failed to save event')
+			.textContent('Error code: ' + httpResponse.status + ", Message " + httpResponse.statusText)
+			.ariaLabel('Save Error')
+			.ok('Close');
+
+	        $mdDialog
+	          .show( alert )
+	          .finally(function() {
+	            alert = undefined;
+	          });
 		}
 		
 		//
@@ -178,9 +195,9 @@
 			if ($scope.editedEvent != null) {
 				$scope.editedEvent.tournamentId = $scope.tournament.id;
 				if ($scope.editedEvent.id == null) {
-					eventResource.save ($scope.editedEvent, $scope.successEventSave)
+					eventResource.save ($scope.editedEvent, $scope.successEventSave, $scope.errorEventSave)
 				} else {
-					eventResource.update ($scope.editedEvent, $scope.successEventSave);
+					eventResource.update ($scope.editedEvent, $scope.successEventSave, $scope.errorEventSave);
 				}
 			}
 		}
