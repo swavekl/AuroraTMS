@@ -1,5 +1,5 @@
-<form name="eventsForm" ng-submit="save()" novalidate>
-	<div layout="row" layout-fill>
+<form name="eventForm" ng-submit="save()" novalidate>
+	<div layout="row" layout-fill layout-padding>
 		<div layout="column" layout-align="start start"
 			layout-align-md="start center" layout-fill>
 
@@ -23,26 +23,26 @@
 
 			<div layout="column" layout-gt-sm="row">
 				<md-input-container
-					md-is-error="eventForm.eventDate.$invalid && !eventForm.eventDate.$pristine">
-				<label>Start Date</label> <md-select name="eventDate"
-					ng-model="editedEvent.eventDate" required style="width:250px">
+					md-is-error="eventForm.day.$invalid && !eventForm.day.$pristine">
+				<label>Start Date</label> <md-select name="day"
+					ng-model="editedEvent.day" required style="width:250px">
 				<md-option ng-repeat="eventDate in eventDatesArray"
 					value="{{ eventDate.day }}">{{ eventDate.dayText }}</md-option> </md-select>
-				<div ng-messages="eventForm.eventDate.$error"
-					ng-show="eventForm.eventDate.$dirty">
+				<div ng-messages="eventForm.day.$error"
+					ng-show="eventForm.day.$dirty">
 					<div ng-message="required">Event start date is required.</div>
 				</div>
 				</md-input-container>
 
 				<md-input-container
-					md-is-error="eventForm.eventTime.$invalid && !eventForm.eventTime.$pristine">
-				<label>Start Time</label> <md-select name="eventTime"
-					ng-model="editedEvent.eventTime" required> <md-option
+					md-is-error="eventForm.startTime.$invalid && !eventForm.startTime.$pristine">
+				<label>Start Time</label> <md-select name="startTime"
+					ng-model="editedEvent.startTime" required> <md-option
 					ng-repeat="eventTime in eventTimesArray"
 					value="{{ eventTime.fractionalHour }}">{{
 				eventTime.timeText }}</md-option> </md-select>
-				<div ng-messages="eventForm.eventTime.$error"
-					ng-show="eventForm.eventTime.$dirty">
+				<div ng-messages="eventForm.startTime.$error"
+					ng-show="eventForm.startTime.$dirty">
 					<div ng-message="required">Event start time is required.</div>
 				</div>
 				</md-input-container>

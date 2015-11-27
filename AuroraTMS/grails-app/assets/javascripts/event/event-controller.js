@@ -29,7 +29,7 @@
 				})
 				.state ('home.event.create', {
 					// create new event state
-					url : '/event/create',
+					url : '/event/create?ordinalNumber',
 					resolve: {
 						eventResource: 'eventResource',
 						event: function (eventResource, $stateParams, session) {
@@ -114,6 +114,7 @@
 			$scope.editedEvent.doubles = false;
 			$scope.editedEvent.singleElimniation = false;
 			$scope.editedEvent.maxEntries = 0;
+			$scope.editedEvent.ordinalNumber = $state.params.ordinalNumber;
 		}
 		
 		// create dates array for event day drop down

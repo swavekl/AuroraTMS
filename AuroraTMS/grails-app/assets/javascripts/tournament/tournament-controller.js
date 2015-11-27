@@ -271,8 +271,25 @@
 		$scope.addEvent = function (browserEvent) {
 			browserEvent.preventDefault();
 			
-			var params = {tournamentId: $scope.tournament.id};
+			var nextOrdinalNumber = getNextOrdinalNumber();
+			var params = {tournamentId: $scope.tournament.id, ordinalNumber: nextOrdinalNumber};
 			$state.go ('home.event.create', params);
+		}
+		
+		//
+		// finds the next ordinal number for event
+		//
+		function getNextOrdinalNumber () {
+			var nextOrdinalNumber = 0;
+			// find the max ordinal number
+			for (var i = 0; i < $scope.originalEvents.length; i++) {
+				var event = $scope.originalEvents[i];
+				if (event.ordinalNumber > nextOrdinalNumber) {
+					nextOrdinalNumber = event.ordinalNumber;
+				}
+			}
+			nextOrdinalNumber++;
+			return nextOrdinalNumber;
 		}
 		
 		//
@@ -338,7 +355,7 @@
 
 		  $scope.query = {
 		    filter: '',
-		    order: 'name',
+		    order: 'ordinaNumber',
 		    limit: 15,
 		    page: 1
 		  };

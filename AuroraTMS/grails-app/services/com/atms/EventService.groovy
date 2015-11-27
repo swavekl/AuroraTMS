@@ -61,7 +61,7 @@ class EventService {
 		def tournamentId = params.tournamentId
 		Event.where {
 			tournament.id == tournamentId
-		}.list()
+		}.list(sort:'ordinalNumber')
 	}
 
 	int count() {

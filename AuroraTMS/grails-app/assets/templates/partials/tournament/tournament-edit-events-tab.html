@@ -5,19 +5,19 @@
 
 <md-data-table-container>
   <table md-data-table md-row-select="selected" md-progress="deferred">
-    <thead md-order="query.order" md-trigger="onOrderChange">
+    <thead md-order="query.order">
       <tr>
         <th name="Number" order-by="ordinaNumber"></th>
         <th name="Name" order-by="name"></th>
-        <th name="Date/Time" order-by="eventDateTime"></th>
-        <th numeric name="Players"></th>
-        <th numeric name="Free Spots"></th>
+        <th name="Day & Time" order-by="eventDateTime"></th>
+        <th name="Players"></th>
+        <th name="Free Spots"></th>
         <th name=" "></th>
         <th name=" "></th>
       </tr>
     </thead>
     <tbody>
-      <tr ng-repeat="event in eventInfoList">
+      <tr ng-repeat="event in eventInfoList | orderBy: query.order">
         <td>{{event.ordinalNumber}}</td>
         <td>{{event.name}}</td>
         <td>{{event.eventDateTime}}</td>
@@ -43,9 +43,9 @@
  </table>
 </md-data-table-container>
 <div layout="row">
-  <span flex="50"></span>
+  <span flex="45"></span>
 	<span flex="25">Total players: {{totalPlayers}}</span>
-  <span flex="25"></span>
+  <span flex="30"></span>
 </div>
 <!-- <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{eventInfoList.length}}" md-trigger="onPaginationChange"></md-data-table-pagination>
  -->
