@@ -29,7 +29,7 @@
 				})
 				.state ('home.event.create', {
 					// create new event state
-					url : '/event/create?ordinalNumber',
+					url : '/event/create?ordinalNumber&eventName',
 					resolve: {
 						eventResource: 'eventResource',
 						event: function (eventResource, $stateParams, session) {
@@ -107,14 +107,24 @@
 		// currently edited event
 		$scope.editedEvent = event;
 		if ($state.current.name == 'home.event.create') {
+			$scope.editedEvent.ordinalNumber = $state.params.ordinalNumber;
+			$scope.editedEvent.name = $state.params.eventName;
+			// initialize min & max player rating
+			for (var i = 0; i < eventDefaults.length; i++) {
+				var eventDefault = eventDefaults[i];
+				if (eventDefault.name == $state.params.eventName) {
+					$scope.editedEvent.minPlayerRating = eventDefault.minPlayerRating;
+					$scope.editedEvent.maxPlayerRating = eventDefault.maxPlayerRating;
+					$scope.editedEvent.doubles = eventDefault.doubles;
+					break;
+				}
+			}
 			// initialize some sensible defaults
 			$scope.editedEvent.day = 1;
 			$scope.editedEvent.startTime = 9.0;
 			$scope.editedEvent.tournament = $scope.tournament;
-			$scope.editedEvent.doubles = false;
 			$scope.editedEvent.singleElimniation = false;
 			$scope.editedEvent.maxEntries = 0;
-			$scope.editedEvent.ordinalNumber = $state.params.ordinalNumber;
 		}
 		
 		// create dates array for event day drop down

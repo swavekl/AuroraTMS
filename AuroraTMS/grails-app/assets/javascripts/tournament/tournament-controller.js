@@ -258,23 +258,50 @@
 		//
 		$scope.editEvent = function (event, browserEvent) {
 			// now set the new event as current
-//			$scope.editedEvent = event;
 			browserEvent.preventDefault();
 		
 			var params = {tournamentId: $scope.tournament.id, id: event.id};
 			$state.go ('home.event.edit', params);
 		}
 		
+		// default event names
+		$scope.eventDefaults = eventDefaults;
+		
 		//
 		// Add new event
 		//
 		$scope.addEvent = function (browserEvent) {
 			browserEvent.preventDefault();
+			var tournamentId = $scope.tournament.id;
 			
-			var nextOrdinalNumber = getNextOrdinalNumber();
-			var params = {tournamentId: $scope.tournament.id, ordinalNumber: nextOrdinalNumber};
-			$state.go ('home.event.create', params);
+			// controller for dialog prompt
+			function DialogController($scope, $mdDialog, eventDefaults) {
+				$scope.eventDefaults = eventDefaults;
+				$scope.answer = function (eventName, $browserEvent) {
+					$mdDialog.hide();
+				
+					// now transition to creating and editing this new event
+					var nextOrdinalNumber = getNextOrdinalNumber();
+					var params = {tournamentId: tournamentId, ordinalNumber: nextOrdinalNumber, eventName: eventName};
+					$state.go ('home.event.create', params);
+				}
+				
+				$scope.closeDialog = function() {
+				      $mdDialog.hide();
+				}
+			}
+		
+			// prompt user for type of event so we can preset some sensible
+			// defaults like max player rating doubles/singles etc.
+			$mdDialog.show({
+			  controller: DialogController,
+			  templateUrl: 'assets/partials/tournament/addEventDialog.tmpl.html',
+			  parent: angular.element(document.body),
+			  clickOutsideToClose:true,
+			  locals: {eventDefaults: $scope.eventDefaults}
+			});
 		}
+		
 		
 		//
 		// finds the next ordinal number for event

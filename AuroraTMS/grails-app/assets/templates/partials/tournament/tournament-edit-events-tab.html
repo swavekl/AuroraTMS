@@ -1,7 +1,3 @@
-<md-data-table-toolbar>
-  <span flex></span>
-  <md-button type="submit" class="md-raised md-primary" ng-click="addEvent($event)">Add Event</md-button>
-</md-data-table-toolbar>
 
 <md-data-table-container>
   <table md-data-table md-row-select="selected" md-progress="deferred">
@@ -47,6 +43,10 @@
 	<span flex="25">Total players: {{totalPlayers}}</span>
   <span flex="30"></span>
 </div>
+<md-data-table-toolbar>
+  <span flex></span>
+  <md-button type="submit" class="md-raised md-primary" ng-click="addEvent($event)">Add Event</md-button>
+</md-data-table-toolbar>
 <!-- <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{eventInfoList.length}}" md-trigger="onPaginationChange"></md-data-table-pagination>
  -->
 <!-- 
