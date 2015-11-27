@@ -1,0 +1,67 @@
+<md-data-table-toolbar>
+  <h2 class="md-title">Events</h2>
+  <span flex></span>
+  <md-button type="submit" class="md-raised md-primary" ng-click="addEvent($event)">Add Event</md-button>
+</md-data-table-toolbar>
+
+<md-data-table-container>
+  <table md-data-table md-row-select="selected" md-progress="deferred">
+    <thead md-order="query.order" md-trigger="onOrderChange">
+      <tr>
+        <th name="Name" order-by="name"></th>
+        <th name="Date/Time" order-by="eventDateTime"></th>
+        <th numeric name="Players" order-by="players"></th>
+        <th numeric name="Free Spots" order-by="maxPlayers"></th>
+        <th name="Delete"></th>
+        <th name="Edit"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr ng-repeat="event in eventInfoList">
+        <td>{{event.name}}</td>
+        <td>{{event.eventDateTime}}</td>
+        <td>{{event.players | number}}</td>
+        <td>{{event.maxPlayers | number}}</td>
+		<td>
+			<md-icon md-svg-icon="delete" ng-click="deleteEvent(event, $event)"
+			class="md-secondary md-hue-3" aria-label="Delete"> 
+				<md-tooltip>Delete event</md-tooltip> 
+			</md-icon>
+		</td>
+		<td>
+	        <md-button class="md-icon-button" aria-label="Edit" ng-click="editEvent(event, $event)">
+	          <ng-md-icon icon="create"></ng-md-icon> 
+	        </md-button>
+<!-- 
+			<md-icon md-svg-icon="create" ng-click="editEvent(event, $event)"
+			class="md-secondary md-hue-3" aria-label="Edit"> 
+				<md-tooltip>Edit event</md-tooltip> 
+			</md-icon>
+ -->		</td>
+      </tr>
+    </tbody>
+  </table>
+</md-data-table-container>
+
+<md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{eventInfoList.length}}" md-trigger="onPaginationChange"></md-data-table-pagination>
+<!-- 
+	<md-whiteframe class="md-whiteframe-3dp" flex="25" layout-margin>
+	<md-content layout="row" layout-align="end center" layout-padding>
+	<md-button type="submit" class="md-raised md-primary"
+		ng-click="addEvent($event)">Add Event</md-button> </md-content>
+	<div ng-show="eventInfoList.length == 0">No events are configured
+		for this tournament. Press Add to add event.</div>
+	<md-content> <md-list> <md-list-item
+		class="md-3-line" ng-repeat="event in eventInfoList"
+		ng-click="editEvent(event, $event)">
+	<div class="md-list-item-text">
+		<h3>{{event.name}}</h3>
+		<h4>{{event.eventDateTime}}</h4>
+		<h4>Players / Free Spots: {{event.players }} / {{event.maxPlayers
+			- event.players}}</h4>
+	</div>
+	<md-icon md-svg-icon="delete" ng-click="deleteEvent(event, $event)"
+		class="md-secondary md-hue-3" aria-label="Delete"> <md-tooltip>Delete event</md-tooltip> </md-icon> 
+	<md-divider></md-divider> </md-list-item> </md-list> </md-content> </md-whiteframe> 
+	
+	-->

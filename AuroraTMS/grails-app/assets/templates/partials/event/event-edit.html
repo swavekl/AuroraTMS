@@ -1,0 +1,18 @@
+<div layout-fill>
+  <md-content class="md-padding">
+    <md-tabs md-dynamic-height md-border-bottom class="md-primary" style="border: 0px solid green">
+      <md-tab label="General">
+	      <div ui-view="general-tab"></div>
+      </md-tab>
+	<md-tab label="Options">
+	      <div ui-view="options-tab"></div>
+	</md-tab> 
+	<md-tab label="Playoff">
+		<div ui-view="playoff-tab"></div>
+	</md-tab>
+	<md-tab label="Prizes">
+		<div ui-view="prizes-tab"></div>
+	</md-tab>
+    </md-tabs>
+  </md-content>
+</div>

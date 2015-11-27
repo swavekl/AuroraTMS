@@ -1,0 +1,92 @@
+<form name="eventsForm" ng-submit="save()" novalidate>
+	<div layout="row" layout-fill>
+		<div layout="column" layout-align="start start"
+			layout-align-md="start center" layout-fill>
+
+			<md-content layout="column" layout-gt-sm="row"> <md-input-container
+				md-is-error="eventForm.ordinalNumber.$invalid && !eventForm.ordinalNumber.$pristine">
+			<label>Number</label> <input name="ordinalNumber"
+				ng-model="editedEvent.ordinalNumber" required size="3" maxlength="3" />
+			<div ng-messages="eventForm.ordinalNumber.$error"
+				ng-show="eventForm.ordinalNumber.$dirty">
+				<div ng-message="required">Ordinal is required.</div>
+			</div>
+			</md-input-container> <md-input-container
+				md-is-error="eventForm.eventname.$invalid && !eventForm.eventname.$pristine">
+			<label>Name</label> <input name="eventname"
+				ng-model="editedEvent.name" required size="35" maxlength="40" />
+			<div ng-messages="eventForm.eventname.$error"
+				ng-show="eventForm.eventname.$dirty">
+				<div ng-message="required">Name is required.</div>
+			</div>
+			</md-input-container> </md-content>
+
+			<div layout="column" layout-gt-sm="row">
+				<md-input-container
+					md-is-error="eventForm.eventDate.$invalid && !eventForm.eventDate.$pristine">
+				<label>Start Date</label> <md-select name="eventDate"
+					ng-model="editedEvent.eventDate" required style="width:250px">
+				<md-option ng-repeat="eventDate in eventDatesArray"
+					value="{{ eventDate.day }}">{{ eventDate.dayText }}</md-option> </md-select>
+				<div ng-messages="eventForm.eventDate.$error"
+					ng-show="eventForm.eventDate.$dirty">
+					<div ng-message="required">Event start date is required.</div>
+				</div>
+				</md-input-container>
+
+				<md-input-container
+					md-is-error="eventForm.eventTime.$invalid && !eventForm.eventTime.$pristine">
+				<label>Start Time</label> <md-select name="eventTime"
+					ng-model="editedEvent.eventTime" required> <md-option
+					ng-repeat="eventTime in eventTimesArray"
+					value="{{ eventTime.fractionalHour }}">{{
+				eventTime.timeText }}</md-option> </md-select>
+				<div ng-messages="eventForm.eventTime.$error"
+					ng-show="eventForm.eventTime.$dirty">
+					<div ng-message="required">Event start time is required.</div>
+				</div>
+				</md-input-container>
+			</div>
+
+			<div layout="column" layout-gt-sm="row">
+				<md-input-container
+					md-is-error="eventForm.singleElimnation.$invalid && !eventForm.singleElimnation.$pristine">
+				<md-radio-group ng-model="editedEvent.singleElimination">
+				<span class="md-caption">Format</span>
+				<div layout="column" layout-gt-sm="row">
+					<md-radio-button ng-value="false" class="md-primary">Round
+					Robin</md-radio-button>
+					<md-radio-button ng-value="true" class="md-primary">Single
+					Elimination</md-radio-button>
+				</div>
+				</md-radio-group> </md-input-container>
+				<md-input-container
+					md-is-error="eventForm.doubles.$invalid && !eventForm.doubles.$pristine">
+				<md-radio-group ng-model="editedEvent.doubles"> <span
+					class="md-caption">Doubles</span>
+				<div layout="column" layout-gt-sm="row">
+					<md-radio-button ng-value="false" class="md-primary">Singles</md-radio-button>
+					<md-radio-button ng-value="true" class="md-primary">Doubles</md-radio-button>
+				</div>
+				</md-radio-group> </md-input-container>
+			</div>
+			<div layout="column" layout-gt-sm="row">
+				<md-input-container
+					md-is-error="eventForm.maxEntries.$invalid && !eventForm.maxEntries.$pristine">
+				<label>Maximum Entries</label> <input name="maxEntries"
+					ng-model="editedEvent.maxEntries" required size="3" maxlength="3" />
+				<div ng-messages="eventForm.maxEntries.$error"
+					ng-show="eventForm.maxEntries.$dirty">
+					<div ng-message="required">Value is required.</div>
+				</div>
+				</md-input-container>
+			</div>
+
+			<md-content layout="row" layout-align="center center" layout-padding>
+			<md-button class="md-raised" ng-click="cancelEvent($event)">Cancel</md-button>
+			<span>&nbsp;&nbsp;</span> <md-button type="submit"
+				class="md-raised md-primary" ng-click="saveEvent($event)"
+				ng-disabled="eventForm.$invalid">Save</md-button> </md-content>
+		</div>
+	</div>
+</form>

@@ -21,20 +21,20 @@
 									return tournamentResource.view({id: $stateParams.id}).$promise;
 								},
 							    
-								eventResource: 'eventResource',
-								events: function (eventResource, $stateParams, session, tournament) {
-									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 0, username: session.getUser()};
-									var events = eventResource.query(queryOptions).$promise;
-									events = events || [];
-									return events;
-								}
+//								eventResource: 'eventResource',
+//								events: function (eventResource, $stateParams, session, tournament) {
+//									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 0, username: session.getUser()};
+//									var events = eventResource.query(queryOptions).$promise;
+//									events = events || [];
+//									return events;
+//								}
 							},
 							controller : 'tournamentController'
 						}
 					}
 				})
 				.state('home.tournamentEdit', {
-					url : 'api/tournament/edit/:id',
+					url : 'api/tournament/edit/:id?selectedTab',
 					privateUrl : true,
 					data: {
 						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
@@ -53,13 +53,29 @@
 								eventResource: 'eventResource',
 								events: function (eventResource, $stateParams, session, tournament) {
 									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 30, username: session.getUser()};
-									console.log ('tournament = ' + queryOptions.tournamentId + " username "+ queryOptions.username);
+									//console.log ('tournament = ' + queryOptions.tournamentId + " username "+ queryOptions.username);
 									var events = eventResource.query(queryOptions).$promise;
 									events = events || [];
 									return events;
 								}
 							},
-							controller : 'tournamentController'
+							controller : 'tournamentController', 
+						},
+						
+						'general-tab@home.tournamentEdit' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-general-tab.html'
+						},
+						
+						'events-tab@home.tournamentEdit' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-events-tab.html'
+						},
+						
+						'contact-tab@home.tournamentEdit' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-contact-tab.html'
+						},
+						
+						'payment-info-tab@home.tournamentEdit' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-payment-info-tab.html'
 						}
 					}
 				})
@@ -81,11 +97,11 @@
 									return tournamentResource.create({}).$promise;
 								},
 							    
-								eventResource: 'eventResource',
-								events: function (eventResource, $stateParams, session) {
-									// new tournament has no events
-									return [];
-								}
+//								eventResource: 'eventResource',
+//								events: function (eventResource, $stateParams, session) {
+//									// new tournament has no events
+//									return [];
+//								}
 							},
 							controller : 'tournamentController'
 						}
@@ -95,8 +111,12 @@
 			
 	// define controller functions
 	.controller('tournamentController', 
-			['$scope', '$state', 'session','tournamentResource', 'tournament','eventResource', 'events', '$mdDialog',
-    function($scope, $state, session, tournamentResource, tournament, eventResource, events, $mdDialog) {
+			['$scope', '$state', 'session','$mdDialog', 'tournamentResource', 'tournament', 'eventResource', 'events', 
+    function($scope, $state, session, $mdDialog, tournamentResource, tournament, eventResource, events) {
+		
+		// when coming back from editing events switch back to the 'Events' tab
+		$scope.selectedTab = ($state.params.selectedTab == undefined) ? 0 : ($state.params.selectedTab);
+		
 		// tournament data
 		$scope.tournament = tournament;
 
@@ -164,10 +184,6 @@
 		// save original events
 		$scope.originalEvents = events;
 		
-		// currently edited event
-		$scope.editedEvent = null; 
-
-		
 		//        
 		// format the event start date and time (for the list of events)
 		//
@@ -230,162 +246,17 @@
 			// date and time are encoded together in one date object
 			$scope.eventInfoList.push(eventInfo);
 		}
-
-		//
-		// event start dates array
-		//
-		$scope.createStartDatesArray = function (startDate, endDate) {
-			var tempStartDate = moment([startDate.getFullYear(), startDate.getMonth(), startDate.getDate()]);
-			var tempEndDate = moment([endDate.getFullYear(), endDate.getMonth(), endDate.getDate()]);
-			// add one day so we loop twice for two day tournament, 3 for 3 day  etc.
-			tempEndDate = tempEndDate.add(1, 'days');
-			var datesArray = [];
-			var day = 1;
-			do {
-				var dateText = tempStartDate.format('LL');
-				datesArray.push ({day: day, dayText: dateText});
-				tempStartDate = tempStartDate.add(1, 'days');
-				day++;
-			} while (tempStartDate.isBefore(tempEndDate))
-			return datesArray;
-		}
-		
-		//
-		// event start times array
-		//
-		var FIRST_START_TIME = 7;
-		var LAST_START_TIME = 23;
-		$scope.createStartTimesArray = function () {
-			var startTimes = [];
-			for (var hour = FIRST_START_TIME; hour < LAST_START_TIME; hour++) {
-				var timeText = moment().hour(hour).minutes(0).seconds(0).format('LT');
-				startTimes.push ({fractionalHour: hour * 1.0, timeText: timeText});
-				timeText = moment().hour(hour).minutes(30).seconds(0).format('LT');
-				startTimes.push ({fractionalHour: hour + 0.5, timeText: timeText});
-			}
-			
-			
-			return startTimes;
-		}
-
-		$scope.eventDatesArray = $scope.createStartDatesArray($scope.tournament.startDate, $scope.tournament.endDate);
-		
-		// create start times array and their text equivalents
-		$scope.eventTimesArray = $scope.createStartTimesArray();
-		
-		//
-		// called when successfully saved event
-		//
-		$scope.successEventSave = function (value, responseHeaders) {
-			console.log ('saved event successfully');
-			// set event id now that it is known
-			var newEventCreated = false;
-			var savedEvent = value;
-			for (var i = 0; i < $scope.originalEvents.length; i++) {
-				var event = $scope.originalEvents[i];
-				if (event.ordinalNumber == savedEvent.ordinalNumber &&
-					event.name == savedEvent.name) {
-					newEventCreated = (event.id == null);
-					event.id = savedEvent.id;
-					break;
-				}
-			}
-			
-			// now update the info list so the list is updated via data binding
-			if (newEventCreated) {
-				var eventInfo = $scope.makeEventInfo (savedEvent);
-				$scope.eventInfoList.push(eventInfo);
-			}
-		}
-		
-		$scope.saveEvent = function (browserEvent) {
-			browserEvent.preventDefault();
-//			console.log ('saving current event');
-			// save current event date & time
-			if ($scope.editedEvent != null) {
-				// find original event
-				var saveToEvent = null;
-				for (var i = 0; i < $scope.originalEvents.length; i++) {
-					var event = $scope.originalEvents[i];
-					if (event.id == $scope.editedEvent.id) {
-						saveToEvent = event;
-						break;
-					}
-				}
-				if (saveToEvent == null) {
-					saveToEvent = {};
-					$scope.originalEvents.push (saveToEvent);
-				}
-
-				// transfer from copy to original
-				saveToEvent.name = $scope.editedEvent.name;
-				saveToEvent.ordinalNumber = $scope.editedEvent.ordinalNumber;
-				saveToEvent.day = $scope.editedEvent.eventDate;
-				saveToEvent.startTime = $scope.editedEvent.eventTime;
-				saveToEvent.tournamentId = $scope.tournament.id;
-				saveToEvent.singleElimination = $scope.editedEvent.singleElimination;
-				saveToEvent.doubles = $scope.editedEvent.doubles;
-				saveToEvent.maxEntries = $scope.editedEvent.maxEntries;
-				if (saveToEvent.id == null) {
-					eventResource.save (saveToEvent, $scope.successEventSave)
-				} else {
-					eventResource.update (saveToEvent, $scope.successEventSave);
-				}
-				
-				// update date & time used in the list
-				$scope.editedEvent.eventDateTime = $scope.formatEventDateTime(saveToEvent.day, saveToEvent.startTime, $scope.tournament.startDate)
-//				console.log ('$scope.editedEvent.eventDateTime = ' + $scope.editedEvent.eventDateTime);
-				
-			}
-		}
 		
 		//
 		// show details of event to be edited
 		//
 		$scope.editEvent = function (event, browserEvent) {
 			// now set the new event as current
-			$scope.editedEvent = event;
+//			$scope.editedEvent = event;
 			browserEvent.preventDefault();
 		
-		}
-		
-		//
-		// Callback after adding new event
-		//
-		$scope.successEventCreate = function (value, responseHeaders) {
-			var newEvent = value;
-			console.log ('success done creating newEvent in backend');
-			// now create event info with sensible defaults
-			var nextOrdinalNumber = events.length + 1;
-			do {
-				var isUsed = false;
-				for (var i = 0; i < $scope.eventInfoList.length; i++) {
-					if ($scope.eventInfoList[i].ordinalNumber == nextOrdinalNumber) {
-						nextOrdinalNumber++;
-						isUsed = true;
-						break;
-					}
-				}			
-			} while (isUsed);
-			newEvent.ordinalNumber = nextOrdinalNumber;
-			
-			// set some sensible start time
-			newEvent.day = 1;
-			newEvent.startTime = 9.0;
-			newEvent.tournament = $scope.tournament;
-			newEvent.doubles = false;
-			newEvent.singleElimniation = false;
-			newEvent.maxEntries = 0;
-			
-			// save in original list
-			$scope.originalEvents.push (newEvent);
-			
-			// convert to eventInfor for editing	
-			var eventInfo = $scope.makeEventInfo (newEvent);
-			
-			// make it show up on the right
-			$scope.editedEvent = eventInfo;
-			
+			var params = {tournamentId: $scope.tournament.id, id: event.id};
+			$state.go ('home.event.edit', params);
 		}
 		
 		//
@@ -393,9 +264,9 @@
 		//
 		$scope.addEvent = function (browserEvent) {
 			browserEvent.preventDefault();
-			// create a new event in the backend with all fields and save in
-			var queryOptions = {tournamentId: $scope.tournament.id};
-			eventResource.create(queryOptions, $scope.successEventCreate);
+			
+			var params = {tournamentId: $scope.tournament.id};
+			$state.go ('home.event.create', params);
 		}
 		
 		//
@@ -431,7 +302,7 @@
 			var confirm = $mdDialog
 				.confirm()
 				.title('Delete Event')
-				.content('Delete event ' + event.name + "?")
+				.textContent('Delete event ' + event.name + " ?")
 				.ariaLabel('Delete Event')
 				.targetEvent(browserEvent)
 				.ok('OK')
@@ -454,6 +325,41 @@
 				});
 		};
 		
+		//=================================================================================================
+		// event list table sorting and pagination
+		//=================================================================================================
+		  $scope.selected = [];
+
+		  $scope.query = {
+		    filter: '',
+		    order: 'name',
+		    limit: 15,
+		    page: 1
+		  };
+
+		 $scope.success = function (desserts) {
+//		    $scope.desserts = desserts;
+		  }
+
+		  // in the future we may see a few built in alternate headers but in the mean time
+		  // you can implement your own search header and do something like
+		  $scope.search = function (predicate) {
+//		    $scope.filter = predicate;
+//		    $scope.deferred = $nutrition.desserts.get($scope.query, $scope.success).$promise;
+		  };
+
+		  $scope.onOrderChange = function (order) {
+//		    return $nutrition.desserts.get($scope.query, $scope.success).$promise; 
+		  };
+
+		  $scope.onPaginationChange = function (page, limit) {
+//		    return $nutrition.desserts.get($scope.query, $scope.success).$promise; 
+		  };
+		
+		//=================================================================================================
+		// expanding/collapsing chevron icon
+		//=================================================================================================
+		
 		$scope.clickIcon = [];
 		for (var i = 0; i < $scope.eventInfoList.length; i++) {
 			$scope.clickIcon.push('expand_more');
@@ -469,7 +375,6 @@
         $scope.getIcon = function (eventIndex) {
         	return $scope.clickIcon[eventIndex];
         }
-        
 	} 
 	])
 })();

@@ -2,9 +2,9 @@
 'use strict';
 
 var app = angular.module('auroraTmsApp', ['ui.router', 'ngMaterial', 'ngMessages', 'ngResource', 'date-range',
-                                          'LocalStorageModule', 'ngMaterial.components', 'ngMdIcons',
+                                          'LocalStorageModule', 'ngMaterial.components', 'ngMdIcons', 'mdDateTime', 'md.data.table',
                                           'menu', 'login', 'dashboard', "campaigns", 'registerUser', 'userProfile',
-                                          'usattSearch', 'tournament', 'tournamentList', 'mdDateTime']);
+                                          'usattSearch', 'tournament', 'tournamentList', 'event']);
 app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIconProvider', 
             function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
     $urlRouterProvider.otherwise('/');

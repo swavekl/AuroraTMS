@@ -23,6 +23,7 @@
 //= require svg-morpheus/compile/minified/svg-morpheus
 //= require angular-material-icons/angular-material-icons
 //= require_tree angular-material-components/src
+//= require angular-material-data-table/dist/md-data-table
 //= require moment/moment
 //= require_tree views
 //= require_self
@@ -30,6 +31,7 @@
 //= require_tree userprofile
 //= require_tree usatt
 //= require_tree register
+//= require_tree event
 //= require_tree tournament
 //= require MenuController
 //= require campaigns

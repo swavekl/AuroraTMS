@@ -1,0 +1,82 @@
+<form name="tournamentForm" ng-submit="save()" novalidate>
+	<div layout="column" layout-align="start start">
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
+		<md-content layout="column" layout-gt-sm="row"> <md-input-container
+			md-is-error="tournamentForm.name.$invalid && !tournamentForm.name.$pristine">
+		<label>Name</label> <input name="name" ng-model="tournament.name"
+			required size="50" maxlength="50" />
+		<div ng-messages="tournamentForm.name.$error"
+			ng-show="tournamentForm.name.$dirty">
+			<div ng-message="required">Name is required.</div>
+		</div>
+		</md-input-container> <md-input-container
+			md-is-error="tournamentForm.starLevel.$invalid && !tournamentForm.starLevel.$pristine">
+		<label>Star Level</label> <input name="starLevel"
+			ng-model="tournament.starLevel" required size="2" maxlength="2" />
+		<div ng-messages="tournamentForm.starLevel.$error"
+			ng-show="tournamentForm.starLevel.$dirty">
+			<div ng-message="required">Star Level is required.</div>
+		</div>
+		</md-input-container> <md-input-container
+			md-is-error="tournamentForm.startDateText.$invalid && !tournamentForm.startDateText.$pristine">
+		<mdc-date-picker model="startDateText" label="Start date">
+		</mdc-date-picker>
+		<div ng-messages="tournamentForm.startDateText.$error"
+			ng-show="tournamentForm.startDateText.$dirty">
+			<div ng-message="required">Start date is required.</div>
+		</div>
+		</md-input-container> <md-input-container
+			md-is-error="tournamentForm.endDateText.$invalid && !tournamentForm.endDateText.$pristine">
+		<mdc-date-picker model="endDateText" label="End date">
+		</mdc-date-picker>
+		<div ng-messages="tournamentForm.endDateText.$error"
+			ng-show="tournamentForm.endDateText.$dirty">
+			<div ng-message="required">End date is required.</div>
+		</div>
+		</md-input-container> </md-content> </md-whiteframe>
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
+		<md-content layout="column" layout-gt-sm="row" layout-wrap>
+		<md-input-container flex="auto"
+			md-is-error="tournamentForm.venue.$invalid && !tournamentForm.venue.$pristine">
+		<label>Venue Name</label> <input name="venue"
+			ng-model="tournament.venue" required size="50" maxlength="50" />
+		<div ng-messages="tournamentForm.venue.$error"
+			ng-show="tournamentForm.venue.$dirty">
+			<div ng-message="required">Venue Name is required.</div>
+		</div>
+		</md-input-container> <md-input-container flex="auto"
+			md-is-error="tournamentForm.address.$invalid && !tournamentForm.address.$pristine">
+		<label>Address</label> <input name="address"
+			ng-model="tournament.address" required size="35" maxlength="40" />
+		<div ng-messages="tournamentForm.address.$error"
+			ng-show="tournamentForm.address.$dirty">
+			<div ng-message="required">Address is required.</div>
+		</div>
+		</md-input-container> <md-input-container flex="auto"
+			md-is-error="tournamentForm.city.$invalid && !tournamentForm.city.$pristine">
+		<label>City</label> <input name="city" ng-model="tournament.city"
+			required size="35" maxlength="40" />
+		<div ng-messages="tournamentForm.city.$error"
+			ng-show="tournamentForm.city.$dirty">
+			<div ng-message="required">City is required.</div>
+		</div>
+		</md-input-container> <md-input-container flex="auto"
+			md-is-error="tournamentForm.state.$invalid && !tournamentForm.state.$pristine">
+		<label>State</label> <md-select name="state"
+			ng-model="tournament.state" required> <md-option
+			ng-repeat="state in statesArray" value="{{ state }}">{{
+		state }}</md-option> </md-select>
+		<div ng-messages="tournamentForm.state.$error"
+			ng-show="tournamentForm.state.$dirty">
+			<div ng-message="required">State is required.</div>
+		</div>
+		</md-input-container> </md-content> </md-whiteframe>
+		<md-content layout="row" layout-align="center center" layout-padding
+			layout-margin> <md-button class="md-raised"
+			ui-sref="home">Cancel</md-button> <span>&nbsp;&nbsp;</span> <md-button
+			type="submit" class="md-raised md-primary"
+			ng-click="saveTournament($event)"
+			ng-disabled="tournamentForm.$invalid">Save</md-button> </md-content>
+<!-- 		<pre>{{tournamentForm | json}}</pre> -->
+	</div>
+</form>
