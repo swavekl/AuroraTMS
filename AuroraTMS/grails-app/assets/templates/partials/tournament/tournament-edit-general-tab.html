@@ -17,23 +17,25 @@
 			ng-show="tournamentForm.starLevel.$dirty">
 			<div ng-message="required">Star Level is required.</div>
 		</div>
-		</md-input-container> <md-input-container
-			md-is-error="tournamentForm.startDateText.$invalid && !tournamentForm.startDateText.$pristine">
-		<mdc-date-picker model="startDateText" label="Start date">
-		</mdc-date-picker>
-		<div ng-messages="tournamentForm.startDateText.$error"
-			ng-show="tournamentForm.startDateText.$dirty">
+		</md-input-container>
+		<md-input-container md-is-error="tournamentForm.startDate.$invalid && !tournamentForm.startDate.$pristine">
+		<label>Start Date</label>
+		<input type="date" md-date-picker ng-model="tournament.startDate" />
+		<div ng-messages="tournamentForm.startDate.$error"
+			ng-show="tournamentForm.startDate.$dirty">
 			<div ng-message="required">Start date is required.</div>
 		</div>
 		</md-input-container> <md-input-container
-			md-is-error="tournamentForm.endDateText.$invalid && !tournamentForm.endDateText.$pristine">
-		<mdc-date-picker model="endDateText" label="End date">
-		</mdc-date-picker>
-		<div ng-messages="tournamentForm.endDateText.$error"
-			ng-show="tournamentForm.endDateText.$dirty">
+			md-is-error="tournamentForm.endDate.$invalid && !tournamentForm.endDate.$pristine">
+		<label>End Date</label> <input type="date" md-date-picker
+			ng-model="tournament.endDate" />
+		<div ng-messages="tournamentForm.endDate.$error"
+			ng-show="tournamentForm.endDate.$dirty">
 			<div ng-message="required">End date is required.</div>
 		</div>
-		</md-input-container> </md-content> </md-whiteframe>
+		</md-input-container> </md-content> 
+		
+		</md-whiteframe>
 		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
 		<md-content layout="column" layout-gt-sm="row" layout-wrap>
 		<md-input-container flex="auto"

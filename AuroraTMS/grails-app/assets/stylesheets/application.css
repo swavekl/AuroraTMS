@@ -16,5 +16,6 @@
 *= require md-date-time/dist/md-date-time
 *= require angular-material-data-table/dist/md-data-table
 *= require angular-material-icons/angular-material-icons
+*= require mdPickers/dist/mdPickers
 *= require_self
 */

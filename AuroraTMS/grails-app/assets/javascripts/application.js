@@ -25,6 +25,7 @@
 //= require_tree angular-material-components/src
 //= require angular-material-data-table/dist/md-data-table
 //= require moment/moment
+//= require mdPickers/dist/mdPickers
 //= require_tree views
 //= require_self
 //= require_tree utils

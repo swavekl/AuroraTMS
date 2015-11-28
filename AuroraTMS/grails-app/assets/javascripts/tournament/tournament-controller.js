@@ -227,7 +227,7 @@
 			}
 //			console.log ('just date' + mDate.format());
 //			console.log ('hours ' + hours + " minutes " + minutes);
-			mDate.zone (0);
+			mDate.utcOffset (0);
 			mDate.utc();
 			mDate.hours(hours);
 			mDate.minutes(minutes);
