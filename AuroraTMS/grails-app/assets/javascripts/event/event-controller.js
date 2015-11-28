@@ -115,6 +115,8 @@
 				if (eventDefault.name == $state.params.eventName) {
 					$scope.editedEvent.minPlayerRating = eventDefault.minPlayerRating;
 					$scope.editedEvent.maxPlayerRating = eventDefault.maxPlayerRating;
+					$scope.editedEvent.minPlayerAge = eventDefault.minPlayerAge;
+					$scope.editedEvent.maxPlayerAge = eventDefault.maxPlayerAge;
 					$scope.editedEvent.doubles = eventDefault.doubles;
 					break;
 				}

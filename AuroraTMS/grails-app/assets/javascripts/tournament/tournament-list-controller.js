@@ -36,7 +36,7 @@
 				    },
 					views : {
 						'menu@' : {
-							templateUrl : 'assets/partials/tournament/tournament-menu.html'
+							templateUrl : 'assets/partials/menu.html'
 						},
 						'content@' : {
 							templateUrl : 'assets/partials/tournament/tournament-manage-list.html',

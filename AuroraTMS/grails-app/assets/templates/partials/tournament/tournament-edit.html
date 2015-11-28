@@ -1,11 +1,10 @@
-<div layout-fill>
-  <md-content>
+<div layout="column" layout-fill>
     <md-tabs md-dynamic-height md-border-bottom class="md-primary" style="border: 0px solid green" md-selected="selectedTab">
       <md-tab label="General">
 	      <div ui-view="general-tab"></div>
       </md-tab>
 	<md-tab label="Events">
-	      <div ui-view="events-tab"></div>
+		<div ui-view="events-tab"></div>
 	</md-tab> 
 	<md-tab label="Contact">
 		<div ui-view="contact-tab"></div>
@@ -14,5 +13,5 @@
 		<div ui-view="payment-info-tab"></div>
 	</md-tab>
     </md-tabs>
-  </md-content>
+
 </div>

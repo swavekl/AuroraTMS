@@ -46,7 +46,7 @@
 					privateUrl : true,
 					views : {
 						'menu@' : {
-							templateUrl : 'assets/partials/userProfile/userProfileMenu.html'
+							templateUrl : 'assets/partials/menu.html'
 						},
 				
 						'content@' : {

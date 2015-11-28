@@ -12,7 +12,7 @@
 		</md-input-container> <md-input-container
 			md-is-error="tournamentForm.starLevel.$invalid && !tournamentForm.starLevel.$pristine">
 		<label>Star Level</label> <input name="starLevel"
-			ng-model="tournament.starLevel" required size="2" maxlength="2" />
+			ng-model="tournament.starLevel" required size="10" maxlength="2" />
 		<div ng-messages="tournamentForm.starLevel.$error"
 			ng-show="tournamentForm.starLevel.$dirty">
 			<div ng-message="required">Star Level is required.</div>

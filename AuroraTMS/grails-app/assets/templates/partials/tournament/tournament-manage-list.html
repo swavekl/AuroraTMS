@@ -1,9 +1,14 @@
-<div>
-	<md-fab-toolbar> <md-fab-trigger><!-- empty to eliminate JS error --></md-fab-trigger>
-	<md-fab-actions> <md-button class="md-fab"
+<div layout="column" layout-fill>
+    <md-toolbar>
+      <div class="md-toolbar-tools">
+          <h3 class="title"><span>Tournaments</span></h3>
+      </div>
+    <md-button class="md-fab md-fab-top-right"
 		aria-label="Add" ng-click="addTournament($event)"> <ng-md-icon
-		icon="add"></ng-md-icon> </md-button> </md-fab-actions> </md-fab-toolbar>
-	<md-list ng-show="tournamentList.length > 0"> <md-list-item
+		icon="add"></ng-md-icon> </md-button>
+    </md-toolbar>
+	<md-list ng-show="tournamentList.length > 0"> 
+	<md-list-item
 		class="md-3-line" ng-repeat="tournament in tournamentList"
 		ng-click="editTournament(tournament.id, $event)">
 	<div class="md-list-item-text">
