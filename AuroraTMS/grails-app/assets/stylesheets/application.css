@@ -15,5 +15,6 @@
 *= require angular-material-components/src/date-picker/date-picker
 *= require md-date-time/dist/md-date-time
 *= require angular-material-data-table/dist/md-data-table
+*= require angular-material-icons/angular-material-icons
 *= require_self
 */

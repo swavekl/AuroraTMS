@@ -14,6 +14,14 @@ class TournamentController extends RestfulController {
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
 
+	TournamentController () {
+		super(Tournament, false)
+	}
+
+	TournamentController (boolean readOnly) {
+		super(Tournament, readOnly)
+	}
+
 	@Secured(['permitAll'])
 	def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
@@ -36,6 +44,18 @@ class TournamentController extends RestfulController {
 		long id = params.id as Long
 		def tournament = tournamentService.show(id)
         respond tournament
+    }
+
+    /**
+     * Displays a form to create a new resource
+     */
+	@Transactional
+	@Secured(['ROLE_TOURNAMENT_DIRECTOR'])
+    def create() {
+        if(handleReadOnly()) {
+            return
+        }
+        respond createResource()
     }
 
 	@Transactional

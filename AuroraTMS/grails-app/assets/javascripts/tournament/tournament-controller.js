@@ -104,6 +104,22 @@
 								}
 							},
 							controller : 'tournamentController'
+						},
+						
+						'general-tab@home.tournamentCreate' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-general-tab.html'
+						},
+						
+						'events-tab@home.tournamentCreate' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-events-tab.html'
+						},
+						
+						'contact-tab@home.tournamentCreate' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-contact-tab.html'
+						},
+						
+						'payment-info-tab@home.tournamentCreate' : {
+							templateUrl: 'assets/partials/tournament/tournament-edit-payment-info-tab.html'
 						}
 					}
 				})
@@ -151,6 +167,10 @@
 			$state.go('home.tournamentManageList');
 		}
 		
+		$scope.errorSave = function (httpResponse) {
+			showError ($mdDialog, httpResponse, 'Failed to Save Tournament');
+		}
+		
 		//
 		// Save tournament
 		//
@@ -172,11 +192,13 @@
 			$scope.endDateTextSaved = $scope.endDateText;
 			
 			if ($scope.tournament.id == null) {
-				tournamentResource.save ($scope.tournament, $scope.successSave)
+				tournamentResource.save ($scope.tournament, $scope.successSave, $scope.errorSave);
 			} else {
-				tournamentResource.update ($scope.tournament, $scope.successSave);
+				tournamentResource.update ($scope.tournament, $scope.successSave, $scope.errorSave);
 			}
 		}
+		
+
 		
 		// ============================================================================================================================
 		// EVENT related functions
@@ -387,7 +409,7 @@
 		  $scope.query = {
 		    filter: '',
 		    order: 'ordinaNumber',
-		    limit: 15,
+		    limit: 5,
 		    page: 1
 		  };
 

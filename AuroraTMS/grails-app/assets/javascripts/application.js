@@ -27,6 +27,7 @@
 //= require moment/moment
 //= require_tree views
 //= require_self
+//= require_tree utils
 //= require_tree login
 //= require_tree userprofile
 //= require_tree usatt

@@ -181,18 +181,7 @@
 		// called when save fails
 		//
 		$scope.errorEventSave = function (httpResponse) {
-			var alert = $mdDialog
-			.alert()
-			.title('Failed to save event')
-			.textContent('Error code: ' + httpResponse.status + ", Message " + httpResponse.statusText)
-			.ariaLabel('Save Error')
-			.ok('Close');
-
-	        $mdDialog
-	          .show( alert )
-	          .finally(function() {
-	            alert = undefined;
-	          });
+			showError ($mdDialog, httpResponse, 'Failed to save event');
 		}
 		
 		//

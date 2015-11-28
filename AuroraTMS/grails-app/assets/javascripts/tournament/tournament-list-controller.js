@@ -94,6 +94,11 @@
 			var params = {id: tournamentId};
 			$state.go('home.tournamentEdit', params);
 		}
+		
+		$scope.addTournament = function (event) {
+			console.log ('add tournament');
+			$state.go('home.tournamentCreate');
+		}
 	} 
 	])
 })();
