@@ -1,6 +1,21 @@
-<md-dialog aria-label="Add Event" ng-cloak> <md-dialog-content
-	layout="row"> <md-button
-	ng-repeat="event in eventDefaults"
-	ng-click="answer( event.name, $event)"> {{event.name}} </md-button> </md-dialog-content> <md-dialog-actions
-	layout="row"> <md-button ng-click="closeDialog()"
-	style="margin-right:20px;"> Cancel </md-button> </md-dialog-actions> </md-dialog>
+<md-dialog aria-label="Add Event" ng-cloak>
+<span class="md-title" style="padding: 10px">Choose Event</span> 
+<md-divider></md-divider>
+<md-dialog-content>
+<table cellspacing="0" cellpadding="0" border="0">
+   <tbody>
+     <tr ng-repeat="rowEventsArray in eventDefaults">
+         <td ng-repeat="event in rowEventsArray">
+         	<md-button ng-click="answer( event.name, $event)">{{event.name}}</md-button>
+         </td>
+     </tr>
+ 	</tbody>
+</table>	
+<md-divider></md-divider>
+</md-dialog-content> 
+<md-dialog-actions
+		layout="row"> 
+		<md-button ng-click="closeDialog()"
+		style="margin-right:20px;"> Cancel </md-button> 
+	</md-dialog-actions> 
+</md-dialog>

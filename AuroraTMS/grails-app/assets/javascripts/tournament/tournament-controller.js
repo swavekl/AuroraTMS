@@ -264,9 +264,6 @@
 			$state.go ('home.event.edit', params);
 		}
 		
-		// default event names
-		$scope.eventDefaults = eventDefaults;
-		
 		//
 		// Add new event
 		//
@@ -275,8 +272,15 @@
 			var tournamentId = $scope.tournament.id;
 			
 			// controller for dialog prompt
-			function DialogController($scope, $mdDialog, eventDefaults) {
-				$scope.eventDefaults = eventDefaults;
+			function DialogController($scope, $mdDialog, eventDefaultsLocal) {
+				// create array of arrays - each array represents one row in the popup
+				$scope.eventDefaults = [];
+				for (var i = 0; i < eventDefaultsLocal.length; i++ ) {
+					if (i % 5 == 0) 
+						$scope.eventDefaults.push([]);
+					$scope.eventDefaults[$scope.eventDefaults.length-1].push(eventDefaultsLocal[i]);
+				}
+				
 				$scope.answer = function (eventName, $browserEvent) {
 					$mdDialog.hide();
 				
@@ -298,7 +302,7 @@
 			  templateUrl: 'assets/partials/tournament/addEventDialog.tmpl.html',
 			  parent: angular.element(document.body),
 			  clickOutsideToClose:true,
-			  locals: {eventDefaults: $scope.eventDefaults}
+			  locals: {eventDefaultsLocal: eventDefaults}
 			});
 		}
 		

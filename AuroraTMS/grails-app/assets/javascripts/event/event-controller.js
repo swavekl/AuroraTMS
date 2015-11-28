@@ -108,7 +108,7 @@
 		$scope.editedEvent = event;
 		if ($state.current.name == 'home.event.create') {
 			$scope.editedEvent.ordinalNumber = $state.params.ordinalNumber;
-			$scope.editedEvent.name = $state.params.eventName;
+			$scope.editedEvent.name = ($state.params.eventName != 'Other') ? $state.params.eventName : '';
 			// initialize min & max player rating
 			for (var i = 0; i < eventDefaults.length; i++) {
 				var eventDefault = eventDefaults[i];

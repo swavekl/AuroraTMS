@@ -21,7 +21,7 @@
 			</div>
 			</md-input-container> </md-content>
 
-			<div layout="column" layout-gt-sm="row">
+			<md-content layout="column" layout-gt-sm="row">
 				<md-input-container
 					md-is-error="eventForm.day.$invalid && !eventForm.day.$pristine">
 				<label>Start Date</label> <md-select name="day"
@@ -46,9 +46,9 @@
 					<div ng-message="required">Event start time is required.</div>
 				</div>
 				</md-input-container>
-			</div>
+			</md-content>
 
-			<div layout="column" layout-gt-sm="row">
+			<md-content layout="column" layout-gt-sm="row">
 				<md-input-container
 					md-is-error="eventForm.singleElimnation.$invalid && !eventForm.singleElimnation.$pristine">
 				<md-radio-group ng-model="editedEvent.singleElimination">
@@ -69,24 +69,68 @@
 					<md-radio-button ng-value="true" class="md-primary">Doubles</md-radio-button>
 				</div>
 				</md-radio-group> </md-input-container>
-			</div>
-			<div layout="column" layout-gt-sm="row">
+			</md-content>
+			
+			<md-content layout="column" layout-gt-sm="row">
 				<md-input-container
 					md-is-error="eventForm.maxEntries.$invalid && !eventForm.maxEntries.$pristine">
 				<label>Maximum Entries</label> <input name="maxEntries"
-					ng-model="editedEvent.maxEntries" required size="3" maxlength="3" />
+					ng-model="editedEvent.maxEntries" required size="20" maxlength="3" />
 				<div ng-messages="eventForm.maxEntries.$error"
 					ng-show="eventForm.maxEntries.$dirty">
 					<div ng-message="required">Value is required.</div>
 				</div>
 				</md-input-container>
-			</div>
+			</md-content>
+			
+			<md-content layout="column" layout-gt-sm="row">
+				<md-input-container
+					md-is-error="eventForm.minPlayerRating.$invalid && !eventForm.minPlayerRating.$pristine">
+				<label>Minimum Player Rating</label> <input name="minPlayerRating"
+					ng-model="editedEvent.minPlayerRating" required size="20" maxlength="4" />
+				<div ng-messages="eventForm.minPlayerRating.$error"
+					ng-show="eventForm.minPlayerRating.$dirty">
+					<div ng-message="required">Value is required.</div>
+				</div>
+				</md-input-container>
+				<md-input-container
+					md-is-error="eventForm.maxPlayerRating.$invalid && !eventForm.maxPlayerRating.$pristine">
+				<label>Maximum Player Rating</label> <input name="maxPlayerRating"
+					ng-model="editedEvent.maxPlayerRating" required size="20" maxlength="4" />
+				<div ng-messages="eventForm.maxPlayerRating.$error"
+					ng-show="eventForm.maxPlayerRating.$dirty">
+					<div ng-message="required">Value is required.</div>
+				</div>
+				</md-input-container>
+			</md-content>
+			
+			<md-content layout="column" layout-gt-sm="row">
+				<md-input-container
+					md-is-error="eventForm.minPlayerAge.$invalid && !eventForm.minPlayerAge.$pristine">
+				<label>Minimum Player Age</label> <input name="minPlayerAge"
+					ng-model="editedEvent.minPlayerAge" required size="20" maxlength="3" />
+				<div ng-messages="eventForm.minPlayerAge.$error"
+					ng-show="eventForm.minPlayerAge.$dirty">
+					<div ng-message="required">Value is required.</div>
+				</div>
+				</md-input-container>
+				<md-input-container
+					md-is-error="eventForm.maxPlayerAge.$invalid && !eventForm.maxPlayerAge.$pristine">
+				<label>Maximum Player Age</label> <input name="maxPlayerAge"
+					ng-model="editedEvent.maxPlayerAge" required size="20" maxlength="3" />
+				<div ng-messages="eventForm.maxPlayerAge.$error"
+					ng-show="eventForm.maxPlayerAge.$dirty">
+					<div ng-message="required">Value is required.</div>
+				</div>
+				</md-input-container>
+			</md-content>
 
 			<md-content layout="row" layout-align="center center" layout-padding>
 			<md-button class="md-raised" ng-click="cancelEvent($event)">Cancel</md-button>
 			<span>&nbsp;&nbsp;</span> <md-button type="submit"
 				class="md-raised md-primary" ng-click="saveEvent($event)"
 				ng-disabled="eventForm.$invalid">Save</md-button> </md-content>
+<!-- 				<pre>{{ eventForm | json }}</pre> -->
 		</div>
 	</div>
 </form>
