@@ -125,13 +125,17 @@
 			$state.go('home.campaigns');
 		}
 		
+		$scope.failureUpdate = function(value, responseHeaders) {
+			showError ($mdDialog, httpResponse, 'Failed to Associate User Profile with Login');
+		}
+		
 		$scope.successAndUpdateAssociation = function(value, responseHeaders) {
 			$scope.profile.id = value.id;
 			session.setUserProfileId (value.id);
 			console.log ('set user profile id to ' + session.getUserProfileId());
 			var username = session.getUser();
 			console.log ('updating association between profile ' + value.id + ' and user ' + username);
-			userProfileResource.updateAssociationWithUser ({id: value.id, username: username}, $scope.successUpdate);
+			userProfileResource.updateAssociationWithUser ({id: value.id, username: username}, $scope.successUpdate, $scope.failureUpdate);
 		}
 
 		$scope.success = function(value, responseHeaders) {
@@ -139,6 +143,10 @@
 			session.setUserProfileId (value.id);
 			console.log ('set user profile id to ' + session.getUserProfileId());
 			$state.go('home.campaigns');
+		}
+		
+		$scope.failure = function (httpResponse) {
+			showError ($mdDialog, httpResponse, 'Failed to Save User Profile');
 		}
 		
 		$scope.save = function () {
@@ -161,9 +169,9 @@
 				var username = session.getUser();  // pass username so we can
 													// link them together
 				console.log ('saving new user profile ' + $scope.profile + " for user " + username);
-				userProfileResource.save ($scope.profile, $scope.successAndUpdateAssociation)
+				userProfileResource.save ($scope.profile, $scope.successAndUpdateAssociation, $scope.failure);
 			} else {
-				userProfileResource.update ($scope.profile, $scope.success);
+				userProfileResource.update ($scope.profile, $scope.success, $scope.failure);
 			}
 		}
 } ])

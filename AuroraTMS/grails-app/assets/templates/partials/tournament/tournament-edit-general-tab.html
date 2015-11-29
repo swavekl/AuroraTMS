@@ -20,7 +20,7 @@
 		</md-input-container>
 		<md-input-container md-is-error="tournamentForm.startDate.$invalid && !tournamentForm.startDate.$pristine">
 		<label>Start Date</label>
-		<input type="date" md-date-picker ng-model="tournament.startDate" />
+		<input type="date" md-date-picker ng-model="tournament.startDate"/>
 		<div ng-messages="tournamentForm.startDate.$error"
 			ng-show="tournamentForm.startDate.$dirty">
 			<div ng-message="required">Start date is required.</div>

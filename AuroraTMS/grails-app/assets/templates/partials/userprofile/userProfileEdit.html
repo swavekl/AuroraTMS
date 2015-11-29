@@ -54,27 +54,25 @@
 		</md-content>
 		
 		<md-content layout-gt-md="row" layout="column"> 
-		<!-- date for small devices -->
-		<md-input-container hide-gt-sm 
+		<!-- date for small devices - use native control -->
+		<md-input-container hide-gt-sm
 			md-is-error="userProfileForm.dateOfBirth.$invalid && !userProfileForm.dateOfBirth.$pristine">
-		<label>Date of Birth</label> <input name="dateOfBirth" type="date"
-			ng-model="profile.dateOfBirth" placeholder="yyyy-MM-dd" required
-			size="30" maxlength="40" />
+		<label>Date of Birth</label> 
+		<input type="date" ng-model="profile.dateOfBirth" name="dateOfBirth" required placeholder="yyyy-MM-dd"/>
 		<div ng-messages="userProfileForm.dateOfBirth.$error">
 			<div ng-message="required">Date of Birth is required.</div>
 		</div>
 		</md-input-container>
 		
-		<md-input-container  
-		md-is-error="userProfileForm.dateOfBirthText.$invalid && !userProfileForm.dateOfBirthText.$pristine"> 
-		<!-- date for larger than small devices --> <mdc-date-picker hide-sm
-			model="dateOfBirthText" label="Birth date">
-		<div ng-messages="userProfileForm.dateOfBirthText.$error"
-			ng-show="userProfileForm.dateOfBirthText.$dirty">
+		<!-- date for larger devices -->
+		<md-input-container hide-sm
+			md-is-error="userProfileForm.dateOfBirth.$invalid && !userProfileForm.dateOfBirth.$pristine">
+		<label>Date of Birth</label> 
+		<input type="date" ng-model="profile.dateOfBirth" name="dateOfBirth" required placeholder="yyyy-MM-dd" md-date-picker/>
+		<div ng-messages="userProfileForm.dateOfBirth.$error">
 			<div ng-message="required">Date of Birth is required.</div>
 		</div>
-		</mdc-date-picker> 
-		
+		</md-input-container>
 		</md-content>
 
 		<md-content layout-gt-md="row" layout="column"> 

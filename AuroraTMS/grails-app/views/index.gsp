@@ -11,7 +11,8 @@
 <asset:stylesheet href="application.css" />
 <link rel="stylesheet"
 	href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic" />
-</head>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"></head>
 <body ng-app="auroraTmsApp" layout="column" ng-controller="MenuController" class="ng-cloak">
 	<md-toolbar layout="row">
 	<div class="md-toolbar-tools">
