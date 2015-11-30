@@ -36,8 +36,8 @@
 			<div ng-message="required">End date is required.</div>
 		</div>
 		</md-input-container> </md-content> 
-		
 		</md-whiteframe>
+
 		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
 		<md-content layout="column" layout-gt-sm="row" layout-wrap>
 		<md-input-container flex="auto"
@@ -73,6 +73,26 @@
 		<div ng-messages="tournamentForm.state.$error"
 			ng-show="tournamentForm.state.$dirty">
 			<div ng-message="required">State is required.</div>
+		</div>
+		</md-input-container> </md-content> </md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
+		<md-content layout="column"> <md-input-container
+			flex="auto"
+			md-is-error="tournamentForm.websiteURL.$invalid && !tournamentForm.websiteURL.$pristine">
+		<label>Website URL</label> <input type="url" name="websiteURL"
+			ng-model="tournament.websiteURL" size="150" maxlength="150" />
+		<div ng-messages="tournamentForm.websiteURL.$error"
+			ng-show="tournamentForm.websiteURL.$dirty">
+			<!-- 			<div ng-message="required">Name is required.</div> -->
+		</div>
+		</md-input-container> <md-input-container flex="auto"
+			md-is-error="tournamentForm.blankEntryFormURL.$invalid && !tournamentForm.blankEntryFormURL.$pristine">
+		<label>Blank Entry Form URL</label> <input type="url" name="blankEntryFormURL"
+			ng-model="tournament.blankEntryFormURL" size="150" maxlength="150" />
+		<div ng-messages="tournamentForm.blankEntryFormURL.$error"
+			ng-show="tournamentForm.blankEntryFormURL.$dirty">
+			<!-- 			<div ng-message="required">Name is required.</div> -->
 		</div>
 		</md-input-container> </md-content> </md-whiteframe>
 
