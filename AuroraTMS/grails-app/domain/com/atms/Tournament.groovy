@@ -14,6 +14,41 @@ class Tournament {
 	int starLevel
 	Date startDate
 	Date endDate
+	String websiteURL
+	String blankEntryFormURL
+	
+	Date ratingCutoffDate
+	Date lateEntryStartDate
+	Date entryCutoffDate
+	
+	// contact information
+	String contactName
+	String contactEmail
+	String contactPhone
+	
+	// payment information
+	String checkPayableTo
+	String checkMailAddress
+	String checkMailCity
+	String checkMailState
+	String checkMailZipCode
+	
+	int tablesCount
+	
+	// fees
+	float usattRatingFee
+	// fee for processing entry
+	float adminFee
+	float lateEntryFee
+	
+	// e.g. By each event (default), by number of events played, by both, by lesser amount
+	int eventFeesCalcMethod
+	// standard round robin fees 
+	double stdAdultRRFee
+	double stdJuniorRRFee
+	// standard single elimination fees
+	double stdAdultSEFee
+	double stdJuniorSEFee
 	
 	static hasMany = [events:Event]
 
@@ -24,5 +59,16 @@ class Tournament {
 		starLevel range: 0..5
 		startDate blank: false
 		endDate blank: false
+		websiteURL blank : true, nullable: true
+		blankEntryFormURL blank : true, nullable: true
+		checkPayableTo blank : true, nullable: true
+		checkMailAddress blank : true, nullable: true
+		checkMailCity blank : true, nullable: true
+		checkMailState blank : true, nullable: true
+		checkMailZipCode blank : true, nullable: true
+		tablesCount min: 0
+		usattRatingFee scale: 2, min: 0f
+		adminFee scale: 2, min: 0f
+		lateEntryFee scale: 2, min: 0f 
     }
 }

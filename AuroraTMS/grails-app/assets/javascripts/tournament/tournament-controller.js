@@ -23,10 +23,8 @@
 							    
 								eventResource: 'eventResource',
 								events: function (eventResource, $stateParams, session, tournament) {
-									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 0, username: session.getUser()};
-									var events = eventResource.query(queryOptions).$promise;
-									events = events || [];
-									return events;
+									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50, username: session.getUser()};
+									return eventResource.query(queryOptions).$promise;
 								}
 							},
 							controller : 'tournamentController'
@@ -52,11 +50,9 @@
 				    
 								eventResource: 'eventResource',
 								events: function (eventResource, $stateParams, session, tournament) {
-									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 30, username: session.getUser()};
+									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50, username: session.getUser()};
 									//console.log ('tournament = ' + queryOptions.tournamentId + " username "+ queryOptions.username);
-									var events = eventResource.query(queryOptions).$promise;
-									events = events || [];
-									return events;
+									return eventResource.query(queryOptions).$promise;
 								}
 							},
 							controller : 'tournamentController', 
@@ -137,16 +133,25 @@
 		$scope.tournament = tournament;
 
 //		console.log ('got tournament ' + tournament.id + " name: " + tournament.name);
-		$scope.tournament.startDate = (tournament.startDate) ? new Date(tournament.startDate) : new Date();
+		// make new tournaments start 3 months from now
+		var defaultStartDate = moment().add(90, 'days').toDate();
+		
+		$scope.tournament.startDate = (tournament.startDate) ? new Date(tournament.startDate) : defaultStartDate;
 		$scope.startDateText = moment(tournament.startDate).format('LL');
 		$scope.startDateTextSaved = $scope.startDateText;
 
-		$scope.tournament.endDate = (tournament.endDate) ? new Date (tournament.endDate) : new Date();
+		$scope.tournament.endDate = (tournament.endDate) ? new Date (tournament.endDate) : $scope.tournament.startDate;
 		$scope.endDateText = moment(tournament.endDate).format('LL');
 		$scope.endDateTextSaved = $scope.endDateText;
 
-		$scope.tournament.contactName = 'Swavek Lorenc';
-		
+		var defaultRatingCutoffDate = moment([defaultStartDate.getFullYear(), defaultStartDate.getMonth(), defaultStartDate.getDate()]).subtract(30, 'days').toDate();
+		var defaultLateEntryStartDate = moment([defaultStartDate.getFullYear(), defaultStartDate.getMonth(), defaultStartDate.getDate()]).subtract(14, 'days').toDate();
+		var defaultEntryCutoffDate = moment([defaultStartDate.getFullYear(), defaultStartDate.getMonth(), defaultStartDate.getDate()]).subtract(7, 'days').toDate();
+
+		$scope.tournament.ratingCutoffDate = (tournament.ratingCutoffDate) ? new Date (tournament.ratingCutoffDate) : defaultRatingCutoffDate;
+		$scope.tournament.lateEntryStartDate = (tournament.lateEntryStartDate) ? new Date (tournament.lateEntryStartDate) : defaultLateEntryStartDate;
+		$scope.tournament.entryCutoffDate = (tournament.entryCutoffDate) ? new Date (tournament.entryCutoffDate) : defaultEntryCutoffDate;
+
         // sates for venue location
 		$scope.statesArray = [
                   			  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 

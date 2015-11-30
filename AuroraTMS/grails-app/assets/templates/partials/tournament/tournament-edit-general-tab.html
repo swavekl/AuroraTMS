@@ -1,7 +1,7 @@
 <form name="tournamentForm" ng-submit="save()" novalidate>
 	<div layout="column" layout-align="start start">
 		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
-		<md-content layout="column" layout-gt-sm="row"> <md-input-container
+		<md-content layout="column" layout-gt-sm="row"> <md-input-container flex="auto" 
 			md-is-error="tournamentForm.name.$invalid && !tournamentForm.name.$pristine">
 		<label>Name</label> <input name="name" ng-model="tournament.name"
 			required size="50" maxlength="50" />
@@ -9,23 +9,25 @@
 			ng-show="tournamentForm.name.$dirty">
 			<div ng-message="required">Name is required.</div>
 		</div>
-		</md-input-container> <md-input-container
+		</md-input-container> 
+		<md-input-container flex="auto"
 			md-is-error="tournamentForm.starLevel.$invalid && !tournamentForm.starLevel.$pristine">
 		<label>Star Level</label> <input name="starLevel"
-			ng-model="tournament.starLevel" required size="10" maxlength="2" />
+			ng-model="tournament.starLevel" required size="15" maxlength="2" />
 		<div ng-messages="tournamentForm.starLevel.$error"
 			ng-show="tournamentForm.starLevel.$dirty">
 			<div ng-message="required">Star Level is required.</div>
 		</div>
 		</md-input-container>
-		<md-input-container md-is-error="tournamentForm.startDate.$invalid && !tournamentForm.startDate.$pristine">
+		<md-input-container flex="auto" 
+		md-is-error="tournamentForm.startDate.$invalid && !tournamentForm.startDate.$pristine">
 		<label>Start Date</label>
 		<input type="date" md-date-picker ng-model="tournament.startDate"/>
 		<div ng-messages="tournamentForm.startDate.$error"
 			ng-show="tournamentForm.startDate.$dirty">
 			<div ng-message="required">Start date is required.</div>
 		</div>
-		</md-input-container> <md-input-container
+		</md-input-container> <md-input-container flex="auto" 
 			md-is-error="tournamentForm.endDate.$invalid && !tournamentForm.endDate.$pristine">
 		<label>End Date</label> <input type="date" md-date-picker
 			ng-model="tournament.endDate" />
@@ -73,6 +75,69 @@
 			<div ng-message="required">State is required.</div>
 		</div>
 		</md-input-container> </md-content> </md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
+		<md-content layout="column" layout-gt-sm="row" layout-wrap>
+			<md-input-container  flex="auto"
+				md-is-error="tournamentForm.contactName.$invalid && !tournamentForm.contactName.$pristine">
+			<label>Contact Person</label> <input name="contactName"
+				ng-model="tournament.contactName" required size="50" maxlength="50" />
+			<div ng-messages="tournamentForm.contactName.$error"
+				ng-show="tournamentForm.contactName.$dirty">
+				<div ng-message="required">Contact Name is required.</div>
+			</div>
+			</md-input-container> <md-input-container  flex="auto"
+				md-is-error="tournamentForm.contactEmail.$invalid && !tournamentForm.name.$pristine">
+			<label>Contact Email</label> <input name="contactEmail"
+				ng-model="tournament.contactEmail" required size="50" maxlength="50" />
+			<div ng-messages="tournamentForm.contactEmail.$error"
+				ng-show="tournamentForm.contactEmail.$dirty">
+				<div ng-message="required">Contact Email is required.</div>
+			</div>
+			</md-input-container> <md-input-container  flex="auto"
+				md-is-error="tournamentForm.contactPhone.$invalid && !tournamentForm.name.$pristine">
+			<label>Contact Phone (630-111-1234)</label> <input name="contactPhone"
+				ng-model="tournament.contactPhone" required size="35" maxlength="12" />
+			<div ng-messages="tournamentForm.contactPhone.$error"
+				ng-show="tournamentForm.contactPhone.$dirty">
+				<div ng-message="required">Contact Phone is required.</div>
+			</div>
+			</md-input-container> 
+			</md-content>
+		</md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin> 
+		<md-content layout="column" layout-gt-sm="row" layout-wrap>
+		<md-input-container flex="auto"
+			md-is-error="tournamentForm.ratingCutoffDate.$invalid && !tournamentForm.ratingCutoffDate.$pristine">
+		<label>Ratings Eligibility Cutoff Date</label> <input type="date"
+			md-date-picker ng-model="tournament.ratingCutoffDate" size="25" />
+		<div ng-messages="tournamentForm.ratingCutoffDate.$error"
+			ng-show="tournamentForm.ratingCutoffDate.$dirty">
+			<div ng-message="required">This field is required.</div>
+		</div>
+		</md-input-container> 		
+		<md-input-container flex="auto"
+			md-is-error="tournamentForm.lateEntryStartDate.$invalid && !tournamentForm.lateEntryStartDate.$pristine">
+		<label>Late Entry Start Date</label> <input type="date"
+			md-date-picker ng-model="tournament.lateEntryStartDate" size="25" />
+		<div ng-messages="tournamentForm.lateEntryStartDate.$error"
+			ng-show="tournamentForm.lateEntryStartDate.$dirty">
+			<div ng-message="required">This field is required.</div>
+		</div>
+		</md-input-container> 
+		<md-input-container flex="auto"
+			md-is-error="tournamentForm.entryCutoffDate.$invalid && !tournamentForm.entryCutoffDate.$pristine">
+		<label>Registration Deadline</label> <input type="date"
+			md-date-picker ng-model="tournament.entryCutoffDate" size="25" />
+		<div ng-messages="tournamentForm.entryCutoffDate.$error"
+			ng-show="tournamentForm.entryCutoffDate.$dirty">
+			<div ng-message="required">This field is required.</div>
+		</div>
+		</md-input-container> 		
+		
+		</md-content> </md-whiteframe>
+
 		<md-content layout="row" layout-align="center center" layout-padding
 			layout-margin> <md-button class="md-raised"
 			ui-sref="home.tournamentManageList">Cancel</md-button> <span>&nbsp;&nbsp;</span> <md-button

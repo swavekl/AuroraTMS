@@ -16,7 +16,7 @@
 <body ng-app="auroraTmsApp" layout="column" ng-controller="MenuController" class="ng-cloak">
 	<md-toolbar layout="row">
 	<div class="md-toolbar-tools">
-		<md-button class="md-icon-button" aria-label="Menu" ng-click="openLeftMenu()" hide-gt-sm> 
+		<md-button class="md-icon-button" aria-label="Menu" ng-click="openLeftMenu()" hide-gt-md> 
 				<ng-md-icon icon="menu" style="fill: white" size="30"></ng-md-icon> 
 		</md-button>
 		<h2>
@@ -27,7 +27,7 @@
 
 	<div layout="row" flex md-swipe-left="closeLeftMenu()">
 		<md-sidenav ui-view="menu" layout="column" class="md-sidenav-left md-whiteframe-z2"
-			md-component-id="left" md-is-locked-open="$mdMedia('gt-sm')">
+			md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 		</md-sidenav>
 		<div ui-view="content" layout="row" flex layout-padding></div>
 	</div>

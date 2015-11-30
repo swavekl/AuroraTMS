@@ -50,6 +50,7 @@ class BootStrap {
 
 		// create via service
 		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('01/16/2016'), endDate: df.parse('01/17/2016'), starLevel: 4)
+		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
 		Map params1 = [:];
 		tournamentService.create(tournament5, params1)
 		
@@ -82,6 +83,7 @@ class BootStrap {
 				AuthorityUtils.createAuthorityList('ROLE_TOURNAMENT_DIRECTOR'))
 
 		def tournament6 = new Tournament (name: "U.S.Open", venue: 'Las Vegas Convention Center', address: '123 W. Strip Ave', city: "Las Vegas", state: "NV", startDate: df.parse('07/11/2015'), endDate: df.parse('07/16/2015'), starLevel: 5)
+		fillOtherTournamentDefaults (tournament6, "Tiffany Oldland", "tiffanyol@yahoo.com")
 		tournamentService.create(tournament6, params1)
 
 		importPlayerData()
@@ -154,19 +156,23 @@ class BootStrap {
 	}
 
 	def grantPermissions() {
-		def tournament = new Tournament (name: "2015 JOOLA Aurora Spring Open", venue: 'Eola Community Center', address: "555 S. Eola Rd.", city: "Aurora", state: "IL", startDate: df.parse('03/14/2015'), endDate: df.parse('03/14/2015'), starLevel: 2)
+		def tournament = new Tournament (name: "2015 JOOLA Aurora Spring Open", venue: 'Eola Community Center', address: "555 S. Eola Rd.", city: "Aurora", state: "IL", startDate: df.parse('03/14/2015'), endDate: df.parse('03/14/2015'), starLevel: 2, )
+		fillOtherTournamentDefaults (tournament, "Swavek Lorenc", "swaveklorenc@yahoo.com")
 		tournament.save(failOnError: true)
 		aclService.createAcl(objectIdentityRetrievalStrategy.getObjectIdentity(tournament))
 		
 		def tournament2 = new Tournament (name: "2015 Aurora Summer Open", , venue: 'Eola Community Center', address: "555 S. Eola Rd.", city: "Aurora", state: "IL", startDate: df.parse('06/20/2015'), endDate: df.parse('06/20/2015'), starLevel: 2)
+		fillOtherTournamentDefaults (tournament2, "Swavek Lorenc", "swaveklorenc@yahoo.com")
 		tournament2.save(failOnError: true)
 		aclService.createAcl(objectIdentityRetrievalStrategy.getObjectIdentity(tournament2))
 
 		def tournament3 = new Tournament (name: "2015 Meiklejohn North American Seniors Open", venue: 'Clubhouse 5', address: "Clubhouse 5, 24262 Punta Alta", city: "Laguna Woods", state: "CA", startDate: df.parse('06/04/2015'), endDate: df.parse('06/07/2015'), starLevel: 2)
+		fillOtherTournamentDefaults (tournament3, "Craig Krum", "cragkrum@yahoo.com")
 		tournament3.save(failOnError: true)
 		aclService.createAcl(objectIdentityRetrievalStrategy.getObjectIdentity(tournament3))
 		
 		def tournament4 = new Tournament (name: "America's Team Championship", venue: 'Forest City Tennis Center', city: "Rockford", address: '7801 East State St', state: "IL",startDate: df.parse('05/23/2015'), endDate: df.parse('05/24/2015'), starLevel: 4)
+		fillOtherTournamentDefaults (tournament4, "Ed Hogshead", "edhg@yahoo.com")
 		tournament4.save(failOnError: true)
 		aclService.createAcl(objectIdentityRetrievalStrategy.getObjectIdentity(tournament4))
 		
@@ -177,6 +183,29 @@ class BootStrap {
 		aclUtilService.addPermission tournament4, 'ed', ADMINISTRATION
 		aclUtilService.addPermission tournament4, 'swavek', ADMINISTRATION
 		
+	}
+	
+	def fillOtherTournamentDefaults (Tournament tournament, String contactName, String contactEmail) {
+		tournament.contactEmail = contactEmail
+		tournament.contactName = contactName
+		tournament.contactPhone = "630-123-4568"
+//		tournament.websiteURL = "http://www.fvttc.net/sanctioned-tournaments/2016-tournaments/2016-aurora-cup.aspx"
+//		tournament.blankEntryFormURL = 'http://www.fvttc.net/resources/site1/General/2016-Aurora-Cup/2016JOOLAAuroraCupBlankEntryForm.pdf'
+//		tournament.tablesCount = 12
+//		tournament.checkPayableTo = contactName 
+//		tournament.checkMailingAddress = '1234 Nice Str' 
+//		tournament.checkMailCity = tournament.city 
+//		tournament.checkMailState = tournament.state 
+//		tournament.checkMailZipCode = '60504-9589'
+		def MILLIS_IN_DAY = 24 * 60 * 60 * 1000
+//		def calendar = Calendar.instance
+//		calendar.setTime tournament.startDate.time
+		tournament.ratingCutoffDate = tournament.startDate - 35 
+		tournament.lateEntryStartDate = tournament.startDate - 14
+		tournament.entryCutoffDate = tournament.startDate - 7
+		tournament.usattRatingFee = 5.0f
+		tournament.adminFee = 0f
+		tournament.lateEntryFee = 0f
 	}
 
 	def importPlayerData() {
