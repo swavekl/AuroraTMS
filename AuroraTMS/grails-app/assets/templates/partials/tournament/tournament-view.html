@@ -1,7 +1,16 @@
-<div layout="row" layout-fill layout-align="center start" layout-padding>
+<div layout="column" layout-fill layout-align="center start" layout-padding>
+<md-toolbar>
+      <div class="md-toolbar-tools">
+          <h3 class="title"><span>Tournament Details</span></h3>
+      </div>
+<md-button class="md-fab md-fab-top-right" aria-label="Enter Tournament"
+	ng-click="enterTournament(tournament.id, $event)"> <ng-md-icon
+	icon="person_add"></ng-md-icon> </md-button> 
+</md-toolbar>
+
 <div flex style="background-color: white;">
 
- <div layout-gt-md="row" layout-sm="column" layout-fill layout-wrap>
+<div layout-gt-md="row" layout-sm="column" layout-fill layout-wrap>
 <div flex-gt-md="100" flex>
  	<h2 class="md-headline">{{tournament.name}}</h2>
 	<p class="md-title">

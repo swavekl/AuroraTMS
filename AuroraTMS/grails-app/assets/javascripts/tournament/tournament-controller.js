@@ -162,10 +162,10 @@
                         ];
 
 		
-		$scope.enterTournament = function (tournamentId, event) {
+		$scope.enterTournament = function (tournamentId, browserEvent) {
 			console.log ('entering tournament ' + tournamentId);
-//			var params = {id: tournamentId};
-//			$state.go('home.tournamentView', params);
+			var params = {id: tournamentId};
+			$state.go('home.tournamentEntry', params);
 		}
 
 		$scope.successSave = function(value, responseHeaders) {

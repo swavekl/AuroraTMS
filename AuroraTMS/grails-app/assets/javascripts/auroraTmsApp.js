@@ -3,8 +3,10 @@
 
 var app = angular.module('auroraTmsApp', ['ui.router', 'ngMaterial', 'ngMessages', 'ngResource', 'date-range',
                                           'LocalStorageModule', 'ngMaterial.components', 'ngMdIcons', 'mdDateTime', 'md.data.table', 'mdPickers',
-                                          'menu', 'login', 'dashboard', "campaigns", 'registerUser', 'userProfile',
-                                          'usattSearch', 'tournament', 'tournamentList', 'event']);
+                                          'menu', 'login', 'dashboard', "campaigns", 
+                                          'registerUser', 'userProfile',
+                                          'usattSearch', 'tournament', 'tournamentList', 'event',
+                                          'tournamentEntry']);
 app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIconProvider', 
             function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
     $urlRouterProvider.otherwise('/');

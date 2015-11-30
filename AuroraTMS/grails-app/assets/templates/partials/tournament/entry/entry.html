@@ -1,0 +1,16 @@
+<div layout="column" layout-fill>
+    <md-tabs md-dynamic-height md-border-bottom class="md-primary" style="border: 0px solid green" md-selected="selectedTab">
+      <md-tab label="Membership">
+	      <div ui-view="membership-tab"></div>
+      </md-tab>
+	<md-tab label="Events">
+		<div ui-view="events-tab"></div>
+	</md-tab> 
+	<md-tab label="Invoice"> 
+		<div ui-view="invoice-tab"></div>
+	</md-tab>
+	<md-tab label="Payment"> 
+		<div ui-view="payment-tab"></div>
+	</md-tab>
+    </md-tabs>
+</div>
