@@ -5,6 +5,7 @@ class UrlMappings {
 		"/api/userprofiles"(resources: "userProfile")
 		"/api/tournaments"(resources: "tournament") {
 			"/events"(resources: "event")
+			"/tournamententries"(resources: "tournamentEntry")
 		}
 		
         "/$controller/$action?/$id?(.$format)?"{

@@ -81,8 +81,8 @@
 			} ])
 
 	.controller('userProfileCtrl', 
-			['$scope', '$state', 'userProfileResource', 'userProfile', 'session', 'usattProfileResource', 'usattProfile',
-		        function($scope, $state, userProfileResource, userProfile, session, usattProfileResource, usattProfile) {
+			['$scope', '$state', '$mdDialog', 'userProfileResource', 'userProfile', 'session', 'usattProfileResource', 'usattProfile',
+		        function($scope, $state, $mdDialog, userProfileResource, userProfile, session, usattProfileResource, usattProfile) {
 		
 		if (userProfile.dateOfBirth != undefined) {
 			userProfile.dateOfBirth = new Date (userProfile.dateOfBirth);
@@ -105,6 +105,7 @@
 			var streetAddress = up.address1 ? up.address1 : "";
 			streetAddress += up.address2 ? (" " + up.address2) : "";
 			var dob = new Date (up.dateOfBirth);
+			var expirationDate = new Date (up.expirationDate);
 			$scope.profile = {
 				firstName : up.firstName,
 				lastName: up.lastName,
@@ -113,8 +114,10 @@
 				city: up.city,
 				state: up.state,
 				zipCode: up.zipCode,
+				country: up.country,
 				gender: up.gender,
-				dateOfBirth: dob
+				dateOfBirth: dob,
+				expirationDate: expirationDate 
 			};
 			$scope.dateOfBirthText = moment(dob).format('LL');
 			$scope.dateOfBirthTextSaved = $scope.dateOfBirthText;

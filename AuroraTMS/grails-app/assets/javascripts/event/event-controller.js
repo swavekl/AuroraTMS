@@ -194,6 +194,7 @@
 
 			// save current event date & time
 			if ($scope.editedEvent != null) {
+				// need this for resource parameter mapping not for GORM persistence
 				$scope.editedEvent.tournamentId = $scope.tournament.id;
 				if ($scope.editedEvent.id == null) {
 					eventResource.save ($scope.editedEvent, $scope.successEventSave, $scope.errorEventSave)

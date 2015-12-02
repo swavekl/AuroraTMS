@@ -8,17 +8,51 @@
 			function($stateProvider, $urlRouterProvider) {
 				$stateProvider
 				.state('home.tournamentEntry', {
-					url : 'api/tournamententry',
+					url : 'api/tournamententry/:tournamentId',
 					privateUrl : true,
 					data: {
 						roles: ['ROLE_USER']
 				    },
 					resolve: {
 						session: 'session',
+						
+						tournamentResource: 'tournamentResource',
+						tournament: function(tournamentResource, $stateParams, session) {
+							return tournamentResource.view({id: $stateParams.tournamentId}).$promise;
+						},
+
 						tournamentEntryResource: 'tournamentEntryResource',
 						tournamentEntry: function(tournamentEntryResource, $stateParams, session) {
-							return {};
-						}
+							var params = {tournamentId: $stateParams.tournamentId};
+							return tournamentEntryResource.create (params).$promise;
+						},
+
+						userProfileResource: 'userProfileResource',
+						userProfile: function(userProfileResource, $stateParams, session) {
+							var userId = session.getUser();
+							var userProfileId = session.getUserProfileId();
+							console.log ('session user id ' + userId + ", user profile id " + userProfileId);
+							if (userProfileId != undefined) {
+								console.log ('getting user profile with id ' + userProfileId);
+								return userProfileResource.get({id: userProfileId}).$promise;
+							} else {
+								console.log ('gettting profile by userid ' + userId);
+								return userProfileResource.editByUsername({username: userId}).$promise;
+							}
+						},
+						
+//						usattProfileResource: 'usattProfileResource',
+//						usattProfile: function(usattProfileResource, userProfile, session) {
+//							var memberId = userProfile.usattID;
+//							console.log ('memberId = ' + memberId);
+//							if (memberId != undefined && memberId != 0) {
+//								console.log ('gettting USATT profile by memberId ' + memberId);
+//								return usattProfileResource.queryByMemberId({memberId: memberId}).$promise;
+//							} else {
+//								return {};
+//							}
+//						},
+
 					},
 					views : {
 						'menu@' : {
@@ -49,11 +83,28 @@
 			
 	// define controller functions
 	.controller('tournamentEntryController', 
-			['$scope', '$state', 'session','tournamentEntryResource', 'tournamentEntry',
-    function($scope, $state, session, tournamentEntryResource, tournamentEntry) {
+			['$scope', '$state', 'session','tournamentResource', 'tournament', 'tournamentEntryResource', 'tournamentEntry','userProfileResource', 'userProfile',
+    function($scope, $state, session, tournamentResource, tournament, tournamentEntryResource, tournamentEntry, userProfileResource, userProfile) {
 		
 		// tournament entry
+		$scope.tournament = tournament;
 		$scope.tournamentEntry = tournamentEntry;
+		if ($scope.tournamentEntry.tournament == null) {
+			$scope.tournamentEntry.tournament = tournament;
+		}
+		$scope.userProfile = userProfile;
+		$scope.membershipExpired = false;
+		// check if new USATT member
+		if ($scope.userProfile.usattID == 0 || $scope.userProfile.usattID > 90000) {
+			$scope.membershipExpired = true;
+		} else {
+			// check if expires before tournament
+			var tournamentDate = (tournament != null && tournament.endDate != null) ? new Date (tournament.endDate) : new Date();
+			var membershipExpirationDate = ($scope.userProfile.expirationDate) ? new Date ($scope.userProfile.expirationDate) : new Date();
+			$scope.userProfile.expirationDate = membershipExpirationDate;
+			$scope.membershipExpired = moment(membershipExpirationDate).isBefore(tournamentDate, 'day') || 
+			                           moment(membershipExpirationDate).isSame(tournamentDate, 'day'); 
+		}
 		
 		$scope.enteredEventsList = [
 		{eventName:'Open Doubles', entryDateTime: 'Fri 6:00 PM', eventFee: '$28'},

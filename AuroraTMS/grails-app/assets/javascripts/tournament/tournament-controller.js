@@ -164,7 +164,7 @@
 		
 		$scope.enterTournament = function (tournamentId, browserEvent) {
 			console.log ('entering tournament ' + tournamentId);
-			var params = {id: tournamentId};
+			var params = {tournamentId: tournamentId};
 			$state.go('home.tournamentEntry', params);
 		}
 

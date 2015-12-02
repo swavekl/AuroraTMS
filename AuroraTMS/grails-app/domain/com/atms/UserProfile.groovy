@@ -8,7 +8,11 @@ class UserProfile {
     String firstName
 	String lastName
 	Date dateOfBirth
+	
+	// USATT membership information
 	long usattID
+	Date expirationDate
+	
 	// contact information
 	String email
 	String phone
@@ -16,12 +20,15 @@ class UserProfile {
 	String city
 	String state
 	String zipCode
+	String country
 	String gender
 	String club
 	
 	
 	// no reference to SecUser
 	static belongsTo = SecUser
+	
+	static hasMany = [tournamentEntries: TournamentEntry]
 	
 	static constraints = {
 		firstName blank: false
@@ -34,6 +41,7 @@ class UserProfile {
 		city blank: false
 		state blank: false
 		zipCode blank: false
-		
+		country blank: false
+		expirationDate nullable: true
     }
 }

@@ -1,1 +1,6 @@
-Membership Step
+<div layout="column">
+	<div ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }} or you are a new member.  
+	If you are a currently a member of a foreign table tennis association please select 'Member of foreign association'.</div>
+	<div ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
+	 
+</div>

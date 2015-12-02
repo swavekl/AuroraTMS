@@ -42,6 +42,8 @@ class Event {
 	int playersToSeed
 	
 	static belongsTo = [tournament: Tournament]
+	
+	static hasMany = [eventEntries: EventEntry]
 
     static constraints = {
 		ordinalNumber min: 1
