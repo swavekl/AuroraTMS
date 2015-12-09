@@ -1,3 +1,6 @@
+//
+// Controller for entering tournaments
+//
 (function() {
 	'use strict';
 
@@ -9,8 +12,8 @@
 				$stateProvider
 				.state('home.tournamentEntry', {
 					url : 'api/tournamententry/:tournamentId',
-					privateUrl : true,
 					data: {
+						privateUrl : true,
 						roles: ['ROLE_USER']
 				    },
 					resolve: {
@@ -40,19 +43,6 @@
 								return userProfileResource.editByUsername({username: userId}).$promise;
 							}
 						},
-						
-//						usattProfileResource: 'usattProfileResource',
-//						usattProfile: function(usattProfileResource, userProfile, session) {
-//							var memberId = userProfile.usattID;
-//							console.log ('memberId = ' + memberId);
-//							if (memberId != undefined && memberId != 0) {
-//								console.log ('gettting USATT profile by memberId ' + memberId);
-//								return usattProfileResource.queryByMemberId({memberId: memberId}).$promise;
-//							} else {
-//								return {};
-//							}
-//						},
-
 					},
 					views : {
 						'menu@' : {
@@ -62,30 +52,35 @@
 							templateUrl : 'assets/partials/tournament/entry/entry.html',
 							controller : 'tournamentEntryController'
 						},
-						'membership-tab@home.tournamentEntry' : {
-							templateUrl : 'assets/partials/tournament/entry/entry-membership.html',
-						},
-						
-						'events-tab@home.tournamentEntry' : {
-							templateUrl : 'assets/partials/tournament/entry/entry-events.html',
-						},
-						
-						'invoice-tab@home.tournamentEntry' : {
-							templateUrl : 'assets/partials/tournament/entry/entry-invoice.html',
-						},
-						
-						'payment-tab@home.tournamentEntry' : {
-							templateUrl : 'assets/partials/tournament/entry/entry-payment.html',
-						}
 					}
 				})
+		        .state('home.tournamentEntry.events', {
+		            url: '/events',
+					templateUrl : 'assets/partials/tournament/entry/entry-events.html',
+		        })
+		        // url will be 'api/tournamententry/:tournamentId
+		        .state('home.tournamentEntry.membership', {
+		            url: '/membership',
+					templateUrl : 'assets/partials/tournament/entry/entry-membership.html',
+		        })
+		        // url will be /form/payment
+		        // url will be /form/interests
+		        .state('home.tournamentEntry.invoice', {
+		        	url: '/invoice',
+		        	templateUrl : 'assets/partials/tournament/entry/entry-invoice.html',
+		        })
+		        // url will be /form/interests
+		        .state('home.tournamentEntry.payment', {
+		            url: '/payment',
+					templateUrl : 'assets/partials/tournament/entry/entry-payment.html',
+		        });
 			} ])
 			
 	// define controller functions
 	.controller('tournamentEntryController', 
 			['$scope', '$state', 'session','tournamentResource', 'tournament', 'tournamentEntryResource', 'tournamentEntry','userProfileResource', 'userProfile',
     function($scope, $state, session, tournamentResource, tournament, tournamentEntryResource, tournamentEntry, userProfileResource, userProfile) {
-		
+		console.log ('in tournamentEntryController state = ' + $state.current.name);
 		// tournament entry
 		$scope.tournament = tournament;
 		$scope.tournamentEntry = tournamentEntry;
@@ -106,6 +101,69 @@
 			                           moment(membershipExpirationDate).isSame(tournamentDate, 'day'); 
 		}
 		
+		// here is the list of steps.  Membership may not be required if it is up to date
+		$scope.steps = []
+		$scope.steps.push ('home.tournamentEntry.events');
+		if ($scope.membershipExpired)
+			$scope.steps.push ('home.tournamentEntry.membership');
+		$scope.steps.push ('home.tournamentEntry.invoice');
+		$scope.steps.push ('home.tournamentEntry.payment');
+		
+		$scope.getCurrentStepIndex = function () {
+			var curState = $state.current.name;
+			var index = 0;
+			for (var i = 0; i < $scope.steps.length; i++) {
+				if ($scope.steps[i] == curState) {
+					index = i;
+				}
+			}
+			return index;
+		}
+		
+		//
+		// Moves to the next step
+		//
+		$scope.nextStep = function () {
+			var index = $scope.getCurrentStepIndex ();
+			if (index < $scope.steps.length - 1) {
+				index++;
+			}
+			
+			var nextState = $scope.steps[index];
+			$state.go (nextState, $state.params);
+		}
+		
+		// 
+		// moves to the previous step
+		//
+		$scope.prevStep = function () {
+			var index = $scope.getCurrentStepIndex ();
+			if (index > 0) {
+				index--;
+			}
+			
+			var prevState = $scope.steps[index];
+			$state.go (prevState, $state.params);
+		}
+		
+		//
+		// checks if this is the last step
+		//
+		$scope.isFirstStep = function () {
+			var index = $scope.getCurrentStepIndex ();
+			return (index == 0);
+		}
+		
+		//
+		// checks if this is the last step
+		//
+		$scope.isLastStep = function () {
+			var index = $scope.getCurrentStepIndex ();
+			return (index == ($scope.steps.length - 1));
+		}
+		
+		
+
 		$scope.enteredEventsList = [
 		{eventName:'Open Doubles', entryDateTime: 'Fri 6:00 PM', eventFee: '$28'},
 		{eventName:'Open Singles', entryDateTime: 'Sat 9:00 AM', eventFee: '$45'},
@@ -137,6 +195,27 @@
 //			var params = {id: tournamentId};
 //			$state.go('home.tournamentEntry', params);
 		}
+		
+		$scope.enterEvent = function (entry, browserEvent) {
+			console.log ('entering event ' + entry.eventName);
+			for (var i = 0; i < $scope.availableEventsList.length; i++) {
+				if ($scope.availableEventsList[i].eventName == entry.eventName) {
+					var entries = $scope.availableEventsList.splice(i, 1);
+					$scope.enteredEventsList.push (entries[0]);
+				}
+			}
+		}
+		
+		$scope.withdrawFromEvent = function (entry, browserEvent) {
+			console.log ('withdrawing from event ' + entry.eventName);
+			for (var i = 0; i < $scope.enteredEventsList.length; i++) {
+				if ($scope.enteredEventsList[i].eventName == entry.eventName) {
+					var entries = $scope.enteredEventsList.splice(i, 1);
+					$scope.availableEventsList.push (entries[0]);
+				}
+			}
+		}
+		
 	} 
 	])
 })();
