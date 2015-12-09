@@ -7,7 +7,9 @@
 			function($stateProvider, $urlRouterProvider) {
 				$stateProvider.state('home.dashboard', {
 					url : 'dashboard',
-					privateUrl : true,
+					data: {
+						privateUrl : true
+					},
 					views : {
 						'content@' : {
 							templateUrl : 'assets/partials/dashboard.html',

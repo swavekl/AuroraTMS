@@ -135,6 +135,7 @@ class BootStrap {
 		user1.userProfile = userProfile1
 		user1.save(failOnError: true)
 
+		// not USATT member
 		def userProfile2 = new UserProfile (firstName: 'Matthew', lastName: 'Lorenc', dateOfBirth: df.parse('10/11/1995'), email: 'matthewlorenc@yahoo.com', phone: '630-999-1180', streetAddress: '2223 New York Ave', city: 'Aurora', state: 'IL', zipCode: '60103', gender: 'M', club: 'Xilin Club')
 		//userProfile2.expirationDate = df.parse ('12/31/2015')
 		userProfile2.country = "USA"
@@ -142,16 +143,18 @@ class BootStrap {
 		user2.userProfile = userProfile2
 		user2.save(failOnError: true)
 
+		// expired membership
 		def userProfile3 = new UserProfile (firstName: 'Craig', lastName: 'Krum', dateOfBirth: df.parse('01/11/1958'), email: 'craigkrum22@yahoo.com', phone: '630-111-1220', streetAddress: '111 Maple Ave', city: 'Sacramento', state: 'CA', zipCode: '90219', gender: 'M', club: 'Sacramento Table Tennis Club')
 		userProfile3.usattID = 5470 
-		userProfile3.expirationDate = df.parse ('06/30/2017')
+		userProfile3.expirationDate = df.parse ('06/30/2015')
 		userProfile3.country = "USA"
 		userProfile3.save(failOnError: true)
 		user3.userProfile = userProfile3
 		user3.save(failOnError: true)
 
+		// life membership
 		def userProfile4 = new UserProfile (firstName: 'Ed', lastName: 'Hogshead', dateOfBirth: df.parse('01/21/1962'), email: 'edh@yahoo.com', phone: '630-111-1220', streetAddress: '111 Maple Ave', city: 'Rocford', state: 'IL', zipCode: '60234', gender: 'M', club: 'Rockford Table Tennis Club')
-		//userProfile4.usattID = 6727
+		userProfile4.usattID = 6727
 		userProfile4.expirationDate = df.parse ('12/31/2099')
 		userProfile4.country = "Germany"
 		userProfile4.save(failOnError: true)

@@ -1,71 +1,21 @@
-<md-content flex layout-padding>
-<H1>General 3</H1>
-<p>Morbi viverra, ante vel aliquet tincidunt, leo dolor pharetra
-	quam, at semper massa orci nec magna. Donec posuere nec sapien sed
-	laoreet. Etiam cursus nunc in condimentum facilisis. Etiam in tempor
-	tortor. Vivamus faucibus egestas enim, at convallis diam pulvinar vel.
-	Cras ac orci eget nisi maximus cursus. Nunc urna libero, viverra sit
-	amet nisl at, hendrerit tempor turpis. Maecenas facilisis convallis mi
-	vel tempor. Nullam vitae nunc leo. Cras sed nisl consectetur, rhoncus
-	sapien sit amet, tempus sapien.</p>
-<p>1). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>2). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>3). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>4). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>5). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>6). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>7). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>8). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>9). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-<p>10). Integer turpis erat, porttitor vitae mi faucibus, laoreet
-	interdum tellus. Curabitur posuere molestie dictum. Morbi eget congue
-	risus, quis rhoncus quam. Suspendisse vitae hendrerit erat, at posuere
-	mi. Cras eu fermentum nunc. Sed id ante eu orci commodo volutpat non ac
-	est. Praesent ligula diam, congue eu enim scelerisque, finibus commodo
-	lectus.</p>
-</md-content>
+<form name="contactForm" novalidate>
+<div layout="column" layout-fill layout-wrap>
+	<div layout-sm="column" layout-gt-md="row" layout-fill>
+	<md-content flex layout="column">Red</md-content>
+	<md-content flex layout="column">Brown</md-content>
+	</div>
+	<div layout-sm="column" layout-gt-md="row" layout-fill>
+	<md-content flex style="background-color: yellow">Yellow</md-content>
+	<md-content flex style="background-color: green">Green</md-content>
+	</div>
+</div>
+
+	<!-- buttons  -->
+	<md-content layout="row" layout-align="center center" layout-padding
+		layout-margin> <md-button class="md-raised"
+		ui-sref="home.tournamentManageList">Cancel</md-button> <span>&nbsp;&nbsp;</span>
+	<md-button type="submit" class="md-raised md-primary"
+		ng-click="saveContact($event)" ng-disabled="contactForm.$invalid">Save</md-button>
+	</md-content>
+	<!-- 		<pre>{{contactForm | json}}</pre> -->
+</form>

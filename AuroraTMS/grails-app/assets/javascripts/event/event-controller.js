@@ -13,8 +13,8 @@
 				.state('home.event', {
 					// abstract state
 					url : 'api/tournament/:tournamentId',
-					privateUrl : true,
 					data: {
+						privateUrl : true,
 						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
 				    },
 					resolve: {
@@ -30,6 +30,10 @@
 				.state ('home.event.create', {
 					// create new event state
 					url : '/event/create?ordinalNumber&eventName',
+					data: {
+						privateUrl : true,
+						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
+					},
 					resolve: {
 						eventResource: 'eventResource',
 						event: function (eventResource, $stateParams, session) {
@@ -64,6 +68,10 @@
 				.state ('home.event.edit', {
 					// edit existing event state
 					url : '/event/:id/',
+					data: {
+						privateUrl : true,
+						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
+					},
 					resolve: {
 						eventResource: 'eventResource',
 						event: function (eventResource, $stateParams, session) {

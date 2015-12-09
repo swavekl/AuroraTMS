@@ -9,7 +9,9 @@
 				$stateProvider
 				.state('home.tournamentView', {
 					url : 'api/tournaments/:id',
-					privateUrl : false,
+					data: {
+						privateUrl : false
+					},
 					views : {
 						'content@' : {
 							templateUrl : 'assets/partials/tournament/tournament-view.html',
@@ -33,8 +35,8 @@
 				})
 				.state('home.tournamentEdit', {
 					url : 'api/tournament/edit/:id?selectedTab',
-					privateUrl : true,
 					data: {
+						privateUrl : true,
 						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
 				    },
 					views : {
@@ -77,8 +79,8 @@
 				})
 				.state('home.tournamentCreate', {
 					url : 'api/tournament/create',
-					privateUrl : true,
 					data: {
+						privateUrl : true,
 						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
 				    },
 					views : {
@@ -165,7 +167,7 @@
 		$scope.enterTournament = function (tournamentId, browserEvent) {
 			console.log ('entering tournament ' + tournamentId);
 			var params = {tournamentId: tournamentId};
-			$state.go('home.tournamentEntry', params);
+			$state.go('home.tournamentEntry.events', params);
 		}
 
 		$scope.successSave = function(value, responseHeaders) {

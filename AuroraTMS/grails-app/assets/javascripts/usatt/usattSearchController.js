@@ -11,8 +11,10 @@
 				$stateProvider
 				.state('home.searchMember', {
 					url : 'usatt/searchMember',
-					privateUrl : true,
-					roles: ['ROLE_USER'],
+					data: {
+						privateUrl : true,
+						roles: ['ROLE_USER']
+					},
 					views : {
 						'content@' : {
 							templateUrl : 'assets/partials/usatt/usattSearchContent.html',

@@ -1,4 +1,4 @@
-<div>
+<div layout="column" flex layout-fill ng-cloak>
 	<table>
 		<tr>
 		<td><H4>Tournaments in the </H4></td>
@@ -10,6 +10,7 @@
 		<td><h4> region</h4></td>
 		</tr>
 	</table>
+	<md-content>
 	<div ng-hide="tournamentList.length > 0">No tournaments found</div>
 	<md-list ng-show="tournamentList.length > 0"> <md-list-item
 		class="md-3-line" ng-repeat="tournament in tournamentList"
@@ -17,17 +18,18 @@
 	<div class="md-list-item-text">
 		<p class="md-subhead">{{ tournament.name }}</p>
 		<h4 ng-show="tournament.startDate != tournament.endDate">
-		<span date-range start-date="{{tournament.startDate}}" end-date="{{tournament.endDate}}"></span>
+			<span date-range start-date="{{tournament.startDate}}"
+				end-date="{{tournament.endDate}}"></span>
 		</h4>
 		<h4 ng-show="tournament.startDate == tournament.endDate">{{
 			tournament.startDate | date }}</h4>
-		<h4>{{ tournament.city }}, {{tournament.state}} &nbsp; 
-		<span ng-repeat="n in tournament.starLevel | range">
-			<ng-md-icon icon="star" size="20"></ng-md-icon>
-		</span>
-	</h4>
+		<h4>
+			{{ tournament.city }}, {{tournament.state}} &nbsp; <span
+				ng-repeat="n in tournament.starLevel | range"> <ng-md-icon
+					icon="star" size="20"></ng-md-icon>
+			</span>
+		</h4>
 	</div>
-	<!-- <ng-md-icon icon="chevron_right" ng-click="showTournamentDetails(tournament.id, $event)"></ng-md-icon> --> <md-divider></md-divider>
-	</md-list-item> </md-list>
-
+	<!-- <ng-md-icon icon="chevron_right" ng-click="showTournamentDetails(tournament.id, $event)"></ng-md-icon> -->
+	<md-divider></md-divider> </md-list-item> </md-list> </md-content>
 </div>

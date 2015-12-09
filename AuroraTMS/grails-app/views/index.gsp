@@ -25,11 +25,11 @@
 	</div>
 	</md-toolbar>
 
-	<div layout="row" flex md-swipe-left="closeLeftMenu()">
+	<div layout="row" flex md-swipe-left="closeLeftMenu()" style="overflow: hidden;">
 		<md-sidenav ui-view="menu" layout="column" class="md-sidenav-left md-whiteframe-z2"
 			md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 		</md-sidenav>
-		<div ui-view="content" layout="row" flex layout-padding></div>
+		<div ui-view="content" layout="row" flex></div>
 	</div>
 	<asset:javascript src="application.js" />
 </body>

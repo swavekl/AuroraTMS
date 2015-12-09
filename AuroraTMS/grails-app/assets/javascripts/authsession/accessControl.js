@@ -6,7 +6,7 @@
     $rootScope.$on('$stateChangeStart', 
     		function(event, toState, toParams, fromState, fromParams) {
 
-      var protectedState = ((toState.privateUrl != undefined) ? toState.privateUrl : false);
+      var protectedState = ((toState.data != undefined && toState.data.privateUrl != undefined) ? toState.data.privateUrl : false);
 
 // console.log ('fromState ' + ((fromState) ? fromState.name : "unknown"));
 // console.log ('fromParams ' + angular.toJson(fromParams, true));

@@ -8,7 +8,9 @@
 				$stateProvider
 				.state('home.createProfile', {
 					url : 'userprofile/createProfile/:memberId',
-					privateUrl : true,
+					data: {
+						privateUrl : true
+					},
 					views : {
 						'content@' : {
 							templateUrl : 'assets/partials/userProfile/userProfileEdit.html',
@@ -43,7 +45,9 @@
 
 				.state('home.editProfile', {
 					url : 'userprofile/editProfile',
-					privateUrl : true,
+					data: {
+						privateUrl : true
+					},
 					views : {
 						'menu@' : {
 							templateUrl : 'assets/partials/menu.html'

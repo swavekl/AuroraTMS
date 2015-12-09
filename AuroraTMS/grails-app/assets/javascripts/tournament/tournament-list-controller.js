@@ -9,7 +9,9 @@
 				$stateProvider
 				.state('home.tournamentList', {
 					url : 'api/tournaments',
-					privateUrl : false,
+					data: {
+						privateUrl : false
+					},
 					views : {
 						'content@' : {
 							templateUrl : 'assets/partials/tournament/tournament-list.html',
@@ -30,8 +32,8 @@
 				})
 				.state('home.tournamentManageList', {
 					url : 'api/tournaments',
-					privateUrl : true,
 					data: {
+						privateUrl : true,
 						roles: ['ROLE_TOURNAMENT_DIRECTOR', 'ROLE_ADMIN']
 				    },
 					views : {

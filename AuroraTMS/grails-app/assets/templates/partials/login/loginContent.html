@@ -1,6 +1,6 @@
-<div layout="column" layout-align-gt-sm="center center" layout-align-sm="start center" layout-fill
-	ng-controller="LoginCtrl">
+<div layout="row" layout-align="center center" layout-fill ng-controller="LoginCtrl">
 		<form name="loginForm" ng-submit="doLogin()" novalidate>
+		<div layout="column">
 				<md-input-container> <label>Username</label>
 				<input name="username" ng-model="login.username" required size="25"
 					maxlength="40">
@@ -19,5 +19,6 @@
 					<md-button class="md-raised" ui-sref="home.registerUser">Register</md-button>
 					<md-button class="md-raised md-primary" type="submit" ng-disabled="loginForm.$invalid">Login</md-button>
 				</section>
+		</div>
 		</form>
 </div>
