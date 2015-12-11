@@ -16,12 +16,12 @@
 					{{entry.eventFee}}</h3>
 				</div>
 				
-   			 <md-button class="md-icon-button" aria-label="Withdraw from Event" ng-click="withdrawFromEvent(entry, $event)">
-	          <ng-md-icon icon="delete">
-	          </ng-md-icon>
+	          <ng-md-icon icon="remove_circle" size="48" ng-click="withdrawFromEvent(entry, $event)">
 	          	<md-tooltip>Withdraw from event</md-tooltip> 
+	          </ng-md-icon>
+<!--    			 <md-button class="md-icon-button" aria-label="Withdraw from Event" ng-click="withdrawFromEvent(entry, $event)">
 	        </md-button>
-        <md-divider></md-divider>
+ -->        <md-divider></md-divider>
         </md-list-item>
       </md-list>
       <md-subheader class="md-primary">Events You Can Enter</md-subheader>
@@ -36,12 +36,12 @@
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
 					{{entry.eventFee}}</h3>
 				</div>
-   			 <md-button class="md-icon-button" aria-label="Enter Event" ng-click="enterEvent(entry, $event)">
-	          <ng-md-icon icon="add">
-	          </ng-md-icon> 
+	          <ng-md-icon icon="add_circle" size="48" ng-click="enterEvent(entry, $event)">
 	          	<md-tooltip>Enter event</md-tooltip> 
+	          </ng-md-icon> 
+<!--    			 <md-button class="md-icon-button" aria-label="Enter Event" ng-click="enterEvent(entry, $event)">
 	        </md-button>
-        <md-divider></md-divider>
+ -->        <md-divider></md-divider>
         </md-list-item>
       </md-list>
       <md-subheader class="md-warn">Events You Can't Enter</md-subheader>

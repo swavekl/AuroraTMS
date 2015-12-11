@@ -25,7 +25,7 @@
 	</div>
 	</md-toolbar>
 
-	<div layout="row" flex md-swipe-left="closeLeftMenu()" style="overflow: hidden;">
+	<div layout="row" flex md-swipe-left="closeLeftMenu()" ng-style="{overflow: myOverlfow}">
 		<md-sidenav ui-view="menu" layout="column" class="md-sidenav-left md-whiteframe-z2"
 			md-component-id="left" md-is-locked-open="$mdMedia('gt-md')">
 		</md-sidenav>

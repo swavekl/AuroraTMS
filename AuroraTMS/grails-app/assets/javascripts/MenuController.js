@@ -1,13 +1,17 @@
 (function() {
 	'use strict';
 
-	var menuModule = angular.module('menu', [ 'ui.router', 'ngMaterial' ]);
+	var menuModule = angular.module('menu', [ 'ui.router', 'ngMaterial', "ng.deviceDetector" ]);
 
-	menuModule.controller('MenuController', [ '$scope', '$state', '$mdSidenav', 'auth',
-			function($scope, $state, $mdSidenav, auth) {
+	menuModule.controller('MenuController', [ '$scope', '$state', '$mdSidenav', 'auth', 'deviceDetector',
+			function($scope, $state, $mdSidenav, auth, deviceDetector) {
 				// some variable
 				$scope.somthing = 8;
-
+				
+				$scope.vm = deviceDetector;
+				// difference of overflow handling
+				$scope.myOverlfow = ($scope.vm.browser == 'firefox' && !$scope.vm.isMobile()) ? 'hidden' : 'auto';
+				
 				$scope.navigateTo = function(nextState) {
 					$mdSidenav('left').close().then(function () {
 						$state.go(nextState);
