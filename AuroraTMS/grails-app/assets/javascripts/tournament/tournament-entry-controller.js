@@ -130,7 +130,7 @@
 		// here is the list of steps.  Membership may not be required if it is up to date
 		$scope.steps = []
 		$scope.steps.push ('home.tournamentEntry.events');
-		if ($scope.membershipExpired)
+//		if ($scope.membershipExpired)
 			$scope.steps.push ('home.tournamentEntry.membership');
 		$scope.steps.push ('home.tournamentEntry.invoice');
 		$scope.steps.push ('home.tournamentEntry.payment');
@@ -219,7 +219,33 @@
 			                    		{eventName:'U2000', entryDateTime: 'Sat 3:00 PM', eventFee: '$28', reason: 'Rating too high'},
 			                    		{eventName:'Women Singles', entryDateTime: 'Sat 5:00 PM', eventFee: '$28', reason: 'Gender'}
 			                            ];
-		
+/*
+		$scope.membershipTypes = [
+		                          {membershipName: 'Adult 1-year', associateFee: 0, memberFee: 75, membershipType: 1},
+		                          {membershipName: 'Adult 3-year', associateFee: 0, memberFee: 210, membershipType: 2},
+		                          {membershipName: 'Adult 5-year', associateFee: 0, memberFee: 325, membershipType: 3},
+		                          {membershipName: 'Junior 1-year', associateFee: 0, memberFee: 45, membershipType: 4},
+		                          {membershipName: 'Junior 3-year', associateFee: 0, memberFee: 125, membershipType: 5},
+		                          {membershipName: 'Collegiate 1-Year', associateFee: 0, memberFee: 45, membershipType: 6},
+		                          {membershipName: 'Household 1-Year', associateFee: 0, memberFee: 150, membershipType: 7},
+		                          {membershipName: 'Contributor', associateFee: 0, memberFee: 45, membershipType: 8},
+		                          {membershipName: 'Lifetime', associateFee: 0, memberFee: 1300, membershipType: 9},
+		                          {membershipName: 'Tournament Pass (per tournament)', associateFee: 20, memberFee: 0, membershipType: 10},
+		                          ];
+*/
+		$scope.membershipTypes = [
+		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, membershipType: 1},
+		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, membershipType: 2},
+		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, membershipType: 3},
+		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, membershipType: 4},
+		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, membershipType: 5},
+		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, membershipType: 6},
+		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, membershipType: 7},
+		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, membershipType: 8},
+//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, membershipType: 9},
+		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, membershipType: 10},
+		                          ];
+
 		// callback for successful list return
 		$scope.success = function (value, responseHeaders) {
 			$scope.tournamentEntry = value;
