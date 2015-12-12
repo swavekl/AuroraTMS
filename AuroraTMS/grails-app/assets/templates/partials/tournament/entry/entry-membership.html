@@ -1,34 +1,24 @@
 <div layout="column" layout-fill ng-cloak>
-<md-content>
-<div ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }} or you are a new member.  
-	If you are a currently a member of a foreign table tennis association please select 'Member of foreign association'.</div>
-	<div ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-	 <p>paragraph</p>
-</md-content>
+	<md-toolbar md-scroll-shrink>
+	  <div class="md-toolbar-tools">USATT Membership</div>
+	</md-toolbar>
+	<md-content>
+	<div layout="column" layout-margin ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }} or you are a new member.  
+		If you are a currently a member of a foreign table tennis association please select 'Member of foreign association'.</div>
+		<div layout="column" layout-margin ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
+	
+      		<md-subheader class="md-primary">Membership Options</md-subheader>
+      		<md-radio-group layout="column" layout-margin>
+				<md-radio-button ng-repeat="type in membershipTypes" ng-value="type.membershipType" aria-label="{{ type.membershipName }}">
+	        	${{ type.fee }} - {{ type.membershipName }}
+				</md-radio-button>
+			</md-radio-group>
+
+      		<md-subheader class="md-primary">Help</md-subheader>
+      		<div layout="column" layout-margin>
+      			<p><strong>(G) General Members.</strong> - No ratings fees for USATT Sanctioned Tournaments, USATT Events (US Open, US National Championships), and/or USATT Sanctioned Leagues. USATT will continue to offer multi-year memberships under the "General Membership" category.</p>
+		    	<p><strong>(A) Associate Members</strong> - May pay on a per-event basis as outlined below. Associate Memberships will only be offered on a year-to-year basis, and Associate Members may not participate in USATT Sanctioned Leagues. Please note that, in accordance with the USATT By-Laws, Associate Members may not vote in elections.</p> 
+<!-- 		    	<p><strong>Contributor</strong> memberships are for those who are required to be, or wish to remain as, paying members of USATT (e.g. Coaches and Officials) but won't be competing in sanctioned leagues or tournaments. If a contributor member wishes to play in a sanctioned league or tournament, they will have to purchase a tournament pass or upgrade to a full membership.</p>-->
+		    </div>
+	</md-content>
 </div>
