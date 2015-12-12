@@ -1,7 +1,7 @@
 (function(angular) {
 	
-	function tournamentEntryResourceFactory($resource, session) {
-		var applicationRoot = '/AuroraTMS/api/tournaments/:tournamentId/tournamententries';
+	function eventEntryResourceFactory($resource, session) {
+		var applicationRoot = '/AuroraTMS/api/tournamententries/:tournamentEntryId';
 		var url = applicationRoot + '/:id';
 		// Pass session token as Authorization header
 		var headers = {
@@ -55,7 +55,7 @@
 		};
 
 		var tournamentEntryResource = $resource(url, {
-			tournamentId : '@tournamentId',
+			tournamentEntryId : '@tournamentEntryId',
 			id : '@id',
 			offset : '@offset',
 			max : '@max',
@@ -65,9 +65,9 @@
 		return tournamentEntryResource;
 	}
 
-	tournamentEntryResourceFactory.$inject = [ '$resource', 'session' ];
+	eventEntryResourceFactory.$inject = [ '$resource', 'session' ];
 
-	angular.module('auroraTmsApp').factory('tournamentEntryResource',
-			tournamentEntryResourceFactory);
+	angular.module('auroraTmsApp').factory('eventEntryResource',
+			eventEntryResourceFactory);
 
 })(angular);

@@ -24,10 +24,24 @@
 							return tournamentResource.view({id: $stateParams.tournamentId}).$promise;
 						},
 
+						// all tournament events
+						eventResource: 'eventResource',
+						events: function(eventResource, $stateParams, session) {
+							return eventResource.list({tournamentId: $stateParams.tournamentId}).$promise;
+						},
+
+						// the entry
 						tournamentEntryResource: 'tournamentEntryResource',
 						tournamentEntry: function(tournamentEntryResource, $stateParams, session) {
 							var params = {tournamentId: $stateParams.tournamentId};
 							return tournamentEntryResource.create (params).$promise;
+						},
+						
+						// entered events
+						eventEntryResource: 'eventEntryResource',
+						eventEntries: function(eventEntryResource, tournamentEntry, $stateParams, session) {
+							var params = {tournamentEntryId: tournamentEntry.id};
+							return eventEntryResource.list (params).$promise;
 						},
 
 						userProfileResource: 'userProfileResource',
@@ -78,16 +92,28 @@
 			
 	// define controller functions
 	.controller('tournamentEntryController', 
-			['$scope', '$state', 'session','tournamentResource', 'tournament', 'tournamentEntryResource', 'tournamentEntry','userProfileResource', 'userProfile',
-    function($scope, $state, session, tournamentResource, tournament, tournamentEntryResource, tournamentEntry, userProfileResource, userProfile) {
-		console.log ('in tournamentEntryController state = ' + $state.current.name);
+			['$scope', '$state', 'session',
+			 'tournamentResource', 'tournament', 
+			 'eventResource', 'events', 
+			 'tournamentEntryResource', 'tournamentEntry',
+			 'userProfileResource', 'userProfile',
+			 'eventEntryResource', 'eventEntries',
+    function($scope, $state, session, 
+    		tournamentResource, tournament, 
+			eventResource, events, 
+    		tournamentEntryResource, tournamentEntry, 
+    		userProfileResource, userProfile, 
+    		eventEntryResource, eventEntries) {
+		//console.log ('in tournamentEntryController state = ' + $state.current.name);
 		// tournament entry
 		$scope.tournament = tournament;
 		$scope.tournamentEntry = tournamentEntry;
 		if ($scope.tournamentEntry.tournament == null) {
 			$scope.tournamentEntry.tournament = tournament;
 		}
+		
 		$scope.userProfile = userProfile;
+		
 		$scope.membershipExpired = false;
 		// check if new USATT member
 		if ($scope.userProfile.usattID == 0 || $scope.userProfile.usattID > 90000) {
@@ -162,7 +188,16 @@
 			return (index == ($scope.steps.length - 1));
 		}
 		
+		// -------------------------------------------------------------------------------------------------------------------
+		// event entries
+		// -------------------------------------------------------------------------------------------------------------------
 		
+		$scope.events = events;
+		$scope.eventEntries = eventEntries;
+		
+		$scope.isEventEntered = function (eventName) {
+			for (var i = 0; i < )
+		}
 
 		$scope.enteredEventsList = [
 		{eventName:'Open Doubles', entryDateTime: 'Fri 6:00 PM', eventFee: '$28'},

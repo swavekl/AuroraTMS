@@ -5,9 +5,12 @@ class UrlMappings {
 		"/api/userprofiles"(resources: "userProfile")
 		"/api/tournaments"(resources: "tournament") {
 			"/events"(resources: "event")
-			"/tournamententries"(resources: "tournamentEntry")
+			"/tournamententries"(resources: "tournamentEntry") 
 		}
-		
+		"/api/tournamententries"(resources: "tournamentEntry") {
+			"/evententries"(resources: "eventEntry")
+		}
+
         "/$controller/$action?/$id?(.$format)?"{
             constraints {
                 // apply constraints here

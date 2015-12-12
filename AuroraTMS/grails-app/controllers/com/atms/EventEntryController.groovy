@@ -9,7 +9,7 @@ import grails.plugin.springsecurity.annotation.Secured
 
 class EventEntryController extends RestfulController {
 
-	def EventEntryService
+	def eventEntryService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -27,9 +27,9 @@ class EventEntryController extends RestfulController {
 		params.max = Math.min(max ?: 10, 100)
 		def tournamentEntriesList = null
 		if (params.containsKey('owned')) {
-			tournamentEntriesList = EventEntryService.listOwned(params)
+			tournamentEntriesList = eventEntryService.listOwned(params)
 		} else {
-			tournamentEntriesList = EventEntryService.list(params)
+			tournamentEntriesList = eventEntryService.list(params)
 		}
 		respond tournamentEntriesList, [status: OK]
 	}
@@ -42,7 +42,7 @@ class EventEntryController extends RestfulController {
 	@Secured(['permitAll'])
 	def show() {
 		long id = params.id as Long
-		def EventEntry = EventEntryService.show(id)
+		def EventEntry = eventEntryService.show(id)
 		respond EventEntry
 	}
 
@@ -60,50 +60,50 @@ class EventEntryController extends RestfulController {
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def save(EventEntry tournamenEntry) {
-		if (tournamenEntry == null) {
+	def save(EventEntry eventEntry) {
+		if (eventEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		tournamenEntry.validate()
-		if (tournamenEntry.hasErrors()) {
+		eventEntry.validate()
+		if (eventEntry.hasErrors()) {
 			render status: NOT_ACCEPTABLE
 			return
 		}
 
-		EventEntryService.create(tournamenEntry, params)
-		respond tournamenEntry, [status: CREATED]
+		eventEntryService.create(eventEntry, params)
+		respond eventEntry, [status: CREATED]
 	}
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def update(EventEntry tournamenEntry) {
-		if (tournamenEntry == null) {
+	def update(EventEntry eventEntry) {
+		if (eventEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		tournamenEntry.validate()
-		if (tournamenEntry.hasErrors()) {
+		eventEntry.validate()
+		if (eventEntry.hasErrors()) {
 			render status: NOT_ACCEPTABLE
 			return
 		}
 
-		EventEntryService.update(tournamenEntry, params)
-		respond tournamenEntry, [status: OK]
+		eventEntryService.update(eventEntry, params)
+		respond eventEntry, [status: OK]
 	}
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def delete(EventEntry tournamenEntry) {
+	def delete(EventEntry eventEntry) {
 
-		if (tournamenEntry == null) {
+		if (eventEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		EventEntryService.delete tournamenEntry
+		eventEntryService.delete eventEntry
 		render status: NO_CONTENT
 	}
 }
