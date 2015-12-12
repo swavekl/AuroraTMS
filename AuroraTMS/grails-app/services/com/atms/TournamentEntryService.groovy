@@ -49,7 +49,7 @@ class TournamentEntryService {
 	@PreAuthorize("hasRole('ROLE_USER')")
 	TournamentEntry create(TournamentEntry tournamentEntry, Map params) {
 		//		TournamentEntry tournamentEntryEntry = new tournamentEntry(params)
-		tournamentEntry.save(flush: true)
+		TournamentEntry.save(flush: true)
 		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
 		
@@ -64,7 +64,7 @@ class TournamentEntryService {
 	@Transactional
 	@PreAuthorize("hasPermission(#tournamentEntry, write) or hasPermission(#tournamentEntry, admin)")
 	void update(TournamentEntry tournamentEntry, Map params) {
-		tournamentEntry.save(flush: true)
+		TournamentEntry.save(flush: true)
 		
 		grantEntryPermissions(tournamentEntry)
 	}
@@ -72,7 +72,7 @@ class TournamentEntryService {
 	@Transactional
 	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
 	void delete(TournamentEntry tournamentEntry) {
-		tournamentEntry.delete()
+		TournamentEntry.delete()
 
 		// Delete the ACL information as well
 		aclUtilService.deleteAcl tournamentEntry
@@ -102,23 +102,23 @@ class TournamentEntryService {
 
 	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
 	TournamentEntry get(long id) {
-		tournamentEntry.get id
+		TournamentEntry.get id
 	}
 
 	// anyone can see a tournamentEntry
 	TournamentEntry show(long id) {
-		tournamentEntry.get id
+		TournamentEntry.get id
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
 	List<TournamentEntry> listOwned(Map params) {
 //		println 'listOwned params ' + springSecurityService.authentication.name
-		tournamentEntry.list params
+		TournamentEntry.list params
 	}
 
 	int count() {
-		tournamentEntry.count()
+		TournamentEntry.count()
 	}
 
 	// anybody can use it
@@ -126,7 +126,7 @@ class TournamentEntryService {
 //		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
 //		println "list params " + params
 
-		tournamentEntry.list params
+		TournamentEntry.list params
 	}
 
 }

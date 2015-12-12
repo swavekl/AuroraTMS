@@ -196,7 +196,7 @@
 		$scope.eventEntries = eventEntries;
 		
 		$scope.isEventEntered = function (eventName) {
-			for (var i = 0; i < )
+			//for (var i = 0; i < )
 		}
 
 		$scope.enteredEventsList = [
