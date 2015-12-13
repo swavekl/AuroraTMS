@@ -19,20 +19,20 @@ class EventEntryService {
 	def aclUtilService
 	def springSecurityService
 
-	void addPermission(TournamentEntry tournamentEntry, String username, int permission) {
-		addPermission tournamentEntry, username, aclPermissionFactory.buildFromMask(permission)
+	void addPermission(EventEntry eventEntry, String username, int permission) {
+		addPermission eventEntry, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
 	@Transactional
-	@PreAuthorize("hasPermission(#tournament, admin)")
-	void addPermission(TournamentEntry tournamentEntry, String username, Permission permission) {
-		aclUtilService.addPermission tournamentEntry, username, permission
+	@PreAuthorize("hasPermission(#eventEntry, admin)")
+	void addPermission(EventEntry eventEntry, String username, Permission permission) {
+		aclUtilService.addPermission eventEntry, username, permission
 	}
 
 	@Transactional
-	@PreAuthorize("hasPermission(#tournament, admin)")
-	void deletePermission(TournamentEntry tournamentEntry, String username, Permission permission) {
-		def acl = aclUtilService.readAcl(tournament)
+	@PreAuthorize("hasPermission(#eventEntry, admin)")
+	void deletePermission(EventEntry eventEntry, String username, Permission permission) {
+		def acl = aclUtilService.readAcl(eventEntry)
 
 		// Remove all permissions associated with this particular
 		// recipient (string equality to KISS)
@@ -47,38 +47,38 @@ class EventEntryService {
 
 	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
-	TournamentEntry create(TournamentEntry tournamentEntry, Map params) {
-		//		TournamentEntry tournamentEntryEntry = new tournamentEntry(params)
-		tournamentEntry.save(flush: true)
+	EventEntry create(EventEntry eventEntry, Map params) {
+		//		EventEntry eventEntryEntry = new eventEntry(params)
+		EventEntry.save(flush: true)
 		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
 		
 		// Grant the current principal administrative permission
-		addPermission tournamentEntry, currentPrincipal, BasePermission.ADMINISTRATION
+		addPermission eventEntry, currentPrincipal, BasePermission.ADMINISTRATION
 		
-		grantAdminPermissions (tournamentEntry)
+		grantAdminPermissions (eventEntry)
 
-		tournamentEntry
+		eventEntry
 	}
 	
 	@Transactional
-	@PreAuthorize("hasPermission(#tournamentEntry, write) or hasPermission(#tournamentEntry, admin)")
-	void update(TournamentEntry tournamentEntry, Map params) {
-		tournamentEntry.save(flush: true)
+	@PreAuthorize("hasPermission(#eventEntry, write) or hasPermission(#eventEntry, admin)")
+	void update(EventEntry eventEntry, Map params) {
+		EventEntry.save(flush: true)
 		
-		grantEntryPermissions(tournamentEntry)
+		grantEntryPermissions(eventEntry)
 	}
 
 	@Transactional
-	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
-	void delete(TournamentEntry tournamentEntry) {
-		tournamentEntry.delete()
+	@PreAuthorize("hasPermission(#eventEntry, delete) or hasPermission(#eventEntry, admin)")
+	void delete(EventEntry eventEntry) {
+		EventEntry.delete()
 
 		// Delete the ACL information as well
-		aclUtilService.deleteAcl tournamentEntry
+		aclUtilService.deleteAcl eventEntry
 	}
 
-	void grantEntryPermissions (TournamentEntry tournamentEntry) {
+	void grantEntryPermissions (EventEntry eventEntry) {
 		// find tournament director who configured this tournament and grant him admin privileges on this entry
 		def tdRole = SecRole.findByAuthority("ROLE_TOURNAMENT_DIRECTOR")
 		def tournamentDirectors = SecUserSecRole.findAllBySecRole(tdRole).secUser
@@ -86,7 +86,7 @@ class EventEntryService {
 			if (it.username != currentPrincipal) {
 				println 'granting access to TOURNAMENT_DIRECTOR" ' + it.username
 				// check if this TD created it
-				addPermission tournamentEntry, it.username, BasePermission.ADMINISTRATION
+				addPermission eventEntry, it.username, BasePermission.ADMINISTRATION
 			}
 		}
 		
@@ -95,38 +95,38 @@ class EventEntryService {
 		admins.each {
 			if (it.username != currentPrincipal) {
 				println 'granting access to ADMIN ' + it.username
-				addPermission tournamentEntry, it.username, BasePermission.ADMINISTRATION
+				addPermission eventEntry, it.username, BasePermission.ADMINISTRATION
 			}
 		}
 	}
 
 	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
-	TournamentEntry get(long id) {
-		tournamentEntry.get id
+	EventEntry get(long id) {
+		EventEntry.get id
 	}
 
-	// anyone can see a tournamentEntry
-	TournamentEntry show(long id) {
-		tournamentEntry.get id
+	// anyone can see a eventEntry
+	EventEntry show(long id) {
+		EventEntry.get id
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
-	List<TournamentEntry> listOwned(Map params) {
+	List<EventEntry> listOwned(Map params) {
 //		println 'listOwned params ' + springSecurityService.authentication.name
-		tournamentEntry.list params
+		EventEntry.list params
 	}
 
 	int count() {
-		tournamentEntry.count()
+		EventEntry.count()
 	}
 
 	// anybody can use it
-	List<TournamentEntry> list(Map params) {
+	List<EventEntry> list(Map params) {
 //		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
 //		println "list params " + params
 
-		tournamentEntry.list params
+		EventEntry.list params
 	}
 
 }

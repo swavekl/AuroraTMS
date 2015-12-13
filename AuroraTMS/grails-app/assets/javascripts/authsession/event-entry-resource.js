@@ -29,7 +29,8 @@
 			'create' : {
 				method : 'GET',
 				headers : headers,
-				url : applicationRoot + '/create'
+//				url : applicationRoot + '/create'
+				url : applicationRoot + '/create?eventId=:eventId&userid=:userid'
 			}, 
 			// public method for getting entries of a tournament
 			'query' : {   
@@ -51,15 +52,21 @@
 			'update' : {
 				method : 'PUT',
 				headers : headers
-			}
+//			},
+//			'reserve' : {
+//				method : 'POST',
+//				headers : headers,
+//				url : applicationRoot + '/reserve?eventId=:eventId&userid=:userid'
+			} 
 		};
 
 		var tournamentEntryResource = $resource(url, {
 			tournamentEntryId : '@tournamentEntryId',
+			eventId : '@eventId',
+			userid: '@userid',
 			id : '@id',
 			offset : '@offset',
-			max : '@max',
-			username: '@username'
+			max : '@max'
 		}, actions);
 
 		return tournamentEntryResource;

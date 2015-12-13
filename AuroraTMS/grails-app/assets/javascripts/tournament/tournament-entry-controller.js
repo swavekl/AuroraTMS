@@ -195,10 +195,6 @@
 		$scope.events = events;
 		$scope.eventEntries = eventEntries;
 		
-		$scope.isEventEntered = function (eventName) {
-			//for (var i = 0; i < )
-		}
-
 		$scope.enteredEventsList = [
 		{eventName:'Open Doubles', entryDateTime: 'Fri 6:00 PM', eventFee: '$28'},
 		{eventName:'Open Singles', entryDateTime: 'Sat 9:00 AM', eventFee: '$45'},
@@ -259,11 +255,16 @@
 		
 		$scope.enterEvent = function (entry, browserEvent) {
 			console.log ('entering event ' + entry.eventName);
-			for (var i = 0; i < $scope.availableEventsList.length; i++) {
-				if ($scope.availableEventsList[i].eventName == entry.eventName) {
-					var entries = $scope.availableEventsList.splice(i, 1);
-					$scope.enteredEventsList.push (entries[0]);
+			var eventId = -1;
+			for (var i = 0; i < $scope.events.length; i++) {
+				if ($scope.events[i].name == entry.eventName) {
+					eventId = $scope.events[i].id;
+					break;
 				}
+			}
+			if (eventId != -1) {
+				var params = {tournamentEntryId: $scope.tournamentEntry.id, userId: $scope.userProfile.id, eventId: eventId};
+				eventEntryResource.create (params);
 			}
 		}
 		

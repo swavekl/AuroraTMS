@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class EventEntryController extends RestfulController {
 
 	def eventEntryService
+	def eventService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -25,13 +26,13 @@ class EventEntryController extends RestfulController {
 	@Secured(['permitAll'])
 	def index(Integer max) {
 		params.max = Math.min(max ?: 10, 100)
-		def tournamentEntriesList = null
+		def eventEntries = null
 		if (params.containsKey('owned')) {
-			tournamentEntriesList = eventEntryService.listOwned(params)
+			eventEntries = eventEntryService.listOwned(params)
 		} else {
-			tournamentEntriesList = eventEntryService.list(params)
+			eventEntries = eventEntryService.list(params)
 		}
-		respond tournamentEntriesList, [status: OK]
+		respond eventEntries, [status: OK]
 	}
 
 	/**
@@ -42,12 +43,12 @@ class EventEntryController extends RestfulController {
 	@Secured(['permitAll'])
 	def show() {
 		long id = params.id as Long
-		def EventEntry = eventEntryService.show(id)
-		respond EventEntry
+		def eventEntry = eventEntryService.show(id)
+		respond eventEntry
 	}
 
 	/**
-	 * Creates a new tournament entry without saving it
+	 * Creates a new event entry
 	 */
 	@Transactional
 	@Secured(['ROLE_USER'])
@@ -55,7 +56,24 @@ class EventEntryController extends RestfulController {
 		if(handleReadOnly()) {
 			return
 		}
-		respond createResource()
+		// check if there is room to reserve if there is max on the tournament event
+		def eventId = params.eventId;
+		def event = eventService.get (eventId)
+		
+		def countOfEntries = eventEntryService.count(eventId)
+		// if not respond with 'no room' error
+		if ((event.maxEntries != 0 && countOfEntries < event.maxEntries) 
+			|| event.maxEntries == 0) {
+			// there is room
+			def eventEntry = createResource()
+			eventEntry.dateEntered = new Date()
+			eventEntry.status = EventEntry.PENDING
+			eventEntry.event = event
+			respond eventEntry	
+		} else {
+			// no room
+			render status: NOT_ACCEPTABLE
+		}
 	}
 
 	@Transactional
