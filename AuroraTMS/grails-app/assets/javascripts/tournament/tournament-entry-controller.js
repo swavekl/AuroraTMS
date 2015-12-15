@@ -220,8 +220,9 @@
 //		var adultDate = new Date($scope.userProfile.dateOfBirth);
 //		adultDate.setYear($scope.userProfile.dateOfBirth.getFullYear() + 18);
 //		$isJunior = moment(adultDate).isSame(tournamentDate, 'day') || moment(adultDate).isAfter(tournamentDate, 'day');
-		$scope.isAdultUser = false;
 */
+		$scope.isAdultUser = false;
+
 		$scope.membershipTypes = [
 		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
 		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
