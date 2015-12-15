@@ -2,14 +2,21 @@
 	<md-toolbar md-scroll-shrink>
 	  <div class="md-toolbar-tools">USATT Membership</div>
 	</md-toolbar>
+
 	<md-content>
 	<div layout="column" layout-margin ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }} or you are a new member.  
 		If you are a currently a member of a foreign table tennis association please select 'Member of foreign association'.</div>
 		<div layout="column" layout-margin ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
 	
       		<md-subheader class="md-primary">Membership Options</md-subheader>
-      		<md-radio-group layout="column" layout-margin>
+      		<md-radio-group layout="column" layout-margin ng-show="!isAdultUser">
 				<md-radio-button ng-repeat="type in membershipTypes" ng-value="type.membershipType" aria-label="{{ type.membershipName }}">
+	        	${{ type.fee }} - {{ type.membershipName }}
+				</md-radio-button>
+			</md-radio-group>
+
+      		<md-radio-group layout="column" layout-margin ng-show="isAdultUser">
+				<md-radio-button ng-repeat="type in membershipTypes | filter: {availableToAdults: '1'}" ng-value="type.membershipType" aria-label="{{ type.membershipName }}">
 	        	${{ type.fee }} - {{ type.membershipName }}
 				</md-radio-button>
 			</md-radio-group>

@@ -215,31 +215,24 @@
 			                    		{eventName:'U2000', entryDateTime: 'Sat 3:00 PM', eventFee: '$28', reason: 'Rating too high'},
 			                    		{eventName:'Women Singles', entryDateTime: 'Sat 5:00 PM', eventFee: '$28', reason: 'Gender'}
 			                            ];
+
 /*
-		$scope.membershipTypes = [
-		                          {membershipName: 'Adult 1-year', associateFee: 0, memberFee: 75, membershipType: 1},
-		                          {membershipName: 'Adult 3-year', associateFee: 0, memberFee: 210, membershipType: 2},
-		                          {membershipName: 'Adult 5-year', associateFee: 0, memberFee: 325, membershipType: 3},
-		                          {membershipName: 'Junior 1-year', associateFee: 0, memberFee: 45, membershipType: 4},
-		                          {membershipName: 'Junior 3-year', associateFee: 0, memberFee: 125, membershipType: 5},
-		                          {membershipName: 'Collegiate 1-Year', associateFee: 0, memberFee: 45, membershipType: 6},
-		                          {membershipName: 'Household 1-Year', associateFee: 0, memberFee: 150, membershipType: 7},
-		                          {membershipName: 'Contributor', associateFee: 0, memberFee: 45, membershipType: 8},
-		                          {membershipName: 'Lifetime', associateFee: 0, memberFee: 1300, membershipType: 9},
-		                          {membershipName: 'Tournament Pass (per tournament)', associateFee: 20, memberFee: 0, membershipType: 10},
-		                          ];
+//		var adultDate = new Date($scope.userProfile.dateOfBirth);
+//		adultDate.setYear($scope.userProfile.dateOfBirth.getFullYear() + 18);
+//		$isJunior = moment(adultDate).isSame(tournamentDate, 'day') || moment(adultDate).isAfter(tournamentDate, 'day');
+		$scope.isAdultUser = false;
 */
 		$scope.membershipTypes = [
-		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, membershipType: 1},
-		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, membershipType: 2},
-		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, membershipType: 3},
-		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, membershipType: 4},
-		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, membershipType: 5},
-		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, membershipType: 6},
-		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, membershipType: 7},
-		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, membershipType: 8},
-//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, membershipType: 9},
-		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, membershipType: 10},
+		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
+		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
+		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3},
+		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, availableToAdults: 0, membershipType: 4},
+		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, availableToAdults: 0, membershipType: 5},
+		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
+		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
+		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
+//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
+		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
 		                          ];
 
 		// callback for successful list return
