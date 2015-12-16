@@ -49,14 +49,14 @@ class TournamentEntryService {
 	@PreAuthorize("hasRole('ROLE_USER')")
 	TournamentEntry create(TournamentEntry tournamentEntry, Map params) {
 		//		TournamentEntry tournamentEntryEntry = new tournamentEntry(params)
-		TournamentEntry.save(flush: true)
+		tournamentEntry.save(flush: true)
 		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
 		
 		// Grant the current principal administrative permission
 		addPermission tournamentEntry, currentPrincipal, BasePermission.ADMINISTRATION
 		
-		grantAdminPermissions (tournamentEntry)
+		grantEntryPermissions (tournamentEntry, currentPrincipal)
 
 		tournamentEntry
 	}
@@ -64,7 +64,7 @@ class TournamentEntryService {
 	@Transactional
 	@PreAuthorize("hasPermission(#tournamentEntry, write) or hasPermission(#tournamentEntry, admin)")
 	void update(TournamentEntry tournamentEntry, Map params) {
-		TournamentEntry.save(flush: true)
+		tournamentEntry.save(flush: true)
 		
 		grantEntryPermissions(tournamentEntry)
 	}
@@ -72,13 +72,13 @@ class TournamentEntryService {
 	@Transactional
 	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
 	void delete(TournamentEntry tournamentEntry) {
-		TournamentEntry.delete()
+		tournamentEntry.delete()
 
 		// Delete the ACL information as well
 		aclUtilService.deleteAcl tournamentEntry
 	}
 
-	void grantEntryPermissions (TournamentEntry tournamentEntry) {
+	void grantEntryPermissions (TournamentEntry tournamentEntry, String currentPrincipal) {
 		// find tournament director who configured this tournament and grant him admin privileges on this entry
 		def tdRole = SecRole.findByAuthority("ROLE_TOURNAMENT_DIRECTOR")
 		def tournamentDirectors = SecUserSecRole.findAllBySecRole(tdRole).secUser

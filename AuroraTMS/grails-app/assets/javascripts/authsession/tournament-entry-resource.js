@@ -59,7 +59,7 @@
 			id : '@id',
 			offset : '@offset',
 			max : '@max',
-			username: '@username'
+			userId: '@userId'
 		}, actions);
 
 		return tournamentEntryResource;

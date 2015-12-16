@@ -30,6 +30,21 @@
 							return eventResource.list({tournamentId: $stateParams.tournamentId}).$promise;
 						},
 
+						// user profile
+						userProfileResource: 'userProfileResource',
+						userProfile: function(userProfileResource, $stateParams, session) {
+							var userId = session.getUser();
+							var userProfileId = session.getUserProfileId();
+							console.log ('session user id ' + userId + ", user profile id " + userProfileId);
+							if (userProfileId != undefined) {
+								console.log ('getting user profile with id ' + userProfileId);
+								return userProfileResource.get({id: userProfileId}).$promise;
+							} else {
+								console.log ('gettting profile by userid ' + userId);
+								return userProfileResource.editByUsername({username: userId}).$promise;
+							}
+						},
+
 						// the entry
 						tournamentEntryResource: 'tournamentEntryResource',
 						tournamentEntry: function(tournamentEntryResource, $stateParams, session) {
@@ -44,19 +59,6 @@
 							return eventEntryResource.list (params).$promise;
 						},
 
-						userProfileResource: 'userProfileResource',
-						userProfile: function(userProfileResource, $stateParams, session) {
-							var userId = session.getUser();
-							var userProfileId = session.getUserProfileId();
-							console.log ('session user id ' + userId + ", user profile id " + userProfileId);
-							if (userProfileId != undefined) {
-								console.log ('getting user profile with id ' + userProfileId);
-								return userProfileResource.get({id: userProfileId}).$promise;
-							} else {
-								console.log ('gettting profile by userid ' + userId);
-								return userProfileResource.editByUsername({username: userId}).$promise;
-							}
-						},
 					},
 					views : {
 						'menu@' : {
@@ -92,13 +94,13 @@
 			
 	// define controller functions
 	.controller('tournamentEntryController', 
-			['$scope', '$state', 'session',
+			['$scope', '$state', 'session', '$mdDialog',
 			 'tournamentResource', 'tournament', 
 			 'eventResource', 'events', 
 			 'tournamentEntryResource', 'tournamentEntry',
 			 'userProfileResource', 'userProfile',
 			 'eventEntryResource', 'eventEntries',
-    function($scope, $state, session, 
+    function($scope, $state, session, $mdDialog,
     		tournamentResource, tournament, 
 			eventResource, events, 
     		tournamentEntryResource, tournamentEntry, 
@@ -247,18 +249,66 @@
 //			$state.go('home.tournamentEntry', params);
 		}
 		
-		$scope.enterEvent = function (entry, browserEvent) {
-			console.log ('entering event ' + entry.eventName);
-			var eventId = -1;
+		$scope.eventEntrySuccess = function(value, responseHeaders) {
+			console.log ('event entry save success ' + value.id);
+		}
+		
+		$scope.eventEntryFailure = function (httpResponse) {
+			showError ($mdDialog, httpResponse, 'Failed to save event entry');
+		}
+		
+		$scope.enteringEventId = -1;
+		
+		$scope.tournamentEntrySuccess = function(value, responseHeaders) {
+			console.log ('tournament entry save success');
+			$scope.tournamentEntry = value;
+			$scope.enterEventInternal ();
+		}
+		
+		$scope.tournamentEntryFailure = function (httpResponse) {
+			showError ($mdDialog, httpResponse, 'Failed to save tournament entry');
+		}
+
+		$scope.enterEventInternal = function (tournamentEntryId) {
+			var event = null;
 			for (var i = 0; i < $scope.events.length; i++) {
-				if ($scope.events[i].name == entry.eventName) {
-					eventId = $scope.events[i].id;
+				if ($scope.events[i].id == $scope.enteringEventId) {
+					event = $scope.events[i];
 					break;
 				}
 			}
-			if (eventId != -1) {
-				var params = {tournamentEntryId: $scope.tournamentEntry.id, userId: $scope.userProfile.id, eventId: eventId};
-				eventEntryResource.create (params);
+			if (event != null) {
+				var eventEntry = {
+						status: 'PENDING',
+						dateEntered: new Date(),
+						event: event,
+						eventId: event.id  // for $resource
+				};
+				eventEntryResource.create (eventEntry, $scope.eventEntrySuccess, $scope.eventEntryFailure);
+			}
+		}
+
+		$scope.enterEvent = function (entry, browserEvent) {
+			browserEvent.preventDefault();
+			
+			console.log ('entering event ' + entry.eventName);
+			$scope.enteringEventId = -1;
+			for (var i = 0; i < $scope.events.length; i++) {
+				if ($scope.events[i].name == entry.eventName) {
+					$scope.enteringEventId = $scope.events[i].id;
+					break;
+				}
+			}
+			
+			if ($scope.enteringEventId  != -1) {
+				// if no tournament entry create it first
+				if ($scope.tournamentEntry.id == undefined) {
+					// need this for resource parameter mapping not for GORM persistence
+					$scope.tournamentEntry.tournamentId = $scope.tournament.id;
+					tournamentEntryResource.save ($scope.tournamentEntry, $scope.tournamentEntrySuccess, $scope.tournamentEntryFailure);
+				} else {
+					$scope.enterEventInternal ();
+				}
 			}
 		}
 		
@@ -271,7 +321,6 @@
 				}
 			}
 		}
-		
 	} 
 	])
 })();

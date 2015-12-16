@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class TournamentEntryController extends RestfulController {
 
 	def tournamentEntryService
+	def userProfileService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -55,7 +56,19 @@ class TournamentEntryController extends RestfulController {
 		if(handleReadOnly()) {
 			return
 		}
-		respond createResource()
+		def tournamentEntry = createResource()
+		
+		tournamentEntry.dateEntered = new Date();
+		
+//		long userId = params.userId as Long
+//		tournamentEntry.userProfile = userId 
+
+		// find the player's rating on the date specified in the tournament eligibility date
+		tournamentEntry.eligibilityRating = 1532
+		// find current rating
+		tournamentEntry.seedRating = 1587
+		
+		respond tournamentEntry
 	}
 
 	@Transactional
