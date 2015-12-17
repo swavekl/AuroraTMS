@@ -9,15 +9,15 @@
 		<div layout="column" layout-margin ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
 	
       		<md-subheader class="md-primary">Membership Options</md-subheader>
-      		<md-radio-group layout="column" layout-margin ng-show="!isAdultUser">
-				<md-radio-button ng-repeat="type in membershipTypes" ng-value="type.membershipType" aria-label="{{ type.membershipName }}">
-	        	${{ type.fee }} - {{ type.membershipName }}
+      		<md-radio-group layout="column" layout-margin ng-show="!isAdultUser" ng-model="selectedMembershipOption.membershipType">
+				<md-radio-button ng-repeat="option in membershipOptions" ng-value="option.membershipType" aria-label="{{ option.membershipName }}" ng-click="selectMembership(option)">
+	        	${{ option.fee }} - {{ option.membershipName }}
 				</md-radio-button>
 			</md-radio-group>
 
-      		<md-radio-group layout="column" layout-margin ng-show="isAdultUser">
-				<md-radio-button ng-repeat="type in membershipTypes | filter: {availableToAdults: '1'}" ng-value="type.membershipType" aria-label="{{ type.membershipName }}">
-	        	${{ type.fee }} - {{ type.membershipName }}
+      		<md-radio-group layout="column" layout-margin ng-show="isAdultUser" ng-model="selectedMembershipOption.membershipType">
+				<md-radio-button ng-repeat="option in membershipOptions | filter: {availableToAdults: '1'}" ng-value="option.membershipType" aria-label="{{ option.membershipName }}" ng-click="selectMembership(option)">
+	        	${{ option.fee }} - {{ option.membershipName }}
 				</md-radio-button>
 			</md-radio-group>
 
