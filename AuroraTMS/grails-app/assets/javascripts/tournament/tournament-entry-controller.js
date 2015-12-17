@@ -218,39 +218,6 @@
 			                    		{eventName:'Women Singles', entryDateTime: 'Sat 5:00 PM', eventFee: '$28', reason: 'Gender'}
 			                            ];
 
-		// Figure out if the current user is an adult
-		var birthdayDate = new Date($scope.userProfile.dateOfBirth);
-		var years = tournamentDate.getFullYear() - birthdayDate.getFullYear();
-
-		// Reset birthday to the current year.
-		birthdayDate.setFullYear(tournamentDate.getFullYear());
-
-		// If the user's birthday has not occurred yet this year, subtract 1.
-		if (tournamentDate < birthdayDate)
-		    years--;
-
-		$scope.isAdultUser = (years >= 18);		// Used to determine whether to display junior membership options or not
-
-		$scope.membershipOptions = [
-		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
-		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
-		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3},
-		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, availableToAdults: 0, membershipType: 4},
-		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, availableToAdults: 0, membershipType: 5},
-		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
-		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
-		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
-//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
-		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
-		                          ];
-
-		$scope.selectedMembershipOption = $scope.membershipOptions[0];		// Membership option selected by the user or defaulted to
-
-		$scope.selectMembership = function (option) {
-			console.log ('selecting membership option ' + option.membershipName);
-			$scope.selectedMembershipOption = option;
-		}
-
 		// callback for successful list return
 		$scope.success = function (value, responseHeaders) {
 			$scope.tournamentEntry = value;
@@ -333,6 +300,51 @@
 					$scope.availableEventsList.push (entries[0]);
 				}
 			}
+		}
+
+		
+		// -------------------------------------------------------------------------------------------------------------------
+		// membership options
+		// -------------------------------------------------------------------------------------------------------------------
+
+		$scope.membershipOptions = [
+		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
+		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
+		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3},
+		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, availableToAdults: 0, membershipType: 4},
+		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, availableToAdults: 0, membershipType: 5},
+		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
+		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
+		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
+//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
+		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
+		                          ];
+
+		$scope.selectedMembershipOption = $scope.membershipOptions[0];		// membership option selected by the user or defaulted to
+
+		//
+		// figure out if the current user is an adult
+		//
+		$scope.isAdultUser = function (){
+			var birthdayDate = new Date($scope.userProfile.dateOfBirth);
+			var years = tournamentDate.getFullYear() - birthdayDate.getFullYear();
+
+			// reset birthday to the current year.
+			birthdayDate.setFullYear(tournamentDate.getFullYear());
+
+			// if the user's birthday has not occurred yet this year, subtract 1.
+			if (tournamentDate < birthdayDate)
+			    years--;
+			
+			return (years >= 18);		// used to determine whether to display junior membership options or not
+		}
+
+		//
+		// store the selected membership option
+		//
+		$scope.selectMembership = function (option) {
+			console.log ('selecting membership option ' + option.membershipName);
+			$scope.selectedMembershipOption = option;
 		}
 	} 
 	])
