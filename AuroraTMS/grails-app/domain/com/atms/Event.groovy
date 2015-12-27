@@ -28,6 +28,11 @@ class Event {
 	int minPlayerAge
 	int maxPlayerAge
 	
+	// flag indicating if event has any gender restrictions (men's or women's only event)
+	enum GenderRestriction { NONE, MALE, FEMALE};
+	 
+	GenderRestriction genderRestriction = GenderRestriction.NONE
+	
 	// round robin options
 	int playersPerGroup
 	int drawMethod 
@@ -40,6 +45,10 @@ class Event {
 	
 	// number of players to seed directly into next round
 	int playersToSeed
+	
+	// fees 
+	double feeAdult
+	double feeJunior
 	
 	static belongsTo = [tournament: Tournament]
 	

@@ -12,8 +12,8 @@ class TournamentEntry {
 	// current rating used for seeding within events
 	int seedRating
 	
-	// no reference back to Tournament, but cascading saves and deletes
-	static belongsTo = Tournament
+	// reference back to Tournament, but cascading saves and deletes
+	static belongsTo = [tournament:Tournament]
 	
 	// collection of tournament entries
 	static hasMany = [eventEntries: EventEntry]

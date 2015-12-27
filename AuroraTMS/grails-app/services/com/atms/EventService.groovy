@@ -67,6 +67,14 @@ class EventService {
 	int count() {
 		Event.count()
 	}
+	
+//	int countEntries(id) {
+//		def criteria = Event.createCriteria()
+//		criteria.list {
+//			projections { count() }
+//			eq ('id', id)
+//		}
+//	}
 
 	@Transactional
 	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")

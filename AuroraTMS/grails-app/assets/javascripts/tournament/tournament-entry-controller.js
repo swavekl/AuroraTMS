@@ -55,7 +55,8 @@
 						// entered events
 						eventEntryResource: 'eventEntryResource',
 						eventEntries: function(eventEntryResource, tournamentEntry, $stateParams, session) {
-							var params = {tournamentEntryId: tournamentEntry.id};
+							var tournamentEntryId = (tournamentEntry.id != null) ? tournamentEntry.id : 0;
+							var params = {tournamentEntryId: tournamentEntryId, tournamentId: $stateParams.tournamentId};
 							return eventEntryResource.list (params).$promise;
 						},
 
@@ -129,6 +130,17 @@
 			                           moment(membershipExpirationDate).isSame(tournamentDate, 'day'); 
 		}
 		
+		var isTournamentDirector = session.isInRole ('TOURNAMENT_DIRECTOR');
+		var isAdmin = session.isInRole ('ADMIN');
+		var hasGroup = session.hasGroup ();
+		if (isTournamentDirector || isAdmin) {
+			// go to page where you find user to enter
+		} else if (hasGroup) {
+			// enter yourself or family/group member
+		} else {
+			// enter yourself only
+		}
+
 		// here is the list of steps.  Membership may not be required if it is up to date
 		$scope.steps = []
 		$scope.steps.push ('home.tournamentEntry.events');
@@ -195,30 +207,71 @@
 		// -------------------------------------------------------------------------------------------------------------------
 		
 		$scope.events = events;
-		$scope.eventEntries = eventEntries;
+		$scope.eventEntryInfos = eventEntries;
 		
-		$scope.enteredEventsList = [
-		{eventName:'Open Doubles', entryDateTime: 'Fri 6:00 PM', eventFee: '$28'},
-		{eventName:'Open Singles', entryDateTime: 'Sat 9:00 AM', eventFee: '$45'},
-		{eventName:'U2500', entryDateTime: 'Sun 9:00 AM', eventFee: '$32'},
-		{eventName:'U2400', entryDateTime: 'Sat 11:00 AM', eventFee: '$28'}
-        ];
+		//
+		// converts eventEntry to eventEntryInfo
+		//
+		$scope.makeEventInfo = function (eventEntry) {
+			var eventEntryInfo = {};
+			var tournamentStartDate = new Date($scope.tournament.startDate);
+			for (var i = 0; i < $scope.events.length; i++) {
+				var event = $scope.events[i];
+				if (event.id == eventEntry.eventEntry.event.id) {
+					eventEntryInfo.id = event.id;
+					eventEntryInfo.eventName = event.name;
+					eventEntryInfo.entryDateTime = formatEventDateTime(event.day, event.startTime, tournamentStartDate);
+					eventEntryInfo.entryFee = 32; // events[i].feeAdult;
+					var availabilityStatus = eventEntry.availabilityStatus;
+					eventEntryInfo.availabilityStatus = availabilityStatus;
+					if (availabilityStatus != 'ENTERED' && availabilityStatus != 'AVAILABLE') {
+						if (availabilityStatus == 'RATING') {
+							eventEntryInfo.reason = 'Rating is too high/low';
+						} else if (availabilityStatus == 'WRONG_AGE') {
+							eventEntryInfo.reason = 'Either too old/young';
+						} else if (availabilityStatus == 'WRONG_GENDER') {
+							eventEntryInfo.reason = 'Wrong gender';
+						} else if (availabilityStatus == 'TIME_CONFLICT') {
+							eventEntryInfo.reason = 'Time confict';
+						} else if (availabilityStatus == 'FULL') {
+							eventEntryInfo.reason = 'Event is full';
+						} else if (availabilityStatus == 'WAITING_LIST') {
+							eventEntryInfo.reason = 'You may enter waiting list';
+						}
+					}
+					break;
+				}
+			}
+			return eventEntryInfo;
+		}
+
+		//
+		// divides them into 3 groups: entered, available and not available
+		//
+		$scope.divideEntries = function () {
+			// create eventInfoObjects
+			$scope.enteredEventsList = [];
+			$scope.availableEventsList = [];
+			$scope.unavailableEventsList = [];
+
+			for (var i = 0; i < $scope.eventEntryInfos.length; i++) {
+				var eventEntryInfo = $scope.eventEntryInfos[i];
+				eventEntryInfo = $scope.makeEventInfo(eventEntryInfo);
+				var availabilityStatus = eventEntryInfo.availabilityStatus;
+//				console.log ('availablility status for ' + eventEntryInfo.eventName + " is " + availabilityStatus);
+				if (availabilityStatus == 'ENTERED') {
+					$scope.enteredEventsList.push (eventEntryInfo);
+				} else if (availabilityStatus == 'AVAILABLE') {
+					$scope.availableEventsList.push(eventEntryInfo);
+				} else {
+					$scope.unavailableEventsList.push(eventEntryInfo);
+				}
+			}
+		}
 		
-		$scope.availableEventsList = [
-		                    		{eventName:'U3800 Doubles', entryDateTime: 'Sat 6:00 PM', eventFee: '$28'},
-		                    		{eventName:'U2300', entryDateTime: 'Sun 3:00 PM', eventFee: '$32'},
-		                    		{eventName:'U2200', entryDateTime: 'Sat 12:30 PM', eventFee: '$28'}
-		                            ];
+		$scope.divideEntries();
 
-		$scope.unavailableEventsList = [
-			                    		{eventName:'Youth Under 18', entryDateTime: 'Sun 9:00 AM', eventFee: '$32', reason: 'Event is full'},
-			                    		{eventName:'Youth Under 14', entryDateTime: 'Sun 9:00 AM', eventFee: '$32', reason: 'Age restriction'},
-			                    		{eventName:'U2100', entryDateTime: 'Sun 9:00 AM', eventFee: '$32', reason: 'Time conflict'},
-			                    		{eventName:'U2000', entryDateTime: 'Sat 3:00 PM', eventFee: '$28', reason: 'Rating too high'},
-			                    		{eventName:'Women Singles', entryDateTime: 'Sat 5:00 PM', eventFee: '$28', reason: 'Gender'}
-			                            ];
-
-/*
+		/*
 //		var adultDate = new Date($scope.userProfile.dateOfBirth);
 //		adultDate.setYear($scope.userProfile.dateOfBirth.getFullYear() + 18);
 //		$isJunior = moment(adultDate).isSame(tournamentDate, 'day') || moment(adultDate).isAfter(tournamentDate, 'day');
@@ -251,17 +304,35 @@
 		
 		$scope.eventEntrySuccess = function(value, responseHeaders) {
 			console.log ('event entry save success ' + value.id);
+			$scope.refreshEventEntries();
 		}
 		
 		$scope.eventEntryFailure = function (httpResponse) {
 			showError ($mdDialog, httpResponse, 'Failed to save event entry');
 		}
 		
+		$scope.refreshListEventEntriesSuccess = function(value, responseHeaders) {
+			console.log ('refreshListEventEntriesSuccess # of entries = ' + value.length);
+			$scope.eventEntryInfos = value;
+			$scope.divideEntries();
+		}
+		
+		$scope.refreshListEventEntriesFailure = function (httpResponse) {
+			showError ($mdDialog, httpResponse, 'Failed to refresh event entries');
+		}
+		
+		$scope.refreshEventEntries = function () {
+			console.log ('refershing event entries');
+			var tournamentEntryId = (tournamentEntry.id != null) ? tournamentEntry.id : 0;
+			var params = {tournamentEntryId: $scope.tournamentEntry.id, tournamentId: $scope.tournament.id};
+			eventEntryResource.list (params, $scope.refreshListEventEntriesSuccess, $scope.refreshListEventEntriesFailure);
+		}
+		
 		$scope.enteringEventId = -1;
 		
 		$scope.tournamentEntrySuccess = function(value, responseHeaders) {
-			console.log ('tournament entry save success');
 			$scope.tournamentEntry = value;
+			console.log ('tournament entry save success with id = ' + $scope.tournamentEntry.id);
 			$scope.enterEventInternal ();
 		}
 		
@@ -269,7 +340,7 @@
 			showError ($mdDialog, httpResponse, 'Failed to save tournament entry');
 		}
 
-		$scope.enterEventInternal = function (tournamentEntryId) {
+		$scope.enterEventInternal = function () {
 			var event = null;
 			for (var i = 0; i < $scope.events.length; i++) {
 				if ($scope.events[i].id == $scope.enteringEventId) {
@@ -282,9 +353,11 @@
 						status: 'PENDING',
 						dateEntered: new Date(),
 						event: event,
-						eventId: event.id  // for $resource
+						tournamentEntry: $scope.tournamentEntry,
+						tournamentEntryId: $scope.tournamentEntry.id
 				};
-				eventEntryResource.create (eventEntry, $scope.eventEntrySuccess, $scope.eventEntryFailure);
+				console.log ('eventEntry.tournamentEntryId = ' + eventEntry.tournamentEntryId);
+				eventEntryResource.save (eventEntry, $scope.eventEntrySuccess, $scope.eventEntryFailure);
 			}
 		}
 

@@ -169,7 +169,7 @@
 			var params = {tournamentId: tournamentId};
 			$state.go('home.tournamentEntry.events', params);
 		}
-
+		
 		$scope.successSave = function(value, responseHeaders) {
 			$state.go('home.tournamentManageList');
 		}
@@ -213,41 +213,12 @@
 		// save original events
 		$scope.originalEvents = events;
 		
-		//        
-		// format the event start date and time (for the list of events)
-		//
-		$scope.formatEventDateTime = function (eventDay, startTime, tournamentStartDate) {
-			var mDate = moment([tournamentStartDate.getFullYear(), tournamentStartDate.getMonth(), tournamentStartDate.getDate()]);
-			if (eventDay > 1) {
-				mDate = mDate.add(eventDay - 1, 'days');
-			}
-			var hours = 0;
-			var minutes = 0;
-			// test if they chose 30 minutes past hour start time
-			if (startTime == Math.floor(startTime)) {
-				hours = startTime;
-				minutes = 0;
-			} else {
-				// he chose 8:30 or 9:30 etc.
-				hours = Math.floor(startTime);
-				minutes = 30;
-			}
-//			console.log ('just date' + mDate.format());
-//			console.log ('hours ' + hours + " minutes " + minutes);
-			mDate.utcOffset (0);
-			mDate.utc();
-			mDate.hours(hours);
-			mDate.minutes(minutes);
-			mDate.seconds(0);
-			return mDate.format('ddd h:mm A');  // Sun 1:30 PM
-		}
-		
 		//
 		// Converts event into editable eventInfo
 		//
 		$scope.makeEventInfo = function (event) {
 //			console.log ('event.startDateTime = ' + event.startDateTime);
-			var eventDateTime = $scope.formatEventDateTime (event.day, event.startTime, $scope.tournament.startDate);
+			var eventDateTime = formatEventDateTime (event.day, event.startTime, $scope.tournament.startDate);
 //			console.log ('eventDateTime = ' + eventDateTime);
 			var eventInfo = {
 					id: event.id,

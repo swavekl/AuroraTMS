@@ -1,7 +1,7 @@
 (function(angular) {
 	
 	function eventEntryResourceFactory($resource, session) {
-		var applicationRoot = '/AuroraTMS/api/tournamententries/:tournamentEntryId';
+		var applicationRoot = '/AuroraTMS/api/tournamententries/:tournamentEntryId/evententries';
 		var url = applicationRoot + '/:id';
 		// Pass session token as Authorization header
 		var headers = {
@@ -24,13 +24,14 @@
 			},
 			'save' : {
 				method : 'POST',
-				headers : headers
+				headers : headers,
+				url: applicationRoot
 			},
 			'create' : {
 				method : 'GET',
 				headers : headers,
-//				url : applicationRoot + '/create'
-				url : applicationRoot + '/create?eventId=:eventId'
+				url : applicationRoot + '/create'
+//				url : applicationRoot + '/create?eventId=:eventId'
 			}, 
 			// public method for getting entries of a tournament
 			'query' : {   
@@ -43,7 +44,7 @@
 				method : 'GET',
 				isArray : true,
 				headers : headers,
-				url : applicationRoot
+				url : applicationRoot + '?tournamentId=:tournamentId'
 			},
 			'delete' : {
 				method : 'DELETE',
@@ -57,6 +58,7 @@
 
 		var tournamentEntryResource = $resource(url, {
 			tournamentEntryId : '@tournamentEntryId',
+			tournamentId: '@tournamentId',
 			eventId : '@eventId',
 			userId: '@userId',
 			id : '@id',

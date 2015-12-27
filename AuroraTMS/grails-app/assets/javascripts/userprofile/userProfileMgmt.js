@@ -34,8 +34,10 @@
 								userProfile : function (userProfileResource, $stateParams, session, usattProfile) { 
 									var userId = session.getUser();
 									var memberId = $stateParams.memberId;
+									var id = 123;
 									console.log ('creating user profile by userid ' + userId + ' and memberId ' + memberId);
-									return userProfileResource.editByUsername({username: userId, memberId: memberId}).$promise;
+									
+									return userProfileResource.editByUsername({id: id, username: userId, memberId: memberId}).$promise;
 								}
 							},
 							controller : 'userProfileCtrl'
@@ -126,6 +128,8 @@
 			$scope.dateOfBirthText = moment(dob).format('LL');
 			$scope.dateOfBirthTextSaved = $scope.dateOfBirthText;
 		}
+		
+		$scope.expirationDateText = moment($scope.profile.expirationDate).format('LL');
 		
 		$scope.successUpdate = function(value, responseHeaders) {
 			console.log ('successfully updated association');

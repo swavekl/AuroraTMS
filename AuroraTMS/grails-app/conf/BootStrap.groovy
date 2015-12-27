@@ -1,10 +1,14 @@
 import groovy.time.*
+
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date;
+
 import javax.swing.text.DateFormatter
+
 import net.sf.ehcache.CacheManager
 
+import com.atms.Event.GenderRestriction;
 import com.atms.SecRole
 import com.atms.SecUser
 import com.atms.SecUserSecRole
@@ -18,7 +22,7 @@ import static org.springframework.security.acls.domain.BasePermission.DELETE
 import static org.springframework.security.acls.domain.BasePermission.READ
 import static org.springframework.security.acls.domain.BasePermission.WRITE
 
-import org.springframework.security.authentication. UsernamePasswordAuthenticationToken
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
@@ -35,6 +39,7 @@ class BootStrap {
 	CacheManager ehcacheCacheManager // uses DataSource properties to register mbean
 	String displayName = ""
 	def df = new SimpleDateFormat("MM/dd/yyyy")
+	
 	def df2 = new SimpleDateFormat("MM/dd/yyyy hh:mm a")
 	
 	def init = { servletContext ->
@@ -56,17 +61,45 @@ class BootStrap {
 		
 		Map paramsE = [:];
 		
-		def event1 = new Event(ordinalNumber: 1, name:'Open Singles', day: 1, startTime: 9.0) // , startDateTime: df2.parse('01/16/2016 09:00 AM')
+		def event1 = new Event(ordinalNumber: 1, name:'Open Singles', day: 1, startTime: 9.0) 
 		event1.tournament = tournament5
 		eventService.create(event1, paramsE)
 		
-		def event2 = new Event(ordinalNumber: 2, name:'U2600', day: 1, startTime: 11.5) // , startDateTime: df2.parse('01/16/2016 11:30 AM')
+		def event2 = new Event(ordinalNumber: 2, name:'U2600', day: 1, startTime: 11.5, maxPlayerRating: 2599) 
 		event2.tournament = tournament5
 		eventService.create(event2, paramsE)
 
-		def event3 = new Event(ordinalNumber: 3, name:'U2200', day: 2, startTime: 16.0) // , startDateTime: df2.parse('01/17/2016 04:00 PM')
+		def event3 = new Event(ordinalNumber: 3, name:'U2200', day: 2, startTime: 16.0, maxPlayerRating: 2199) 
 		event3.tournament = tournament5
 		eventService.create(event3, paramsE)
+		
+		def event4 = new Event(ordinalNumber: 4, name:'U2100', day: 2, startTime: 14.0, maxPlayerRating: 2099) 
+		event4.tournament = tournament5
+		eventService.create(event4, paramsE)
+		
+		def event5 = new Event(ordinalNumber: 5, name:'U1900', day: 1, startTime: 11.5, maxPlayerRating: 1899) 
+		event5.tournament = tournament5
+		eventService.create(event5, paramsE)
+		
+		def event6 = new Event(ordinalNumber: 6, name:'U1700', day: 2, startTime: 9.0, maxPlayerRating: 1699) 
+		event6.tournament = tournament5
+		eventService.create(event6, paramsE)
+		
+		def event7 = new Event(ordinalNumber: 7, name:'U1600', day: 2, startTime: 11.0, maxPlayerRating: 1599)
+		event7.tournament = tournament5
+		eventService.create(event7, paramsE)
+		
+		def event8 = new Event(ordinalNumber: 8, name:'Women Singles', day: 2, startTime: 11.0, genderRestriction: GenderRestriction.FEMALE)
+		event8.tournament = tournament5
+		eventService.create(event8, paramsE)
+
+		def event9 = new Event(ordinalNumber: 9, name:'Boys Under 18', day: 1, startTime: 9.0, genderRestriction: GenderRestriction.MALE, maxPlayerAge: 17)
+		event9.tournament = tournament5
+		eventService.create(event9, paramsE)
+
+		def event10 = new Event(ordinalNumber: 10, name:'40 and Over', day: 1, startTime: 11.0, minPlayerAge: 40)
+		event10.tournament = tournament5
+		eventService.create(event10, paramsE)
 
 		sessionFactory.currentSession.flush()
 		
@@ -245,7 +278,7 @@ class BootStrap {
 			if (expDate == 'LIFE') {
 				expirationDate = new Date ('12/31/2099');
 			} else {
-				expirationDate != "" ? dateFormatter.parse(expDate) : null
+				expirationDate = (expDate != "") ? dateFormatter.parse(expDate) : null
 			}
 			def lastPlayed = table.LastPlayed.text() != "" ? dateFormatter.parse(table.LastPlayed.text()) : null
 			int memberId = table.MemberID.toInteger();

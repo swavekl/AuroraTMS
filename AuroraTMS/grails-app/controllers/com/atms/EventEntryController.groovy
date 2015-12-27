@@ -11,6 +11,7 @@ class EventEntryController extends RestfulController {
 
 	def eventEntryService
 	def eventService
+	def userProfileService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -26,15 +27,29 @@ class EventEntryController extends RestfulController {
 	@Secured(['permitAll'])
 	def index(Integer max) {
 		params.max = Math.min(max ?: 10, 100)
-		def eventEntries = null
-		if (params.containsKey('owned')) {
+		List eventEntries = []
+		if (params.containsKey('tournamentId') && params.get('tournamentId') != null) {
+			long tournamentId = params.tournamentId as Long
+			long tournamentEntryId = params.tournamentEntryId as Long
+			eventEntries = eventEntryService.listAllStatus(tournamentId, tournamentEntryId)
+		} else if (params.containsKey('owned')) {
 			eventEntries = eventEntryService.listOwned(params)
+		// check which events are available etc
 		} else {
 			eventEntries = eventEntryService.list(params)
 		}
-		respond eventEntries, [status: OK]
-	}
 
+		def eventEntryInfos = []
+		eventEntries.each {
+			def eventEntryInfo = new EventEntryInfo()
+			eventEntryInfo.eventEntry = it
+			eventEntryInfo.availabilityStatus = it.availabilityStatus as String
+			eventEntryInfos.push(eventEntryInfo)
+		}
+
+		respond eventEntryInfos, [status: OK]
+	}
+	
 	/**
 	 * Shows a single resource
 	 * @param id The id of the resource
@@ -56,24 +71,7 @@ class EventEntryController extends RestfulController {
 		if(handleReadOnly()) {
 			return
 		}
-		// check if there is room to reserve if there is max on the tournament event
-		def eventId = params.eventId;
-		def event = eventService.get (eventId)
-		
-		def countOfEntries = eventEntryService.count(eventId)
-		// if not respond with 'no room' error
-		if ((event.maxEntries != 0 && countOfEntries < event.maxEntries) 
-			|| event.maxEntries == 0) {
-			// there is room
-			def eventEntry = createResource()
-			eventEntry.dateEntered = new Date()
-			eventEntry.status = EventEntry.PENDING
-			eventEntry.event = event
-			respond eventEntry	
-		} else {
-			// no room
-			render status: NOT_ACCEPTABLE
-		}
+		respond createResource()
 	}
 
 	@Transactional
@@ -88,6 +86,24 @@ class EventEntryController extends RestfulController {
 		if (eventEntry.hasErrors()) {
 			render status: NOT_ACCEPTABLE
 			return
+		}
+
+		def eventId = eventEntry.event.id;
+		// check if there is room to reserve if there is max on the tournament event
+		//def eventId = params.eventId;
+//		def event = eventService.get (eventId)
+		def event = eventEntry.event
+		
+//				def countOfEntries = eventService.countEntries(eventId)
+		def countOfEntries = eventEntryService.count(eventId)
+		// if not respond with 'no room' error
+		if ((event.maxEntries != 0 && countOfEntries < event.maxEntries)
+			|| event.maxEntries == 0) {
+			// there is room
+			eventEntry.dateEntered = new Date()
+		} else {
+			// no room
+			render status: NOT_ACCEPTABLE
 		}
 
 		eventEntryService.create(eventEntry, params)

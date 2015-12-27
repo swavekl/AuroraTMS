@@ -59,7 +59,8 @@ grails.project.dependency.resolution = {
     plugins {
         // plugins for the build system only
         build ":tomcat:7.0.55.2"
-
+		//test ":build-test-data:2.4.0"
+		
         // plugins for the compile step
         compile ":scaffolding:2.1.2"
         compile ':cache:1.1.8'
@@ -76,6 +77,7 @@ grails.project.dependency.resolution = {
 			// to prevent old ehcache
 			excludes 'ehcache-core'
 		}
+		compile "org.grails.plugins:mysql-connectorj:5.1.22.1"
 		
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"

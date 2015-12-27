@@ -39,6 +39,25 @@
     this.setRoles = function (roles) {
     	this._roles = roles;
     };
+    
+    this.isInRole = function (role) {
+    	var hasRole = false;
+    	if (this._roles != null) {
+    		for (var i = 0; i < this._roles.length; i++) {
+    			if (this._roles[i] == role) {
+    				hasRole = true;
+    				break;
+    			}
+    		}
+    	}
+    	
+    	return hasRole;
+    };
+    
+    this.hasGroup = function () {
+    	// to do
+    	return false;
+    }
 
     this.getAccessToken = function(){
       return this._accessToken;
