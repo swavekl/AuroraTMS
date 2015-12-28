@@ -44,6 +44,7 @@ class EventEntryController extends RestfulController {
 			def eventEntryInfo = new EventEntryInfo()
 			eventEntryInfo.eventEntry = it
 			eventEntryInfo.availabilityStatus = it.availabilityStatus as String
+			eventEntryInfo.fee = it.fee
 			eventEntryInfos.push(eventEntryInfo)
 		}
 

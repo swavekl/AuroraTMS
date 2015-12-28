@@ -1,41 +1,21 @@
-<div layout="column" layout-fill ng-cloak>
+<div layout="column" layout-fill ng-cloak layout-padding>
 <md-content>
-<p>Here are the events you entered</p>
 <table>
-<tr>
-<td>U2300</td>
-<td>Fri 6:30 PM</td>
-<td>$32</td>
+<tr ng-repeat="invoiceGroup in invoice">
+<td>{{ invoiceGroup.group }}</td>
+<td>
+	<table>
+	<tr ng-repeat="item in invoiceGroup.items">
+	<td>{{ item.name }}</td>
+	<td>{{ item.price | currency }}</td>
+	</tr>
+	</table>
+</td>
 </tr>
 <tr>
-<td>U2100</td>
-<td>Sat 1:30 PM</td>
-<td>$30</td>
 </tr>
-<tr>
-<td>U2000</td>
-<td>Sun 12:30 PM</td>
-<td>$28</td>
-</tr>
-<tr>
-<td>Events Total</td>
-<td></td>
-<td>$90</td>
-</tr>
-<tr>
-<td>USATT Membership</td>
-<td></td>
-<td>${{ selectedMembershipOption.fee }} - {{ selectedMembershipOption.membershipName }}</td>
-</tr>
-<tr>
-<td>Registration Fee</td>
-<td></td>
-<td>$5</td>
-</tr>
-<tr>
 <td>Grand Total</td>
-<td></td>
-<td>$170</td>
+<td>{{ grandTotal | currency }}</td>
 </tr>
 </table>
 </md-content>

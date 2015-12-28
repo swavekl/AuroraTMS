@@ -124,28 +124,16 @@ class EventEntryService {
 	}
 	
 	int count (eventId) {
-//		def query = EventEntry.where {
-//			event.id == eventId
-//		}.projections {
-//			count ()
-//		}
-//		def result = query.find()
-//		return [ count: result[0] ]
-		
 		def result = EventEntry.withCriteria {
 			idEq(eventId)
 			projections { rowCount() }
 		}
 		int count = result[0]
-		println 'count of entries is = ' + count
 		return count
 	}
 
 	// anybody can use it
 	List<EventEntry> list(Map params) {
-//		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
-//		println "list params " + params
-
 		EventEntry.list params
 	}
 	
@@ -168,26 +156,17 @@ class EventEntryService {
 		}
 		
 		// now get all events and add those that player is not it to mark them as available or not available
-//		println 'All events'
-//		for (event in tournamentEvents) {
-//			println 'tournament event ' + event.name + " min, max " + event.minPlayerRating + ", " + event.maxPlayerRating
-//		}
-		
 		// first mark the entered events status
 		for (eventEntry in eventEntries) {
-//			println 'assigning ENTERED status to entry ' + eventEntry.event.name
 			eventEntry.availabilityStatus = EventEntry.AvailabilityStatus.ENTERED
 		}
 
 		// second create event entries marked AVAILABLE for events that user didn't enter
 		def eventsNotEntered = [];
-//		println 'Entered events'
 		for (event in tournamentEvents) {
-//			println 'id of tournament event ' + event.name + " is " + event.id
 			boolean alreadyEntered = false;
 			for (eventEntry in eventEntries) {
 				if (eventEntry.event.id == event.id) {
-//					println 'event ' + event.name + " is already entered"
 					alreadyEntered = true;
 					break;
 				}
@@ -208,7 +187,6 @@ class EventEntryService {
 		int ageYears = 13
 		String gender = 'M'
 		for (event in tournamentEvents) {
-//			println 'Evaluating conflicts for event ' + event.name
 			evaluateConflicts (event, eventEntries, eventsNotEntered, eligibilityRating, ageYears, gender)
 		}
 		
@@ -217,11 +195,16 @@ class EventEntryService {
 			evaluateTimeConflicts (eventNotEntered, eventEntries)
 		}
 		
+		// set prices per age
+		for (event in tournamentEvents) {
+			evaluatePrices (event, eventEntries, eventsNotEntered, ageYears)
+		}
+		
 		// combine the two lists
 		def allEntries = []
 		allEntries.addAll(eventEntries)
 		allEntries.addAll(eventsNotEntered)
-		
+
 		// third evaluate rules for various conflicts
 		return allEntries
 	}
@@ -362,6 +345,23 @@ class EventEntryService {
 						eventNotEntered.availabilityStatus = EventEntry.AvailabilityStatus.TIME_CONFLICT
 					}
 				}
+			}
+		}
+	}
+	
+	/**
+	 * Set prices dependent on age
+	 * @param evenToEvaluate
+	 * @param eventEntries
+	 * @param eventsNotEntered
+	 */
+	void evaluatePrices (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, int ageYears) {
+		EventEntry foundEventEntry = findEventEntry (eventToEvaluate, eventEntries, eventsNotEntered)
+		if (foundEventEntry != null) {
+			if (ageYears < 18) {
+				foundEventEntry.fee = (eventToEvaluate.feeJunior != 0) ? eventToEvaluate.feeJunior : eventToEvaluate.feeAdult
+			} else {
+			foundEventEntry.fee = eventToEvaluate.feeAdult
 			}
 		}
 	}

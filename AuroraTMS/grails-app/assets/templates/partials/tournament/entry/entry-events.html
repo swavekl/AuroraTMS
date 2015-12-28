@@ -10,11 +10,11 @@
 				<div hide-gt-sm class="md-list-item-text">
 					<h3>{{entry.eventName}}</h3>
 					<h4>{{entry.entryDateTime}}</h4>
-					<h4>{{entry.eventFee}}</h4>
+					<h4>{{entry.fee | currency }}</h4>
 				</div>
 				<div hide-sm class="md-list-item-text">
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
-					{{entry.eventFee}}</h3>
+					{{entry.fee | currency }}</h3>
 				</div>
 				
 	          <ng-md-icon icon="remove_circle" size="48" ng-click="withdrawFromEvent(entry, $event)">
@@ -31,11 +31,11 @@
 				<div hide-gt-sm class="md-list-item-text">
 					<h3>{{entry.eventName}}</h3>
 					<h4>{{entry.entryDateTime}}</h4>
-					<h4>{{entry.eventFee}}</h4>
+					<h4>{{entry.fee | currency }}</h4>
 				</div>
 				<div hide-sm class="md-list-item-text">
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
-					{{entry.eventFee}}</h3>
+					{{entry.fee | currency }}</h3>
 				</div>
 	          <ng-md-icon icon="add_circle" size="48" ng-click="enterEvent(entry, $event)">
 	          	<md-tooltip>Enter event</md-tooltip> 

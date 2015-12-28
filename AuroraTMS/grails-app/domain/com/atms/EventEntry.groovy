@@ -20,8 +20,11 @@ class EventEntry {
 
 	// a reason the event is not available - e.g. Rating, Full, Age, time conflict etc.
 	AvailabilityStatus availabilityStatus
+	
+	// price per event dependent on age or other criteria
+	float fee
 
-	static transients = [ "availabilityStatus" ]
+	static transients = [ "availabilityStatus", "price" ]
 
 	// reference property back to TournamentEntry FK created in database, cascading saves and deletes from TournamentEntry
 	static belongsTo = [tournamentEntry: TournamentEntry]

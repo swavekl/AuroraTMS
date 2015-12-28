@@ -222,7 +222,7 @@
 					eventEntryInfo.eventEntry = eventEntry.eventEntry;
 					eventEntryInfo.eventName = event.name;
 					eventEntryInfo.entryDateTime = formatEventDateTime(event.day, event.startTime, tournamentStartDate);
-					eventEntryInfo.entryFee = 32; // events[i].feeAdult;
+					eventEntryInfo.fee = eventEntry.fee;
 					var availabilityStatus = eventEntry.availabilityStatus;
 					eventEntryInfo.availabilityStatus = availabilityStatus;
 					if (availabilityStatus != 'ENTERED' && availabilityStatus != 'AVAILABLE') {
@@ -297,6 +297,8 @@
 			console.log ('refreshListEventEntriesSuccess # of entries = ' + value.length);
 			$scope.eventEntryInfos = value;
 			$scope.divideEntries();
+			// update invoice
+			$scope.updateSummary();
 		}
 		
 		$scope.refreshListEventEntriesFailure = function (httpResponse) {
@@ -439,8 +441,62 @@
 		// store the selected membership option
 		//
 		$scope.selectMembership = function (option) {
-			console.log ('selecting membership option ' + option.membershipName);
 			$scope.selectedMembershipOption = option;
+			$scope.updateSummary ();
+		}
+		
+		//----------------------------------------------------------------------------------------------------------------------------------
+		// Summary step
+		//----------------------------------------------------------------------------------------------------------------------------------
+		//
+		// calculate events total and other fees
+		//
+		$scope.invoice = [];
+		$scope.grandTotal = 0;
+		
+		$scope.updateSummary = function () {
+			$scope.invoice = [];
+			$scope.grandTotal = 0;
+			// invoice
+			var eventsTotal = 0;
+			var items = [];
+			for (var i = 0; i < $scope.enteredEventsList.length; i++) {
+				var enteredEventInfo = $scope.enteredEventsList[i];
+				eventsTotal += enteredEventInfo.fee;
+				items.push({name: enteredEventInfo.eventName, price: enteredEventInfo.fee});
+			}
+			items.push ({name: 'Events Total', price: eventsTotal});
+			$scope.invoice.push({group: 'Events', items: items});
+			$scope.grandTotal = eventsTotal;
+
+			// membership
+			if ($scope.selectedMembershipOption.fee != 0) {
+				var membershipItems = [];
+				membershipItems.push ({name: $scope.selectedMembershipOption.membershipName, price: $scope.selectedMembershipOption.fee});
+				$scope.invoice.push({group: 'USATT Membership', items: membershipItems});
+				$scope.grandTotal += $scope.selectedMembershipOption.fee;
+			}
+			
+			// other fees
+			if ($scope.tournament.adminFee != 0 || $scope.tournament.lateFee != 0) {
+				var otherFeesItems = [];
+				if ($scope.tournament.adminFee != 0) {
+					otherFeesItems.push ({name: 'Administrative fee', price: $scope.tournament.adminFee});
+					$scope.grandTotal += $scope.tournament.adminFee;
+				}
+				if ($scope.tournament.lateEntryFee != 0 && isLate()) {
+					otherFeesItems.push ({name: 'Late fee', price: $scope.tournament.lateEntryFee});
+					$scope.grandTotal += $scope.tournament.lateEntryFee; 
+				}
+				$scope.invoice.push({group: 'Other fees', items: otherFeesItems});
+			}			
+		}
+		
+		//
+		// determine if entry is late
+		//
+		$scope.isLate = function () {
+			return false;
 		}
 	} 
 	])

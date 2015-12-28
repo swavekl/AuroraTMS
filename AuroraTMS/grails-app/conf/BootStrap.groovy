@@ -55,49 +55,51 @@ class BootStrap {
 
 		// create via service
 		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('01/16/2016'), endDate: df.parse('01/17/2016'), starLevel: 4)
+		tournament5.adminFee = 5.0
+		tournament5.lateEntryFee = 10.0
 		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
 		Map params1 = [:];
 		tournamentService.create(tournament5, params1)
 		
 		Map paramsE = [:];
 		
-		def event1 = new Event(ordinalNumber: 1, name:'Open Singles', day: 1, startTime: 9.0) 
+		def event1 = new Event(ordinalNumber: 1, name:'Open Singles', day: 1, startTime: 9.0, feeAdult: 32.0, feeJunior: 28.0) 
 		event1.tournament = tournament5
 		eventService.create(event1, paramsE)
 		
-		def event2 = new Event(ordinalNumber: 2, name:'U2600', day: 1, startTime: 11.5, maxPlayerRating: 2599) 
+		def event2 = new Event(ordinalNumber: 2, name:'U2600', day: 1, startTime: 11.5, maxPlayerRating: 2599, feeAdult: 32.0, feeJunior: 28.0) 
 		event2.tournament = tournament5
 		eventService.create(event2, paramsE)
 
-		def event3 = new Event(ordinalNumber: 3, name:'U2200', day: 2, startTime: 16.0, maxPlayerRating: 2199) 
+		def event3 = new Event(ordinalNumber: 3, name:'U2200', day: 2, startTime: 16.0, maxPlayerRating: 2199, feeAdult: 32.0, feeJunior: 28.0) 
 		event3.tournament = tournament5
 		eventService.create(event3, paramsE)
 		
-		def event4 = new Event(ordinalNumber: 4, name:'U2100', day: 2, startTime: 14.0, maxPlayerRating: 2099) 
+		def event4 = new Event(ordinalNumber: 4, name:'U2100', day: 2, startTime: 14.0, maxPlayerRating: 2099, feeAdult: 32.0, feeJunior: 28.0) 
 		event4.tournament = tournament5
 		eventService.create(event4, paramsE)
 		
-		def event5 = new Event(ordinalNumber: 5, name:'U1900', day: 1, startTime: 11.5, maxPlayerRating: 1899) 
+		def event5 = new Event(ordinalNumber: 5, name:'U1900', day: 1, startTime: 11.5, maxPlayerRating: 1899, feeAdult: 28.0, feeJunior: 25.0) 
 		event5.tournament = tournament5
 		eventService.create(event5, paramsE)
 		
-		def event6 = new Event(ordinalNumber: 6, name:'U1700', day: 2, startTime: 9.0, maxPlayerRating: 1699) 
+		def event6 = new Event(ordinalNumber: 6, name:'U1700', day: 2, startTime: 9.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 25.0) 
 		event6.tournament = tournament5
 		eventService.create(event6, paramsE)
 		
-		def event7 = new Event(ordinalNumber: 7, name:'U1600', day: 2, startTime: 11.0, maxPlayerRating: 1599)
+		def event7 = new Event(ordinalNumber: 7, name:'U1600', day: 2, startTime: 11.0, maxPlayerRating: 1599, feeAdult: 28.0, feeJunior: 25.0)
 		event7.tournament = tournament5
 		eventService.create(event7, paramsE)
 		
-		def event8 = new Event(ordinalNumber: 8, name:'Women Singles', day: 2, startTime: 11.0, genderRestriction: GenderRestriction.FEMALE)
+		def event8 = new Event(ordinalNumber: 8, name:'Women Singles', day: 2, startTime: 11.0, genderRestriction: GenderRestriction.FEMALE, feeAdult: 25.0, feeJunior: 22.0)
 		event8.tournament = tournament5
 		eventService.create(event8, paramsE)
 
-		def event9 = new Event(ordinalNumber: 9, name:'Boys Under 18', day: 1, startTime: 9.0, genderRestriction: GenderRestriction.MALE, maxPlayerAge: 17)
+		def event9 = new Event(ordinalNumber: 9, name:'Boys Under 18', day: 1, startTime: 9.0, genderRestriction: GenderRestriction.MALE, maxPlayerAge: 17, feeAdult: 0, feeJunior: 20.0)
 		event9.tournament = tournament5
 		eventService.create(event9, paramsE)
 
-		def event10 = new Event(ordinalNumber: 10, name:'40 and Over', day: 1, startTime: 11.0, minPlayerAge: 40)
+		def event10 = new Event(ordinalNumber: 10, name:'40 and Over', day: 1, startTime: 11.0, minPlayerAge: 40, feeAdult: 32.0, feeJunior: 0)
 		event10.tournament = tournament5
 		eventService.create(event10, paramsE)
 
