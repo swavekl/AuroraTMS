@@ -169,7 +169,7 @@ class BootStrap {
 		user1.save(failOnError: true)
 
 		// not USATT member
-		def userProfile2 = new UserProfile (firstName: 'Matthew', lastName: 'Lorenc', dateOfBirth: df.parse('10/11/1995'), email: 'matthewlorenc@yahoo.com', phone: '630-999-1180', streetAddress: '2223 New York Ave', city: 'Aurora', state: 'IL', zipCode: '60103', gender: 'M', club: 'Xilin Club')
+		def userProfile2 = new UserProfile (firstName: 'Matthew', lastName: 'Lorenc', dateOfBirth: df.parse('12/11/1998'), email: 'matthewlorenc@yahoo.com', phone: '630-999-1180', streetAddress: '2223 New York Ave', city: 'Aurora', state: 'IL', zipCode: '60103', gender: 'M', club: 'Xilin Club')
 		//userProfile2.expirationDate = df.parse ('12/31/2015')
 		userProfile2.country = "USA"
 		userProfile2.save(failOnError: true)
