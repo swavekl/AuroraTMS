@@ -1,22 +1,24 @@
-<div layout="column" layout-fill ng-cloak layout-padding>
-<md-content>
-<table>
-<tr ng-repeat="invoiceGroup in invoice">
-<td>{{ invoiceGroup.group }}</td>
-<td>
-	<table>
-	<tr ng-repeat="item in invoiceGroup.items">
-	<td>{{ item.name }}</td>
-	<td>{{ item.price | currency }}</td>
-	</tr>
-	</table>
-</td>
-</tr>
-<tr>
-</tr>
-<td>Grand Total</td>
-<td>{{ grandTotal | currency }}</td>
-</tr>
-</table>
-</md-content>
+<div layout="column" layout-fill ng-cloak>
+	<md-toolbar>
+	<div class="md-toolbar-tools">Invoice</div>
+	</md-toolbar>
+	<md-content layout-padding>
+	<section ng-repeat="invoiceGroup in invoice">
+		<md-subheader class="md-primary">{{ invoiceGroup.group
+		}}</md-subheader>
+		<table style="width: 100%">
+			<tr ng-repeat="item in invoiceGroup.items">
+				<td style="width: 80%">{{ item.name }}</td>
+				<td style="width: 20%">{{ item.price | currency }}</td>
+			</tr>
+		</table>
+		<md-divider></md-divider>
+	</section>
+	<table style="width: 100%">
+			<tr>
+				<td style="width: 80%">Grand Total</td>
+				<td style="width: 20%"><H3>{{ grandTotal | currency }}</H3></td>
+			</tr>
+		</table>
+	</md-content>
 </div>

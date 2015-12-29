@@ -55,9 +55,8 @@ class BootStrap {
 
 		// create via service
 		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('01/16/2016'), endDate: df.parse('01/17/2016'), starLevel: 4)
-		tournament5.adminFee = 5.0
-		tournament5.lateEntryFee = 10.0
 		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
+		tournament5.lateEntryStartDate = df.parse ('12/27/2015')
 		Map params1 = [:];
 		tournamentService.create(tournament5, params1)
 		
@@ -252,9 +251,9 @@ class BootStrap {
 		tournament.ratingCutoffDate = tournament.startDate - 35 
 		tournament.lateEntryStartDate = tournament.startDate - 14
 		tournament.entryCutoffDate = tournament.startDate - 7
-		tournament.usattRatingFee = 5.0f
-		tournament.adminFee = 0f
-		tournament.lateEntryFee = 0f
+		//tournament.usattRatingFee = 5.0f
+		tournament.adminFee = 5.0f
+		tournament.lateEntryFee = 10.0f
 	}
 
 	def importPlayerData() {

@@ -35,8 +35,6 @@ class Tournament {
 	
 	int tablesCount
 	
-	// fees
-	float usattRatingFee
 	// fee for processing entry
 	float adminFee
 	float lateEntryFee
@@ -67,7 +65,6 @@ class Tournament {
 //		checkMailState blank : true, nullable: true
 //		checkMailZipCode blank : true, nullable: true
 		tablesCount min: 0
-		usattRatingFee scale: 2, min: 0f
 		adminFee scale: 2, min: 0f
 		lateEntryFee scale: 2, min: 0f 
     }

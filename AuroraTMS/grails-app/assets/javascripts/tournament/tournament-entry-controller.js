@@ -484,7 +484,7 @@
 					otherFeesItems.push ({name: 'Administrative fee', price: $scope.tournament.adminFee});
 					$scope.grandTotal += $scope.tournament.adminFee;
 				}
-				if ($scope.tournament.lateEntryFee != 0 && isLate()) {
+				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry()) {
 					otherFeesItems.push ({name: 'Late fee', price: $scope.tournament.lateEntryFee});
 					$scope.grandTotal += $scope.tournament.lateEntryFee; 
 				}
@@ -495,8 +495,14 @@
 		//
 		// determine if entry is late
 		//
-		$scope.isLate = function () {
-			return false;
+		$scope.isLateEntry = function () {
+			var isLate = false;
+			var today = new Date();
+			var lateEntryStartDate = $scope.tournament.lateEntryStartDate;
+			if (lateEntryStartDate != null) {
+				isLate = moment(today).isAfter(lateEntryStartDate);
+			}
+			return isLate;
 		}
 	} 
 	])
