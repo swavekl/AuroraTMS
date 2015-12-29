@@ -3,9 +3,8 @@
 	<div class="md-toolbar-tools">Invoice</div>
 	</md-toolbar>
 	<md-content layout-padding>
-	<section ng-repeat="invoiceGroup in invoice">
-		<md-subheader class="md-primary">{{ invoiceGroup.group
-		}}</md-subheader>
+	<section ng-repeat="invoiceGroup in invoice.currentItems">
+		<md-subheader class="md-primary">{{ invoiceGroup.group }}</md-subheader>
 		<table style="width: 100%">
 			<tr ng-repeat="item in invoiceGroup.items">
 				<td style="width: 80%">{{ item.name }}</td>
@@ -15,10 +14,26 @@
 		<md-divider></md-divider>
 	</section>
 	<table style="width: 100%">
-			<tr>
-				<td style="width: 80%">Grand Total</td>
-				<td style="width: 20%"><H3>{{ grandTotal | currency }}</H3></td>
+		<tr>
+			<td style="width: 80%">Grand total</td>
+			<td style="width: 20%"><H3>{{ invoice.grandTotal | currency }}</H3></td>
+		</tr>
+	</table>
+	<section ng-show="invoice.previousTransactionsItems.length > 0">
+		<md-subheader class="md-primary">Payments and Refunds</md-subheader>
+		<table style="width: 100%">
+			<tr ng-repeat="transaction in invoice.previousTransactionsItems">
+				<td style="width: 80%">{{ transaction.name }}</td>
+				<td style="width: 20%">{{ transaction.price | currency }}</td>
 			</tr>
 		</table>
+		<md-divider></md-divider>
+	</section>
+	<table style="width: 100%">
+		<tr>
+			<td style="width: 80%">Balance Due</td>
+			<td style="width: 20%"><H3>{{ invoice.balanceDue | currency }}</H3></td>
+		</tr>
+	</table>
 	</md-content>
 </div>

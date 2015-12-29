@@ -451,30 +451,34 @@
 		//
 		// calculate events total and other fees
 		//
-		$scope.invoice = [];
-		$scope.grandTotal = 0;
+		$scope.invoice = {
+				currentItems: [], 
+				grandTotal: 0, 
+				previousTransactionsItems: [], 
+				balanceDue: 0};
+		$scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00}, {paymentDate: "12/25/2015", amount: -20.00}];
 		
 		$scope.updateSummary = function () {
-			$scope.invoice = [];
-			$scope.grandTotal = 0;
+			var currentItems = [];
+			var grandTotal = 0;
 			// invoice
 			var eventsTotal = 0;
-			var items = [];
+			var eventItems = [];
 			for (var i = 0; i < $scope.enteredEventsList.length; i++) {
 				var enteredEventInfo = $scope.enteredEventsList[i];
 				eventsTotal += enteredEventInfo.fee;
-				items.push({name: enteredEventInfo.eventName, price: enteredEventInfo.fee});
+				eventItems.push({name: enteredEventInfo.eventName, price: enteredEventInfo.fee});
 			}
-			items.push ({name: 'Events Total', price: eventsTotal});
-			$scope.invoice.push({group: 'Events', items: items});
-			$scope.grandTotal = eventsTotal;
+			eventItems.push ({name: 'Events Total', price: eventsTotal});
+			currentItems.push({group: 'Events', items: eventItems});
+			grandTotal = eventsTotal;
 
 			// membership
 			if ($scope.selectedMembershipOption.fee != 0) {
 				var membershipItems = [];
 				membershipItems.push ({name: $scope.selectedMembershipOption.membershipName, price: $scope.selectedMembershipOption.fee});
-				$scope.invoice.push({group: 'USATT Membership', items: membershipItems});
-				$scope.grandTotal += $scope.selectedMembershipOption.fee;
+				currentItems.push({group: 'USATT Membership', items: membershipItems});
+				grandTotal += $scope.selectedMembershipOption.fee;
 			}
 			
 			// other fees
@@ -482,14 +486,39 @@
 				var otherFeesItems = [];
 				if ($scope.tournament.adminFee != 0) {
 					otherFeesItems.push ({name: 'Administrative fee', price: $scope.tournament.adminFee});
-					$scope.grandTotal += $scope.tournament.adminFee;
+					grandTotal += $scope.tournament.adminFee;
 				}
 				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry()) {
 					otherFeesItems.push ({name: 'Late fee', price: $scope.tournament.lateEntryFee});
-					$scope.grandTotal += $scope.tournament.lateEntryFee; 
+					grandTotal += $scope.tournament.lateEntryFee; 
 				}
-				$scope.invoice.push({group: 'Other fees', items: otherFeesItems});
-			}			
+				currentItems.push({group: 'Other fees', items: otherFeesItems});
+			}
+			
+			// all items
+			$scope.invoice.currentItems = currentItems;
+			// grand total line
+			$scope.invoice.grandTotal = grandTotal;
+			
+			// balance due (maybe less by payments)
+			var previousTransactionsTotal = 0;
+			
+			// previous payments if any
+			var previousTransactionItems = [];
+			if ($scope.previousTransactions != null) {
+				for (var i = 0; i < $scope.previousTransactions.length; i++) {
+					var payment = $scope.previousTransactions[i];
+					var name = (payment.amount > 0) ? "Payment" : "Refund";
+					name += " on " + payment.paymentDate;
+					previousTransactionItems.push ({name: name, price: payment.amount});
+					previousTransactionsTotal += payment.amount;
+				}
+				previousTransactionItems.push ({name: 'Total', price: previousTransactionsTotal});
+			}
+			
+			$scope.invoice.previousTransactionsItems = previousTransactionItems;
+			$scope.invoice.balanceDue = grandTotal - previousTransactionsTotal;
+			
 		}
 		
 		//
@@ -500,7 +529,7 @@
 			var today = new Date();
 			var lateEntryStartDate = $scope.tournament.lateEntryStartDate;
 			if (lateEntryStartDate != null) {
-				isLate = moment(today).isAfter(lateEntryStartDate);
+				isLate = moment(today).isAfter(lateEntryStartDate, 'day');
 			}
 			return isLate;
 		}
