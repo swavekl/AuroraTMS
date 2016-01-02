@@ -170,6 +170,8 @@ log4j.main = {
 //			'org.springframework.security'
 }
 
+grails.plugin.springsecurity.portMapper.httpPort = 8080
+grails.plugin.springsecurity.portMapper.httpsPort = 8443
 
 // Added by the Spring Security Core plugin:
 grails {
@@ -185,11 +187,34 @@ grails {
 //			rejectIfNoRule = true
 //			fii.rejectPublicInvocations = false
 //			securityConfigType = "Annotation"   // default
-			
+
 			roleHierarchy = '''
 				ROLE_ADMIN > ROLE_TOURNAMENT_DIRECTOR
 				ROLE_TOURNAMENT_DIRECTOR > ROLE_USER
 				'''
+
+				
+			secureChannel {
+				useHeaderCheckChannelSecurity = true
+//				secureHeaderName = 'X-FORWARDED-PROTO'
+//				secureHeaderValue = 'http'
+//				insecureHeaderName = 'X-FORWARDED-PROTO'
+//				insecureHeaderValue = 'https'
+				
+				// one of REQUIRES_INSECURE_CHANNEL
+				definition = [
+					'/':                              'REQUIRES_SECURE_CHANNEL',
+					'/index':                         'ANY_CHANNEL',
+					'/index.gsp':                     'REQUIRES_SECURE_CHANNEL',
+					'/assets/**':                     'REQUIRES_SECURE_CHANNEL',
+					'/**/js/**':                      'REQUIRES_SECURE_CHANNEL',
+					'/**/css/**':                     'ANY_CHANNEL',
+					'/**/images/**':                  'ANY_CHANNEL',
+					'/**/favicon.ico':                'ANY_CHANNEL',
+					'/dbconsole/**':         		  'REQUIRES_SECURE_CHANNEL',
+					'/register/**':                   'REQUIRES_SECURE_CHANNEL'
+				]
+			}
 			
 			// when annotation is used these are extra static rules in addition to those done via annotations
 			controllerAnnotations.staticRules = [
