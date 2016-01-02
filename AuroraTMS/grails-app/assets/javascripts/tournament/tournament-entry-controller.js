@@ -439,6 +439,7 @@
 		$scope.selectMembership = function (option) {
 			console.log ('selecting membership option ' + option.membershipName);
 			$scope.selectedMembershipOption = option;
+			$scope.updateSummary();
 		}
 		
 		//----------------------------------------------------------------------------------------------------------------------------------
@@ -472,7 +473,8 @@
 			// membership
 			if ($scope.selectedMembershipOption.fee != 0) {
 				var membershipItems = [];
-				membershipItems.push ({name: $scope.selectedMembershipOption.membershipName, price: $scope.selectedMembershipOption.fee});
+				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
+				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});
 				currentItems.push({group: 'USATT Membership', items: membershipItems});
 				grandTotal += $scope.selectedMembershipOption.fee;
 			}
