@@ -12,7 +12,9 @@
 <link rel="stylesheet"
 	href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic" />
 <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet"></head>
+      rel="stylesheet">
+<script type="text/javascript" src="https://js.stripe.com/v2/"></script>
+      </head>
 <body ng-app="auroraTmsApp" layout="column" ng-controller="MenuController" class="ng-cloak">
 	<md-toolbar layout="row">
 	<div class="md-toolbar-tools">

@@ -80,16 +80,18 @@
 		            url: '/membership',
 					templateUrl : 'assets/partials/tournament/entry/entry-membership.html',
 		        })
-		        // url will be /form/payment
-		        // url will be /form/interests
+		        // url will be /form/invoice
 		        .state('home.tournamentEntry.invoice', {
 		        	url: '/invoice',
 		        	templateUrl : 'assets/partials/tournament/entry/entry-invoice.html',
 		        })
-		        // url will be /form/interests
 		        .state('home.tournamentEntry.payment', {
-		            url: '/payment',
-					templateUrl : 'assets/partials/tournament/entry/entry-payment.html',
+		        	url: '/payment',
+		        	templateUrl : 'assets/partials/tournament/entry/entry-payment.html',
+		        })
+		        .state('home.tournamentEntry.completed', {
+		            url: '/confirmation',
+					templateUrl : 'assets/partials/tournament/entry/entry-completed.html',
 		        });
 			} ])
 			
@@ -530,6 +532,69 @@
 				isLate = moment(today).isAfter(lateEntryStartDate, 'day');
 			}
 			return isLate;
+		}
+		
+		
+		//---------------------------------------------------------------------------------------------------------------------------------
+		// payments/refunds
+		//---------------------------------------------------------------------------------------------------------------------------------
+		$scope.card = {
+				number: null,
+				cvc: null,
+				expiration_month: null,
+				expiration_year: null
+		}
+		
+		// error message from token creation
+		$scope.error = null;
+
+		//
+		// handler for token creation
+		//
+		$scope.stripeResponseHandler = function (status, response) {
+			console.log ('in stripeResponseHandler');
+			if (response.error) {
+			    // Show the errors on the form
+				$scope.error = response.error.message;
+				console.log ('error = ' + $scope.error);
+			    //$form.find('button').prop('disabled', false);
+			  } else {
+			    // response contains id and card, which contains additional card details
+			    var token = response.id;
+			    console.log ('token = ' + token);
+			    
+			    $state.go ('home.tournamentEntry.completed');
+//			    // Insert the token into the form so it gets submitted to the server
+//			    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+//			    // and submit
+//			    $form.get(0).submit();
+			  }			
+		}
+		
+		$scope.performTransaction = function (browserEvent) {
+			browserEvent.preventDefault();
+			
+			// disable the button to prevent multiple submission
+			$scope.error = null;
+			
+			// validate data
+			var validNumber = Stripe.card.validateCardNumber ($scope.card.number);
+			var validCVC = Stripe.card.validateCVC($scope.card.cvc);
+			var validExpiration = Stripe.card.validateExpiry($scope.card.expiration_month, $scope.card.expiration_year);
+			if (validNumber && validCVC && validExpiration) {
+				// This identifies your website in the createToken call below
+				  Stripe.setPublishableKey($scope.tournament.stripeKey);
+				  
+				  // create token
+				  Stripe.card.createToken({
+					  number: $scope.card.number,
+					  cvc: $scope.card.cvc,
+					  exp_month: $scope.card.expiration_month,
+					  exp_year:  $scope.card.expiration_year
+					}, $scope.stripeResponseHandler);
+			} else {
+				
+			}
 		}
 	} 
 	])

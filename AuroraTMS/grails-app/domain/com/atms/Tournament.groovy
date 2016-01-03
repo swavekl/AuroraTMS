@@ -48,6 +48,9 @@ class Tournament {
 //	double stdAdultSEFee
 //	double stdJuniorSEFee
 	
+	// stripe key used for charging/refunding
+	String stripeKey
+	
 	static hasMany = [events:Event, tournamentEntries: TournamentEntry]
 
     static constraints = {
@@ -66,6 +69,7 @@ class Tournament {
 //		checkMailZipCode blank : true, nullable: true
 		tablesCount min: 0
 		adminFee scale: 2, min: 0f
-		lateEntryFee scale: 2, min: 0f 
+		lateEntryFee scale: 2, min: 0f
+		stripeKey blank: false 
     }
 }

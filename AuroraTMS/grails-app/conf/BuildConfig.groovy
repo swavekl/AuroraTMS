@@ -78,7 +78,7 @@ grails.project.dependency.resolution = {
 			excludes 'ehcache-core'
 		}
 		compile "org.grails.plugins:mysql-connectorj:5.1.22.1"
-		compile "org.grails.plugins:stripe:2.8"
+		//compile "org.grails.plugins:stripe:2.8"
 		
         runtime ":database-migration:1.4.0"
         runtime ":jquery:1.11.1"
