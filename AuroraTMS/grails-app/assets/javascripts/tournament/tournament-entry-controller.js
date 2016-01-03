@@ -470,8 +470,8 @@
 			currentItems.push({group: 'Events', items: eventItems});
 			grandTotal = eventsTotal;
 
-			// membership
-			if ($scope.selectedMembershipOption.fee != 0) {
+			// membership (only update this if we are on the membership options page and membership expired)
+			if ($scope.membershipExpired && $scope.getCurrentStepIndex() == 1) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
 				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});

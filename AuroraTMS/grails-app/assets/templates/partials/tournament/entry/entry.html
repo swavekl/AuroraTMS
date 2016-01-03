@@ -1,9 +1,10 @@
 <div layout="column" layout-fill>
-<md-content>
+<md-content flex>
 <div id="entry-form-view" ui-view></div>
 </md-content>
 <md-toolbar layout="row">
 <md-button ng-show="!isFirstStep()" ng-click="prevStep();">Prev</md-button>
 <span flex></span>
-<md-button ng-show="!isLastStep()" ng-click="nextStep();">Next</md-button></md-toolbar>
+<md-button ng-show="!isLastStep()" ng-click="nextStep();">Next</md-button>
+</md-toolbar>
 </div>
