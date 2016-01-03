@@ -172,6 +172,7 @@ log4j.main = {
 
 grails.plugin.springsecurity.portMapper.httpPort = 8080
 grails.plugin.springsecurity.portMapper.httpsPort = 8443
+grails.plugin.springsecurity.auth.forceHttps = true
 
 // Added by the Spring Security Core plugin:
 grails {
@@ -193,7 +194,6 @@ grails {
 				ROLE_TOURNAMENT_DIRECTOR > ROLE_USER
 				'''
 
-				
 			secureChannel {
 				useHeaderCheckChannelSecurity = true
 //				secureHeaderName = 'X-FORWARDED-PROTO'
@@ -212,7 +212,8 @@ grails {
 					'/**/images/**':                  'ANY_CHANNEL',
 					'/**/favicon.ico':                'ANY_CHANNEL',
 					'/dbconsole/**':         		  'REQUIRES_SECURE_CHANNEL',
-					'/register/**':                   'REQUIRES_SECURE_CHANNEL'
+					'/register/**':                   'REQUIRES_SECURE_CHANNEL',
+					'/**':                            'REQUIRES_SECURE_CHANNEL'
 				]
 			}
 			
