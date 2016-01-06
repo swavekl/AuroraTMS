@@ -1,98 +1,106 @@
-<div layout="column" layout-fill layout-align="center start">
-<md-toolbar>
-      <div class="md-toolbar-tools">
-          <h3 class="title"><span>Tournament Details</span></h3>
-      </div>
-<md-button class="md-fab md-fab-top-right" aria-label="Enter Tournament"
-	ng-click="enterTournament(tournament.id, $event)"> <ng-md-icon
-	icon="person_add"></ng-md-icon> </md-button> 
-</md-toolbar>
+<div layout="column" layout-fill> <!-- layout-align="center start">  -->
+	<md-toolbar>
+		<div class="md-toolbar-tools">
+		    <h3 class="title"><span>Tournament Details</span></h3>
+		</div>
+		<md-button class="md-fab md-fab-top-right" aria-label="Enter Tournament" ng-click="enterTournament(tournament.id, $event)">
+			<ng-md-icon icon="person_add"></ng-md-icon>
+		</md-button> 
+	</md-toolbar>
 
-<md-content flex layout-fill layout-padding>
+	<md-content flex layout-padding> <!--  layout-fill> -->
 
-<div layout-gt-md="row" layout-sm="column" layout-fill layout-wrap>
-<div flex-gt-md="100" flex>
- 	<h2 class="md-headline">{{tournament.name}}</h2>
-	<p class="md-title">
-		<span ng-show="startDateText == endDateText">{{
-			tournament.startDate | date }} </span> <span
-			ng-show="startDateText != endDateText" date-range
-			start-date="{{startDateText}}" end-date="{{endDateText}}"> </span>&nbsp;&nbsp;
-		<span ng-repeat="n in tournament.starLevel | range"> <ng-md-icon
-				icon="star" size="16"></ng-md-icon>
-		</span>
-	</p>
-</div>
-<md-divider></md-divider>
+		<div layout-gt-md="row" layout-sm="column"> <!--  layout-fill layout-wrap> -->
 
-	<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
-		<div layout="row" style="border: 0px solid red;">
-			<div flex="80"  style="border: 0px solid green;">
-				<h2 class="md-subhead">Venue</h2>
-				<p>
-					{{ tournament.venue}}<br />{{ tournament.address}}<br />{{
-					tournament.city }}, {{tournament.state}}
+			<div flex-gt-md="100" flex>
+			 	<h2 class="md-headline">{{tournament.name}}</h2>
+				<p class="md-title">
+					<span ng-show="startDateText == endDateText">{{
+						tournament.startDate | date }} </span> <span
+						ng-show="startDateText != endDateText" date-range
+						start-date="{{startDateText}}" end-date="{{endDateText}}"> </span>&nbsp;&nbsp;
+					<span ng-repeat="n in tournament.starLevel | range">
+						<ng-md-icon icon="star" size="16"></ng-md-icon>
+					</span>
 				</p>
 			</div>
-			<div flex="20"><br/><br/>&nbsp;
-				<ng-md-icon icon="directions" size="40"></ng-md-icon>
-			</div>
-		</div>
-	</div>
+		</div>	
 
-	<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
-		<div layout="row"  style="border: 0px solid red;">
-			<div flex="80"  style="border: 0px solid green;">
-				<h2 class="md-subhead">Contact Info</h2>
-				<p>
-					{{ tournament.contactName }} <br />{{ tournament.contactPhone}}<br />{{tournament.contactEmail}}
-				</p>
-			</div>
-			<div flex="20"><br/><br/>&nbsp;
-				<ng-md-icon icon="phone" size="40"></ng-md-icon>
-			</div>
-		</div>
-	</div>
-
-	<div flex-md="100" flex-gt-md="33" flex style="border: 0px solid blue;">
-		<div layout="row"  style="border: 0px solid red;">
-			<div flex="80"  style="border: 0px solid green;">
-				<h2 class="md-subhead">Important Dates</h2>
-				<p>
-					{{ tournament.ratingCutoffDate | date:'MMM, dd yyyy' }} - Event Eligibility Ratings<br />
-					{{ tournament.lateEntryStartDate | date:'MMM, dd yyyy' }} - Late Entry Start Date<br />
-					{{ tournament.entryCutoffDate | date:'MMM, dd yyyy' }} - Registration Deadline<br />
-				</p>
-			</div>
-			<div flex="20"><br/><br/>&nbsp;
-				<ng-md-icon icon="schedule" size="40"></ng-md-icon>
-			</div>
-		</div>
-	</div>
-
- 	<div flex-gt-md="100" flex>
 		<md-divider></md-divider>
-		<h3 class="md-subtitle">Events</h3>
-		<md-list> <md-list-item class="md-3-line"
-			ng-repeat="event in eventInfoList">
-		<div hide-gt-sm class="md-list-item-text">
-			<h3>{{event.name}}</h3>
-			<h4>{{event.eventDateTime}}</h4>
-			<h4>Players / Free Spots: {{event.players }} /
-				{{event.maxPlayers - event.players}}</h4>
+
+		<div layout-gt-md="row" layout-sm="column">		
+			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
+				<div layout="row" style="border: 0px solid red;">
+					<div flex="80"  style="border: 0px solid green;">
+						<h2 class="md-subhead">Venue</h2>
+						<p>
+							{{ tournament.venue}}<br />{{ tournament.address}}<br />{{
+							tournament.city }}, {{tournament.state}}
+						</p>
+					</div>
+					<div flex="20"><br/><br/>&nbsp;
+						<ng-md-icon icon="directions" size="40"></ng-md-icon>
+					</div>
+				</div>
+			</div>
+		
+			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
+				<div layout="row"  style="border: 0px solid red;">
+					<div flex="80"  style="border: 0px solid green;">
+						<h2 class="md-subhead">Contact Info</h2>
+						<p>
+							{{ tournament.contactName }} <br />{{ tournament.contactPhone}}<br />{{tournament.contactEmail}}
+						</p>
+					</div>
+					<div flex="20"><br/><br/>&nbsp;
+						<ng-md-icon icon="phone" size="40"></ng-md-icon>
+					</div>
+				</div>
+			</div>
+		
+			<div flex-md="100" flex-gt-md="33" flex style="border: 0px solid blue;">
+				<div layout="row"  style="border: 0px solid red;">
+					<div flex="80"  style="border: 0px solid green;">
+						<h2 class="md-subhead">Important Dates</h2>
+						<p>
+							{{ tournament.ratingCutoffDate | date:'MMM, dd yyyy' }} - Event Eligibility Ratings<br />
+							{{ tournament.lateEntryStartDate | date:'MMM, dd yyyy' }} - Late Entry Start Date<br />
+							{{ tournament.entryCutoffDate | date:'MMM, dd yyyy' }} - Registration Deadline<br />
+						</p>
+					</div>
+					<div flex="20"><br/><br/>&nbsp;
+						<ng-md-icon icon="schedule" size="40"></ng-md-icon>
+					</div>
+				</div>
+			</div>
 		</div>
-		<div hide-sm class="md-list-item-text">
-			<h3>{{event.name}} - {{event.eventDateTime}} - 
-			Players / Free Spots: {{event.players }} /
-				{{event.maxPlayers - event.players}}</h3>
+		
+		<div layout-gt-md="row" layout-sm="column">					
+		 	<div flex-gt-md="100" flex>
+				<md-divider></md-divider>
+				<h3 class="md-subtitle">Events</h3>
+				<md-list> <md-list-item class="md-3-line"
+					ng-repeat="event in eventInfoList">
+				<div hide-gt-sm class="md-list-item-text">
+					<h3>{{event.name}}</h3>
+					<h4>{{event.eventDateTime}}</h4>
+					<h4>Players / Free Spots: {{event.players }} /
+						{{event.maxPlayers - event.players}}</h4>
+				</div>
+				<div hide-sm class="md-list-item-text">
+					<h3>{{event.name}} - {{event.eventDateTime}} - 
+					Players / Free Spots: {{event.players }} /
+						{{event.maxPlayers - event.players}}</h3>
+				</div>
+				<ng-md-icon icon="expand_more" size="40"></ng-md-icon>
+				<md-divider></md-divider> 
+				</md-list-item></md-list>
+			</div>
 		</div>
-		<ng-md-icon icon="expand_more" size="40"></ng-md-icon>
-		<md-divider></md-divider> 
-		</md-list-item></md-list>
-	</div>
-	
-	<div flex-gt-sm="100" flex-sm="1">Total Registered Players {{totalPlayers}}</div>
-	
-</div>
- </md-conent>
+		
+		<div layout-gt-md="row" layout-sm="column">					
+			<div flex-gt-sm="100" flex-sm="1">Total Registered Players {{totalPlayers}}</div>
+		</div>
+				
+	</md-conent>
 </div>
