@@ -1,32 +1,95 @@
 <div layout="column" layout-fill ng-cloak>
-<md-content><div>Payment</div>
-<div>Total: {{ invoice.balanceDue | currency }}</div>
-<form action="" method="POST" id="payment-form">
-  <span class="payment-errors">{{ error }}</span>
+	<md-content flex layout-padding>
+	<div layout-gt-sm="row">Payment</div>
+	<div layout-gt-sm="row">Total: {{ invoice.balanceDue | currency }}</div>
+	<form action="" method="POST" id="payment-form">
+		<span class="payment-errors">{{ error }}</span>
 
-  <div class="form-row">
-    <label>
-      <span>Card Number</span>
-      <input type="text" size="20" data-stripe="number" ng-model="card.number"/>
-    </label>
-  </div>
+		<div layout-gt-sm="row">
+			<md-input-container class="md-block">
+				<label>First Name</label>
+				<input type="text" size="50" data-stripe="firstname" ng-model="card.firstname" required />
+			</md-input-container>
+			<md-input-container class="md-block">
+				<label>Last Name</label>
+				<input type="text" size="50" data-stripe="lastname" ng-model="card.lastname" required />
+			</md-input-container>
+		</div>
 
-  <div class="form-row">
-    <label>
-      <span>CVC</span>
-      <input type="text" size="4" data-stripe="cvc" ng-model="card.cvc"/>
-    </label>
-  </div>
+<!-- 		<div layout-gt-sm="row"> -->
+<!-- 			<label><strong>Billing Address</strong></label> -->
+<!-- 		</div> -->
 
-  <div class="form-row">
-    <label>
-      <span>Expiration (MM/YYYY)</span>
-      <input type="text" size="2" data-stripe="exp-month" ng-model="card.expiration_month"/>
-    </label>
-    <span> / </span>
-    <input type="text" size="4" data-stripe="exp-year" ng-model="card.expiration_year"/>
-  </div>
+<!-- 		<div layout-gt-sm="row"> -->
+<!-- 			<md-input-container class="md-block"> -->
+<!-- 				<label>Address</label> -->
+<!-- 				<input type="text" size="255" data-stripe="address" ng-model="card.address" required /> -->
+<!-- 			</md-input-container> -->
+<!-- 		</div> -->
 
-  <button type="submit" ng-click="performTransaction($event)"  class="md-raised md-primary">Submit Payment</button>
-</form>
-</md-content>
+<!-- 		<div layout-gt-sm="row"> -->
+<!-- 			<md-input-container class="md-block"> -->
+<!-- 				<label>City</label> -->
+<!-- 				<input type="text" size="100" data-stripe="city" ng-model="card.city" required /> -->
+<!-- 			</md-input-container> -->
+<!-- 			<md-input-container class="md-block"> -->
+<!-- 				<label>State</label> -->
+<!-- 				<input type="text" size="2" data-stripe="state" ng-model="card.state" required /> -->
+<!-- 			</md-input-container> -->
+<!-- 			<md-input-container class="md-block"> -->
+<!-- 				<label>Zip Code</label> -->
+<!-- 				<input type="text" size="10" data-stripe="zip" ng-model="card.zip" required /> -->
+<!-- 			</md-input-container> -->
+<!-- 		</div> -->
+
+		<div class="form-row">
+			<md-input-container> <label>Card Number</label>
+			<input type="text" size="20" data-stripe="number"
+				ng-model="card.number" required /> </md-input-container>
+		</div>
+
+		<div class="form-row">
+			<md-input-container> <label>CVC</label> <input
+				type="text" size="4" data-stripe="cvc" ng-model="card.cvc" required />
+			</md-input-container>
+		</div>
+
+		<div class="form-row">
+			<md-input-container> <label>Expiration
+				(MM/YYYY)</label> <input type="text" size="2" data-stripe="exp-month"
+				ng-model="card.expiration_month" required /> </md-input-container>
+			/
+			<md-input-container> <input type="text" size="4"
+				data-stripe="exp-year" ng-model="card.expiration_year" required /> </md-input-container>
+		</div>
+
+		<div class="form-row">
+			<md-input-container>
+			<button type="submit" ng-click="performTransaction($event)"
+				class="md-raised md-primary">Submit Payment</button>
+			</md-input-container>
+		</div>
+
+
+		<!-- 		<div class="form-row"> -->
+		<!-- 			<label> <span>Card Number</span> -->
+		<!-- 			<input type="text" size="20" data-stripe="number" ng-model="card.number" /> -->
+		<!-- 			</label> -->
+		<!-- 		</div> -->
+
+		<!-- 		<div class="form-row"> -->
+		<!-- 			<label> <span>CVC</span> <input type="text" size="4" data-stripe="cvc" ng-model="card.cvc" /> -->
+		<!-- 			</label> -->
+		<!-- 		</div> -->
+
+		<!-- 		<div class="form-row"> -->
+		<!-- 			<label> <span>Expiration (MM/YYYY)</span> <input type="text" -->
+		<!-- 				size="2" data-stripe="exp-month" ng-model="card.expiration_month" /> -->
+		<!-- 			</label> <span> / </span> <input type="text" size="4" data-stripe="exp-year" -->
+		<!-- 				ng-model="card.expiration_year" /> -->
+		<!-- 		</div> -->
+
+		<!-- 		<button type="submit" ng-click="performTransaction($event)" class="md-raised md-primary">Submit Payment</button> -->
+	</form>
+	</md-content>
+</div>
