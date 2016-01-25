@@ -53,7 +53,7 @@ class EventEntryService {
 	EventEntry create(EventEntry eventEntry, Map params) {
 		//		EventEntry eventEntryEntry = new eventEntry(params)
 		eventEntry.save(flush: true)
-		println "granting ownership of Event Entry to user " + springSecurityService.authentication.name
+//		println "granting ownership of Event Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
 		
 		// Grant the current principal administrative permission
@@ -86,7 +86,7 @@ class EventEntryService {
 		def currentPrincipal = springSecurityService.authentication.name
 		tournamentDirectors.each {
 			if (it.username != currentPrincipal) {
-				println 'granting access to eventEntry to TOURNAMENT_DIRECTOR" ' + it.username
+//				println 'granting access to eventEntry to TOURNAMENT_DIRECTOR" ' + it.username
 				// check if this TD created it
 				addPermission eventEntry, it.username, BasePermission.ADMINISTRATION
 			}
@@ -96,7 +96,7 @@ class EventEntryService {
 		def admins = SecUserSecRole.findAllBySecRole(adminRole).secUser
 		admins.each {
 			if (it.username != currentPrincipal) {
-				println 'granting access to eventEntry to ADMIN ' + it.username
+//				println 'granting access to eventEntry to ADMIN ' + it.username
 				addPermission eventEntry, it.username, BasePermission.ADMINISTRATION
 			}
 		}

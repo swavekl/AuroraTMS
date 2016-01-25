@@ -150,6 +150,7 @@
 			$scope.steps.push ('home.tournamentEntry.membership');
 		$scope.steps.push ('home.tournamentEntry.invoice');
 		$scope.steps.push ('home.tournamentEntry.payment');
+//		$scope.steps.push ('home.tournamentEntry.completed');
 		
 		$scope.getCurrentStepIndex = function () {
 			var curState = $state.current.name;
@@ -454,7 +455,8 @@
 				currentItems: [], 
 				grandTotal: 0, 
 				previousTransactionsItems: [], 
-				balanceDue: 0};
+				balanceDue: 0,
+				actionLabel: 'Balance Due'};
 		$scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00}, {paymentDate: "12/25/2015", amount: -20.00}];
 		
 		$scope.updateSummary = function () {
@@ -518,6 +520,7 @@
 			
 			$scope.invoice.previousTransactionsItems = previousTransactionItems;
 			$scope.invoice.balanceDue = grandTotal - previousTransactionsTotal;
+			$scope.invoice.actionLabel = ($scope.invoice.balanceDue >= 0) ? "Balance Due" : 'Refund Due';
 			
 		}
 		
@@ -539,20 +542,25 @@
 		// payments/refunds
 		//---------------------------------------------------------------------------------------------------------------------------------
 		$scope.card = {
-				number: null,
-				cvc: null,
-				expiration_month: null,
-				expiration_year: null
+				number: "4242424242424242",
+				cvc: "123",
+				expiration_month: 1,
+				expiration_year: 2018
 		}
 		
 		// error message from token creation
 		$scope.error = null;
-
+		
+		// button pressed to pay or get refund which was disabled
+		$scope.paymentRefundButton = null;
+		
 		//
 		// handler for token creation
 		//
 		$scope.stripeResponseHandler = function (status, response) {
 			console.log ('in stripeResponseHandler');
+			
+			$scope.paymentRefundButton.disabled = false; 
 			if (response.error) {
 			    // Show the errors on the form
 				$scope.error = response.error.message;
@@ -571,8 +579,12 @@
 			  }			
 		}
 		
-		$scope.performTransaction = function (browserEvent) {
+		$scope.performPayment = function (browserEvent) {
 			browserEvent.preventDefault();
+			
+			// disable buttons to prevent double submittal
+			browserEvent.target.disabled = true;
+			$scope.paymentRefundButton = browserEvent.target; 
 			
 			// disable the button to prevent multiple submission
 			$scope.error = null;
@@ -593,8 +605,44 @@
 					  exp_year:  $scope.card.expiration_year
 					}, $scope.stripeResponseHandler);
 			} else {
+				$scope.error = "";
+				if (!validNumber)
+					$scope.error += "Invalid number"
+
+				if (!validCVC) {
+					$scope.error += ($scope.error != "") ? ", " : "";
+					$scope.error += "Invalid CVC"
+				}
 				
+				if (!validExpiration) {
+					$scope.error += ($scope.error != "") ? ", " : "";
+					$scope.error += "Invalid expiration date";
+				}
 			}
+		}
+		
+		//
+		// issue refund
+		//
+		$scope.performRefund = function (browserEvent) {
+			browserEvent.preventDefault();
+			
+			// disable buttons to prevent double submittal
+			browserEvent.target.disabled = true;
+			$scope.paymentRefundButton = browserEvent.target; 
+			
+			// disable the button to prevent multiple submission
+			$scope.error = null;
+			
+			console.log ('performing refund of ' + $scope.invoice.balanceDue);
+			// now go to this
+		    $state.go ('home.tournamentEntry.completed');
+		}
+		
+		$scope.viewTournament = function (browserEvent) {
+			browserEvent.preventDefault();
+			var params = {id: $scope.tournament.id};
+			$state.go('home.tournamentView', params);
 		}
 	} 
 	])

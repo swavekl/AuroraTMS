@@ -1,10 +1,29 @@
 <div layout="column" layout-fill ng-cloak>
 	<md-content flex layout-padding>
+<<<<<<< Upstream, based on origin/master
 	<div layout-gt-sm="row">Payment</div>
 	<div layout-gt-sm="row">Total: {{ invoice.balanceDue | currency }}</div>
 	<form action="" method="POST" id="payment-form">
 		<span class="payment-errors">{{ error }}</span>
+=======
+	<div ng-if="invoice.balanceDue == 0" layout-gt-sm="row">You have no balance so your changes are confirmed</div>
+	<form action="" method="POST" id="payment-form">
+		<div ng-if="invoice.balanceDue > 0" layout-gt-sm="row">Pay now: {{ invoice.balanceDue | currency }}</div>
+		<span class="payment-errors">{{ error }}</span>
+ 		<div class="form-row" ng-if="invoice.balanceDue > 0">
+			<md-input-container md-is-error="payment-form.number.$invalid && !payment-form.number.$pristine"> 
+			<label>Card Number</label>
+			<input type="text" size="20" data-stripe="number" id="number"
+				ng-model="card.number" required min-length="16" /> 
+				<div ng-messages="payment-form.number.$error" ng-show="payment-form.number.$dirty">
+					<div ng-message="required">Credit card number is required.</div>
+					<div ng-message="min-length">Credit card is invalid</div>
+				</div>
+			</md-input-container>
+		</div>
+>>>>>>> 9d0ab76 added ability to perform refunds and returning to the tournament page
 
+<<<<<<< Upstream, based on origin/master
 		<div layout-gt-sm="row">
 			<md-input-container class="md-block">
 				<label>First Name</label>
@@ -14,8 +33,26 @@
 				<label>Last Name</label>
 				<input type="text" size="50" data-stripe="lastname" ng-model="card.lastname" required />
 			</md-input-container>
+=======
+		<div class="form-row" ng-if="invoice.balanceDue > 0">
+			<md-input-container> <label>CVC</label> <input
+				type="text" size="4" data-stripe="cvc" ng-model="card.cvc" required />
+			</md-input-container>
+			<md-input-container> <label nowrap="true">Expiration Date</label>
+			 <input type="text" size="2" data-stripe="exp-month"
+				ng-model="card.expiration_month" required /> </md-input-container>
+			<md-input-container md-is-error="payment-form.exp-year.$invalid && !payment-form.exp-year.$pristine">
+				<label>Year (YYYY)</label> 
+				<input type="text" size="4" data-stripe="exp-year" id="exp-year" ng-model="card.expiration_year" required pattern="\d{4}"/>
+				<div ng-messages="payment-form.exp-year.$error" ng-show="payment-form.exp-year.$dirty">
+					<div ng-message="required">Year is required.</div>
+					<div ng-message="pattern">Year is invalid</div>
+				</div>
+			 </md-input-container>
+>>>>>>> 9d0ab76 added ability to perform refunds and returning to the tournament page
 		</div>
 
+<<<<<<< Upstream, based on origin/master
 <!-- 		<div layout-gt-sm="row"> -->
 <!-- 			<label><strong>Billing Address</strong></label> -->
 <!-- 		</div> -->
@@ -90,6 +127,19 @@
 		<!-- 		</div> -->
 
 		<!-- 		<button type="submit" ng-click="performTransaction($event)" class="md-raised md-primary">Submit Payment</button> -->
+=======
+		<div class="form-row">
+			<md-input-container>
+			<button type="submit" ng-if="invoice.balanceDue > 0" ng-click="performPayment($event)"
+				class="md-raised md-primary">Pay Now</button>
+			</md-input-container>
+			<div ng-if="invoice.balanceDue < 0" layout-gt-sm="row">Get refund of: {{ invoice.balanceDue | currency }}</div>
+			<md-input-container>
+			<button type="submit" ng-if="invoice.balanceDue < 0" ng-click="performRefund($event)"
+				class="md-raised md-primary">Get Refund Now</button>
+			</md-input-container>
+		</div>
+>>>>>>> 9d0ab76 added ability to perform refunds and returning to the tournament page
 	</form>
 	</md-content>
 </div>
