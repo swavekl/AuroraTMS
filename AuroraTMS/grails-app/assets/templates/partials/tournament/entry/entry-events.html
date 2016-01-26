@@ -16,7 +16,7 @@
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
 					{{entry.fee | currency }}</h3>
 				</div>
-			  <md-button class="md-fab md-mini md-primary" aria-label="Withdraw from Event" ng-click="withdrawFromEvent $event)">
+			  <md-button class="md-fab md-mini md-primary" aria-label="Withdraw from Event" ng-click="withdrawFromEvent(entry, $event)">
 	          <ng-md-icon icon="remove_circle"></ng-md-icon>
 	          <md-tooltip md-direction="left">Withdraw from Event</md-tooltip>
 	          </md-button>
