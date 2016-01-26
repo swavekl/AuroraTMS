@@ -5,7 +5,7 @@
 
   <md-content>
   <md-subheader class="md-primary">Events You Entered</md-subheader>
-      <md-list layout-padding>
+      <md-list layout-padding layout-margin>
         <md-list-item class="md-3-line" ng-repeat="entry in enteredEventsList">
 				<div hide-gt-sm class="md-list-item-text">
 					<h3>{{entry.eventName}}</h3>
@@ -16,17 +16,21 @@
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
 					{{entry.fee | currency }}</h3>
 				</div>
+			  <md-button class="md-fab md-mini md-primary" aria-label="Withdraw from Event" ng-click="withdrawFromEvent $event)">
+	          <ng-md-icon icon="remove_circle"></ng-md-icon>
+	          <md-tooltip md-direction="left">Withdraw from Event</md-tooltip>
+	          </md-button>
 				
-	          <ng-md-icon icon="remove_circle" size="48" ng-click="withdrawFromEvent(entry, $event)">
-	          	<md-tooltip>Withdraw from event</md-tooltip> 
-	          </ng-md-icon>
+<!-- 	          <ng-md-icon icon="remove_circle" size="48" ng-click="withdrawFromEvent(entry, $event)"> -->
+<!-- 	          	<md-tooltip>Withdraw from event</md-tooltip>  -->
+<!-- 	          </ng-md-icon> -->
 <!--    			 <md-button class="md-icon-button" aria-label="Withdraw from Event" ng-click="withdrawFromEvent(entry, $event)">
 	        </md-button>
  -->        <md-divider></md-divider>
         </md-list-item>
       </md-list>
       <md-subheader class="md-primary">Events You Can Enter</md-subheader>
-      <md-list layout="column" layout-padding>
+      <md-list layout="column" layout-padding layout-margin>
         <md-list-item class="md-3-line" ng-repeat="entry in availableEventsList">
 				<div hide-gt-sm class="md-list-item-text">
 					<h3>{{entry.eventName}}</h3>
@@ -37,16 +41,20 @@
 					<h3>{{entry.eventName}} - {{entry.entryDateTime}} - 
 					{{entry.fee | currency }}</h3>
 				</div>
-	          <ng-md-icon icon="add_circle" size="48" ng-click="enterEvent(entry, $event)">
+				<!-- <ng-md-icon icon="add_circle" size="48" ng-click="enterEvent(entry, $event)">
 	          	<md-tooltip>Enter event</md-tooltip> 
-	          </ng-md-icon> 
+	          </ng-md-icon>  -->
+			  <md-button class="md-fab md-mini md-primary" aria-label="Enter Event" ng-click="enterEvent(entry, $event)">
+	          <ng-md-icon icon="add_circle"></ng-md-icon>
+	          <md-tooltip md-direction="left">Enter event</md-tooltip>
+	          </md-button>
 <!--    			 <md-button class="md-icon-button" aria-label="Enter Event" ng-click="enterEvent(entry, $event)">
 	        </md-button>
  -->        <md-divider></md-divider>
         </md-list-item>
       </md-list>
       <md-subheader class="md-warn">Events You Can't Enter</md-subheader>
-      <md-list layout="column" layout-padding>
+      <md-list layout="column" layout-padding layout-margin>
         <md-list-item class="md-3-line" ng-repeat="entry in unavailableEventsList">
 				<div hide-gt-sm class="md-list-item-text">
 					<h3>{{entry.eventName}}</h3>
