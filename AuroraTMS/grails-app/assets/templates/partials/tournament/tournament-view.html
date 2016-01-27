@@ -3,8 +3,9 @@
 		<div class="md-toolbar-tools">
 		    <h3 class="title"><span>Tournament Details</span></h3>
 		</div>
-		<md-button class="md-fab md-fab-top-right" aria-label="Enter Tournament" ng-click="enterTournament(tournament.id, $event)">
+		<md-button class="md-fab md-fab-top-right" aria-label="Enter Tournament" ng-click="enterTournament(tournament.id, $event)" ng-show="!tournamentRegistrationClosed()">
 			<ng-md-icon icon="person_add"></ng-md-icon>
+			<md-tooltip md-direction="left">Register for the Tournament</md-tooltip>
 		</md-button> 
 	</md-toolbar>
 
@@ -31,7 +32,7 @@
 		<div layout-gt-md="row" layout-sm="column">		
 			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
 				<div layout="row" style="border: 0px solid red;">
-					<div flex="80"  style="border: 0px solid green;">
+					<div flex="80" style="border: 0px solid green;">
 						<h2 class="md-subhead">Venue</h2>
 						<p>
 							{{ tournament.venue}}<br />{{ tournament.address}}<br />{{
@@ -45,8 +46,8 @@
 			</div>
 		
 			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
-				<div layout="row"  style="border: 0px solid red;">
-					<div flex="80"  style="border: 0px solid green;">
+				<div layout="row" style="border: 0px solid red;">
+					<div flex="80" style="border: 0px solid green;">
 						<h2 class="md-subhead">Contact Info</h2>
 						<p>
 							{{ tournament.contactName }} <br />{{ tournament.contactPhone}}<br />{{tournament.contactEmail}}
@@ -59,8 +60,8 @@
 			</div>
 		
 			<div flex-md="100" flex-gt-md="33" flex style="border: 0px solid blue;">
-				<div layout="row"  style="border: 0px solid red;">
-					<div flex="80"  style="border: 0px solid green;">
+				<div layout="row" style="border: 0px solid red;">
+					<div flex="80" style="border: 0px solid green;">
 						<h2 class="md-subhead">Important Dates</h2>
 						<p>
 							{{ tournament.ratingCutoffDate | date:'MMM, dd yyyy' }} - Event Eligibility Ratings<br />
@@ -89,8 +90,8 @@
 				</div>
 				<div hide-sm class="md-list-item-text">
 					<h3>{{event.name}} - {{event.eventDateTime}} - 
-					Players / Free Spots: {{event.players }} /
-						{{event.maxPlayers - event.players}}</h3>
+					Players / Free Spots: <strong>{{event.players }}</strong> /
+						<strong>{{event.maxPlayers - event.players}}</strong></h3>
 				</div>
 				<ng-md-icon icon="expand_more" size="40"></ng-md-icon>
 				<md-divider></md-divider> 
@@ -98,9 +99,25 @@
 			</div>
 		</div>
 		
-		<div layout-gt-md="row" layout-sm="column">					
-			<div flex-gt-sm="100" flex-sm="1">Total Registered Players {{totalPlayers}}</div>
+		<div layout-gt-md="row" layout-sm="column">		
+			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
+				<div layout="row" style="border: 0px solid red;">
+					<div flex="80" style="border: 0px solid green;">
+						<h2 class="md-subhead">Total Registered Players: <strong>{{totalPlayers}}</strong></h2>
+					</div>
+				</div>
+			</div>
+		
+			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;" ng-show="!tournamentRegistrationClosed()">
+				<div layout="row" style="border: 0px solid red;">
+					<div flex="80" style="border: 0px solid green;">
+							<md-button class="md-raised md-primary" aria-label="Enter Tournament" ng-click="enterTournament(tournament.id, $event)">
+								<ng-md-icon icon="person_add"></ng-md-icon>Register Now
+							</md-button>
+					</div>
+				</div>
+			</div>
 		</div>
-				
+					
 	</md-conent>
 </div>

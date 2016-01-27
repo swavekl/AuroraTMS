@@ -154,7 +154,7 @@
 		$scope.tournament.lateEntryStartDate = (tournament.lateEntryStartDate) ? new Date (tournament.lateEntryStartDate) : defaultLateEntryStartDate;
 		$scope.tournament.entryCutoffDate = (tournament.entryCutoffDate) ? new Date (tournament.entryCutoffDate) : defaultEntryCutoffDate;
 
-        // sates for venue location
+        // states for venue location
 		$scope.statesArray = [
                   			  'AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 
                   			  'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD',
@@ -252,7 +252,28 @@
 		for (var i = 0; i < $scope.eventInfoList.length; i++) {
 			$scope.totalPlayers += $scope.eventInfoList[i].players;
 		}
+		
+		// calculate total number of available event spots for the tournament
+		$scope.totalAvailableEventSpots = 0;
+		for (var i = 0; i < $scope.eventInfoList.length; i++) {
+			$scope.totalAvailableEventSpots += $scope.eventInfoList[i].maxPlayers;
+		}
 
+		// indicates if the number of sign-up players is equal to number of available tournament spots
+		$scope.maxPlayersReached = ($scope.totalPlayers == $scope.totalAvailableEventSpots);
+
+		//
+		// is the tournament closed for registration (either the number of entries reached max or sign-up cutoff date is in the past)
+		//
+		$scope.tournamentRegistrationClosed = function () {
+			var tournamentCutOffDate = ($scope.tournament.entryCutoffDate != null ? $scope.tournament.entryCutoffDate : new Date());
+			var today = new Date();
+			var isCuttOffDateReached = moment(tournamentCutOffDate).isBefore(today, 'day');
+			var isMaxNumberOfEntriesReached = $scope.maxPlayersReached;
+			
+			return (isMaxNumberOfEntriesReached || isCuttOffDateReached);
+		}
+		
 		//
 		// show details of event to be edited
 		//

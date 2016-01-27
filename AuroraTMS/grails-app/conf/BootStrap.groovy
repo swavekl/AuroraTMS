@@ -55,10 +55,10 @@ class BootStrap {
 		grantPermissions()
 
 		// create via service
-		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('01/16/2016'), endDate: df.parse('01/17/2016'), starLevel: 4)
+		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('05/16/2016'), endDate: df.parse('05/17/2016'), starLevel: 4)
 		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
 		tournament5.stripeKey = getKey()
-		tournament5.lateEntryStartDate = df.parse ('12/27/2015')
+		tournament5.lateEntryStartDate = df.parse ('04/27/2016')
 		Map params1 = [:];
 		tournamentService.create(tournament5, params1)
 		

@@ -4,12 +4,28 @@
 	</md-toolbar>
 
 	<md-content>
-		<div layout="column" layout-margin ng-show="!membershipExpired">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
-		<div layout="column" layout-margin ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }} or you are a new member.  
-		If you are a currently a member of a foreign table tennis association please select 'Tournament Pass'.</div>
+		<div layout="column" layout-margin ng-show="isNewMember">You are a new member. If you are a currently a member of a foreign table tennis association please select 'Tournament Pass'.</div>
+		<div layout="column" layout-margin ng-show="!membershipExpired && !membershipWillExpire">Your USATT membership is up to date through {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}</div>
+		<div layout="column" layout-margin ng-show="membershipExpired">Your USATT membership expired on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}.</div>
+		<div layout="column" layout-margin ng-show="membershipWillExpire">Your USATT membership will expire before the tournament on {{ userProfile.expirationDate | date : 'MMM, dd yyyy' }}. You must purchase a new membership in order to participate in this tournament.</div>
 
-		<div layout="column" layout-margin ng-show="membershipExpired">
+		<div layout="column" layout-margin ng-show="membershipExpired || membershipWillExpire">
       		<md-subheader class="md-primary">Membership Options</md-subheader>
+      		<span ng-show="!isNewMember">
+      		<md-radio-group layout="column" layout-margin ng-show="!isAdultUser()" ng-model="selectedMembershipOption.membershipType">
+				<md-radio-button ng-repeat="option in membershipOptions | filter: {availableToMembers: '1'}" ng-value="option.membershipType" aria-label="{{ option.membershipName }}" ng-click="selectMembership(option)">
+	        	${{ option.fee }} - {{ option.membershipName }}
+				</md-radio-button>
+			</md-radio-group>
+
+      		<md-radio-group layout="column" layout-margin ng-show="isAdultUser()" ng-model="selectedMembershipOption.membershipType">
+				<md-radio-button ng-repeat="option in membershipOptions | filter: {availableToAdults: '1'} | filter: {availableToMembers: '1'}" ng-value="option.membershipType" aria-label="{{ option.membershipName }}" ng-click="selectMembership(option)">
+	        	${{ option.fee }} - {{ option.membershipName }}
+				</md-radio-button>
+			</md-radio-group>
+			</span>
+
+      		<span ng-show="isNewMember">
       		<md-radio-group layout="column" layout-margin ng-show="!isAdultUser()" ng-model="selectedMembershipOption.membershipType">
 				<md-radio-button ng-repeat="option in membershipOptions" ng-value="option.membershipType" aria-label="{{ option.membershipName }}" ng-click="selectMembership(option)">
 	        	${{ option.fee }} - {{ option.membershipName }}
@@ -21,6 +37,7 @@
 	        	${{ option.fee }} - {{ option.membershipName }}
 				</md-radio-button>
 			</md-radio-group>
+			</span>
 
       		<md-subheader class="md-primary">Help</md-subheader>
       		<div layout="column" layout-margin>

@@ -119,18 +119,28 @@
 		
 		$scope.userProfile = userProfile;
 		
+		$scope.isNewMember = false;
 		$scope.membershipExpired = false;
+		$scope.membershipWillExpire = false;
+		
 		// check if new USATT member
 		if ($scope.userProfile.usattID == 0 || $scope.userProfile.usattID > 90000) {
-			$scope.membershipExpired = true;
+			$scope.isNewMember = true;
 		} else {
 			// check if expires before tournament
+			var today = new Date();
 			var tournamentDate = (tournament != null && tournament.endDate != null) ? new Date (tournament.endDate) : new Date();
 			var membershipExpirationDate = ($scope.userProfile.expirationDate) ? new Date ($scope.userProfile.expirationDate) : new Date();
+			var isExpirationDateBeforeTournamentDate = moment(membershipExpirationDate).isBefore(tournamentDate, 'day') || 
+			   										   moment(membershipExpirationDate).isSame(tournamentDate, 'day'); 
+			var isExpirationDateBeforeToday = moment(membershipExpirationDate).isBefore(today, 'day'); 
+
 			$scope.userProfile.expirationDate = membershipExpirationDate;
-			$scope.membershipExpired = moment(membershipExpirationDate).isBefore(tournamentDate, 'day') || 
-			                           moment(membershipExpirationDate).isSame(tournamentDate, 'day'); 
+			$scope.membershipExpired = isExpirationDateBeforeTournamentDate && isExpirationDateBeforeToday; 
+			$scope.membershipWillExpire = isExpirationDateBeforeTournamentDate && !isExpirationDateBeforeToday; 
 		}
+		
+		$scope.needToPayMembership = ($scope.membershipExpired || $scope.membershipWillExpire);
 		
 		var isTournamentDirector = session.isInRole ('TOURNAMENT_DIRECTOR');
 		var isAdmin = session.isInRole ('ADMIN');
@@ -146,7 +156,7 @@
 		// here is the list of steps.  Membership may not be required if it is up to date
 		$scope.steps = []
 		$scope.steps.push ('home.tournamentEntry.events');
-//		if ($scope.membershipExpired)
+//		if ($scope.needToPayMembership)
 			$scope.steps.push ('home.tournamentEntry.membership');
 		$scope.steps.push ('home.tournamentEntry.invoice');
 		$scope.steps.push ('home.tournamentEntry.payment');
@@ -423,6 +433,7 @@
 		// figure out if the current user is an adult
 		//
 		$scope.isAdultUser = function (){
+			var tournamentDate = (tournament != null && tournament.endDate != null) ? new Date (tournament.endDate) : new Date();
 			var birthdayDate = new Date($scope.userProfile.dateOfBirth);
 			var years = tournamentDate.getFullYear() - birthdayDate.getFullYear();
 
@@ -474,8 +485,8 @@
 			currentItems.push({group: 'Events', items: eventItems});
 			grandTotal = eventsTotal;
 
-			// membership (only update this if we are on the membership options page and membership expired)
-			if ($scope.membershipExpired && $scope.getCurrentStepIndex() == 1) {
+			// membership (only update this if we are on the membership options page and membership needs to be paid)
+			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
 				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});
