@@ -1,6 +1,7 @@
 <div layout="column" layout-fill ng-cloak>
 	<md-content flex layout-padding>
 	<div ng-if="invoice.balanceDue == 0" layout-gt-sm="row">You have no balance so your changes are confirmed</div>
+	<md-progress-linear md-mode="indeterminate" ng-show="transactionInProgress"></md-progress-linear>
 	<form action="" method="POST" id="payment-form">
 		<div ng-if="invoice.balanceDue > 0" layout-gt-sm="row">Pay now: {{ invoice.balanceDue | currency }}</div>
 		<span class="payment-errors">{{ error }}</span>

@@ -59,6 +59,14 @@
 							var params = {tournamentEntryId: tournamentEntryId, tournamentId: $stateParams.tournamentId};
 							return eventEntryResource.list (params).$promise;
 						},
+						
+						// charges and refunds
+						financialTransactionResource: 'financialTransactionResource',
+						financialTransactions: function (financialTransactionResource, tournamentEntry, $stateParams, session) {
+							var tournamentEntryId = (tournamentEntry.id != null) ? tournamentEntry.id : 0;
+							var params = {tournamentEntryId: tournamentEntryId};	
+							return financialTransactionResource.list (params).$promise
+						}
 
 					},
 					views : {
@@ -103,12 +111,14 @@
 			 'tournamentEntryResource', 'tournamentEntry',
 			 'userProfileResource', 'userProfile',
 			 'eventEntryResource', 'eventEntries',
+			 'financialTransactionResource', 'financialTransactions',
     function($scope, $state, session, $mdDialog,
     		tournamentResource, tournament, 
 			eventResource, events, 
     		tournamentEntryResource, tournamentEntry, 
     		userProfileResource, userProfile, 
-    		eventEntryResource, eventEntries) {
+    		eventEntryResource, eventEntries,
+    		financialTransactionResource, financialTransactions) {
 		//console.log ('in tournamentEntryController state = ' + $state.current.name);
 		// tournament entry
 		$scope.tournament = tournament;
@@ -552,6 +562,16 @@
 		//---------------------------------------------------------------------------------------------------------------------------------
 		// payments/refunds
 		//---------------------------------------------------------------------------------------------------------------------------------
+		// see FinancialTransaction.groovy Type enum
+		var CHARGE = 'Charge';
+		var REFUND = 'Refund';
+		
+		// PaymentMethod
+		var CREDITCARD = 'CreditCard';
+		var CHECK = 'Check';
+		var CASH = 'Cash';
+		var PAYPAL = 'PayPal';
+		
 		$scope.card = {
 				number: "4242424242424242",
 				cvc: "123",
@@ -565,6 +585,26 @@
 		// button pressed to pay or get refund which was disabled
 		$scope.paymentRefundButton = null;
 		
+		$scope.transactionInProgress = false;
+		
+		//
+		// called when successfully conducted charge transaction
+		//
+		$scope.successFinacialTransactionSave = function (value, responseHeaders) {
+			$scope.transactionInProgress = false;
+			//$state.go ('home.tournamentEdit', {id: $scope.tournament.id, selectedTab: 1});
+			$state.go ('home.tournamentEntry.completed');
+		}
+		
+		//
+		// called when save fails
+		//
+		$scope.errorFinancialTransactionSave = function (httpResponse) {
+			$scope.transactionInProgress = false;
+			var operation = ($scope.invoice.balanceDue >= 0) ? "Charge" : "Refund";
+			showError ($mdDialog, httpResponse, operation + " failed!");
+		}
+
 		//
 		// handler for token creation
 		//
@@ -573,6 +613,7 @@
 			
 			$scope.paymentRefundButton.disabled = false; 
 			if (response.error) {
+				$scope.transactionInProgress = false;
 			    // Show the errors on the form
 				$scope.error = response.error.message;
 				console.log ('error = ' + $scope.error);
@@ -581,12 +622,21 @@
 			    // response contains id and card, which contains additional card details
 			    var token = response.id;
 			    console.log ('token = ' + token);
-			    
-			    $state.go ('home.tournamentEntry.completed');
-//			    // Insert the token into the form so it gets submitted to the server
-//			    $form.append($('<input type="hidden" name="stripeToken" />').val(token));
-//			    // and submit
-//			    $form.get(0).submit();
+			    var amount = $scope.invoice.balanceDue * 100;
+			    var financialTransaction = {
+			    		createdDate: new Date(),
+			    		createdBy: session.getUser(),
+			    		amount: amount,
+			    		type: CHARGE,
+			    		paymentMethod: CREDITCARD,
+			    		paymentMethodIdentifier: token,
+			    		// required by resource for parameter mapping
+			    		tournamentEntryId: $scope.tournamentEntry.id,
+			    		account: {id: 1},
+			    		tournamentEntry: $scope.tournamentEntry
+			    };
+			    // initiate the transaction
+			    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);
 			  }			
 		}
 		
@@ -605,16 +655,23 @@
 			var validCVC = Stripe.card.validateCVC($scope.card.cvc);
 			var validExpiration = Stripe.card.validateExpiry($scope.card.expiration_month, $scope.card.expiration_year);
 			if (validNumber && validCVC && validExpiration) {
-				// This identifies your website in the createToken call below
-				  Stripe.setPublishableKey($scope.tournament.stripeKey);
-				  
-				  // create token
-				  Stripe.card.createToken({
-					  number: $scope.card.number,
-					  cvc: $scope.card.cvc,
-					  exp_month: $scope.card.expiration_month,
-					  exp_year:  $scope.card.expiration_year
-					}, $scope.stripeResponseHandler);
+					// This identifies your website in the createToken call
+					// below
+					var stripePublishableKey = $scope.tournament.stripeKey;
+					if (stripePublishableKey != null) {
+						  $scope.transactionInProgress = true;
+						  Stripe.setPublishableKey(stripePublishableKey);
+						  
+						  // create token
+						  Stripe.card.createToken({
+							  number: $scope.card.number,
+							  cvc: $scope.card.cvc,
+							  exp_month: $scope.card.expiration_month,
+							  exp_year:  $scope.card.expiration_year
+							}, $scope.stripeResponseHandler);
+					} else {
+						$scope.error = "missing Stripe gateway key";
+					}
 			} else {
 				$scope.error = "";
 				if (!validNumber)

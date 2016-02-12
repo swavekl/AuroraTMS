@@ -33,6 +33,28 @@ class TournamentController extends RestfulController {
 		}
         respond tournamentInstanceList, [status: OK]
     }
+	
+	/**
+	 * To protect account sensitive data clear secret key before sending
+	 * @param tournament
+	 * @return
+	 */
+	def cloneAccounts (Tournament tournament) {
+		def clonedAccounts = [] 
+		if (tournament.accounts != null) {
+			tournament.accounts.each {
+				def accountClone = new Account()
+				accountClone.id = it.id
+				accountClone.stripeSecretKey = null
+				accountClone.stripePublicKey = it.stripePublicKey
+				accountClone.gatewayType = it.gatewayType
+				accountClone.version = it.version
+				accountClone.financialTransactions = it.financialTransactions
+				clonedAccounts.add (accountClone)
+			}
+		}
+		tournament.accounts = clonedAccounts
+	}
 
     /**
      * Shows a single resource
@@ -43,6 +65,7 @@ class TournamentController extends RestfulController {
     def show() {
 		long id = params.id as Long
 		def tournament = tournamentService.show(id)
+		cloneAccounts (tournament)
         respond tournament
     }
 

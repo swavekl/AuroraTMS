@@ -15,8 +15,8 @@ class TournamentEntry {
 	// reference back to Tournament, but cascading saves and deletes
 	static belongsTo = [tournament:Tournament]
 	
-	// collection of tournament entries
-	static hasMany = [eventEntries: EventEntry]
+	// collection of tournament entries and financial transactions (payments, refunds)
+	static hasMany = [eventEntries: EventEntry, financialTransactions: FinancialTransaction]
 	
     static constraints = {
 		eligibilityRating nullable: true

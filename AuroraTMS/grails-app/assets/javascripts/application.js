@@ -42,6 +42,7 @@
 //= require dashboard
 //= require auroraTmsApp
 //= require_tree authsession
+//= require_tree resources
 //= require_tree directives
 //= require_tree filters
 

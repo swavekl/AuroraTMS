@@ -17,9 +17,15 @@ class Tournament {
 	String websiteURL
 	String blankEntryFormURL
 	
+	// eligibility ratings date 
+	// use rating as of this date to qualify for rating restricted events
 	Date ratingCutoffDate
+	// start charging late entry fees after this date
 	Date lateEntryStartDate
+	// entries close after this date
 	Date entryCutoffDate
+	// date after which refunds are not offered
+	Date refundCutoffDate
 	
 	// contact information
 	String contactName
@@ -51,7 +57,8 @@ class Tournament {
 	// stripe key used for charging/refunding
 	String stripeKey
 	
-	static hasMany = [events:Event, tournamentEntries: TournamentEntry]
+	// tournament owns events, tournamentEntries, and multiple payment accounts
+	static hasMany = [events:Event, tournamentEntries: TournamentEntry, accounts:Account]
 
     static constraints = {
 		name blank: false

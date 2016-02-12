@@ -10,6 +10,7 @@ import liquibase.util.file.FilenameUtils;
 import net.sf.ehcache.CacheManager
 
 import com.atms.Event.GenderRestriction;
+import com.atms.Account
 import com.atms.SecRole
 import com.atms.SecUser
 import com.atms.SecUserSecRole
@@ -53,11 +54,12 @@ class BootStrap {
 		createUsers()
 		loginAsAdmin()
 		grantPermissions()
+		
 
 		// create via service
 		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('05/16/2016'), endDate: df.parse('05/17/2016'), starLevel: 4)
 		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
-		tournament5.stripeKey = getKey()
+		
 		tournament5.lateEntryStartDate = df.parse ('04/27/2016')
 		Map params1 = [:];
 		tournamentService.create(tournament5, params1)
@@ -253,10 +255,15 @@ class BootStrap {
 		tournament.ratingCutoffDate = tournament.startDate - 35 
 		tournament.lateEntryStartDate = tournament.startDate - 14
 		tournament.entryCutoffDate = tournament.startDate - 7
+		tournament.refundCutoffDate = tournament.startDate - 7
 		//tournament.usattRatingFee = 5.0f
 		tournament.adminFee = 5.0f
 		tournament.lateEntryFee = 10.0f
-		tournament.stripeKey = 'abcdefg'
+		
+		def account = createAccount ()
+		tournament.accounts = []
+		tournament.accounts.add (account)
+		tournament.stripeKey = account.stripePublicKey
 	}
 
 	def importPlayerData() {
@@ -328,21 +335,31 @@ class BootStrap {
 	}
 	
 	def getKey = {
+	 }
+	
+	def createAccount = {
 		try
 		{
-			String key = "pub_key" 
+			// read the keys for encoding cc transactions
 			String propertiesFile = "C:\\grails\\data\\myprops.properties"
 			Properties prop = new Properties();
 			FileInputStream inputStream = new FileInputStream(propertiesFile)
 			prop.load(inputStream);
-			String pub_key = prop.getProperty(key);
-			return pub_key
+			String pub_key = prop.getProperty("pub_key");
+			String secret_key = prop.getProperty("secret_key");
+			
+			// temporary way to initialize payment account - later it will be done in tournament payment tab 
+			def account = new Account ()
+			account.gatewayType = Account.GatewayType.Stripe
+			account.stripePublicKey = pub_key
+			account.stripeSecretKey = secret_key
+			account.save (flush: true)
+			return account
 		}
 		catch (IOException e)
 		{
 			log.debug"Exception occured while reading properties file :"+e
 		}
-		return "abcdef"
-	 }
+	}
 
 }
