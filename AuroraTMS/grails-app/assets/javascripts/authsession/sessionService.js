@@ -10,6 +10,8 @@
     this._userProfileId = null;
     this._nextState = null;
     this._nextStateParams = null;
+    // indicates if the currently logged in user has a group such as family or college team
+    this._hasGroup = false;
 
     this.getUser = function(){
       return this._user;
@@ -56,7 +58,11 @@
     
     this.hasGroup = function () {
     	// to do
-    	return false;
+    	return this._hasGroup;
+    }
+    
+    this.setHasGroup = function (hasGroup) {
+    	this._hasGroup = hasGroup;
     }
 
     this.getAccessToken = function(){
@@ -97,6 +103,7 @@
       this.setRoles(null);
       this.setAccessToken(null);
       this.setUserProfileId(null);
+      this.setHasGroup(false);
     };
 
   }

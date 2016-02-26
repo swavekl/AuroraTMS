@@ -7,13 +7,15 @@ import org.springframework.security.acls.model.Permission
 
 import com.atms.utils.RegionStateInfo;
 
-//import grails.transaction.Transactional
-import org.springframework.transaction.annotation.Transactional
-
+import grails.transaction.Transactional
+import grails.transaction.NotTransactional
+// if you get insufficient_scope as reason for 403 you may need to change the url so that it is properly routed to your controller. e.g.
+// /api/tournaments/5/tournamententries/1/confirmentries 
+// is not routed to your expected controller because it is looking for object 'confirmentries' which may not exist.  then it says access is denied because it can't find the controller. 
+// Instead the url should be 
+// /api/tournaments/5/tournamententries/1?confirmentries=true
 @Transactional
 class EventEntryService {
-
-	static transactional = false
 
 	def aclPermissionFactory
 	def aclService
@@ -26,13 +28,13 @@ class EventEntryService {
 		addPermission eventEntry, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#eventEntry, admin)")
 	void addPermission(EventEntry eventEntry, String username, Permission permission) {
 		aclUtilService.addPermission eventEntry, username, permission
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#eventEntry, admin)")
 	void deletePermission(EventEntry eventEntry, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(eventEntry)
@@ -48,21 +50,42 @@ class EventEntryService {
 		aclService.updateAcl acl
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	EventEntry create(EventEntry eventEntry, Map params) {
-		//		EventEntry eventEntryEntry = new eventEntry(params)
-		eventEntry.save(flush: true)
-//		println "granting ownership of Event Entry to user " + springSecurityService.authentication.name
+		long eventId = eventEntry.event.id as Long;
+		// check if there is room to reserve if there is max on the tournament event
+		def event = eventEntry.event
+		def countOfEntries = count(eventId)
+		// if not respond with 'no room' error
+		if ((event.maxEntries != 0 && countOfEntries < event.maxEntries)
+			|| event.maxEntries == 0) {
+			// there is room
+			eventEntry.dateEntered = new Date()
+		} else {
+			// no room
+			return null
+		}
+		
+		println 'Saving EventEntry...'
+		long teid = eventEntry.tournamentEntry.id as Long
+		TournamentEntry tournamentEntry = TournamentEntry.get(teid)
+		tournamentEntry.addToEventEntries (eventEntry)
+		tournamentEntry.save (flush : true)
+
+		println 'Saved EventEntry with id ' + eventEntry.id  
 		def currentPrincipal = springSecurityService.authentication.name
 		
 		// Grant the current principal administrative permission
 		addPermission eventEntry, currentPrincipal, BasePermission.ADMINISTRATION
 		
 		grantAdminPermissions (eventEntry)
+
+		// return
+		eventEntry
 	}
 	
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#eventEntry, write) or hasPermission(#eventEntry, admin)")
 	void update(EventEntry eventEntry, Map params) {
 		eventEntry.save(flush: true)
@@ -70,7 +93,7 @@ class EventEntryService {
 		grantAdminPermissions(eventEntry)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#eventEntry, delete) or hasPermission(#eventEntry, admin)")
 	void delete(EventEntry eventEntry) {
 		eventEntry.delete()
@@ -138,6 +161,32 @@ class EventEntryService {
 	}
 	
 	//
+	// changes status of event entries to CONFIRMED
+	//
+	@PreAuthorize("hasRole('ROLE_USER')")
+	void confirmEventEntries (long tournamentEntryId) {
+		def eventEntries = EventEntry.where{
+			tournamentEntry.id == tournamentEntryId &&
+			status == EventEntry.EntryStatus.PENDING
+		}.list()
+
+		eventEntries.each {
+			if (it.status == EventEntry.EntryStatus.PENDING) {
+				it.status = EventEntry.EntryStatus.CONFIRMED
+			}
+		}
+
+		eventEntries.each {
+			if (it.status == EventEntry.EntryStatus.NOT_SELECTED) {
+				eventEntries.removeElement(it)
+			}
+		}
+		eventEntries.each {
+			it.save (flush: true)
+		}
+	}
+	
+	//
 	// list entered events and those that are and are not available for some reason
 	//
 	List<EventEntry> listAllStatus (long tournamentId, long tournamentEntryId) {
@@ -150,6 +199,9 @@ class EventEntryService {
 		def tournamentEntry = null
 		if (tournamentEntryId != 0) {
 			tournamentEntry = TournamentEntry.get(tournamentEntryId)
+			if (tournamentEntry.eventEntries != null) {
+				println 'tournamentEntry.eventEntries is not null'
+			}
 			tournamentEntry.eventEntries.each {
 				eventEntries.push(it)
 			}
@@ -219,6 +271,7 @@ class EventEntryService {
 	 * @param gender
 	 * @return
 	 */
+	@NotTransactional
 	void evaluateConflicts (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, int eligibilityRating, int ageYears, String gender) {
 		// ratings restrictions
 		evaluateRatingsRules (eventToEvaluate, eventEntries, eventsNotEntered, eligibilityRating)
@@ -239,6 +292,7 @@ class EventEntryService {
 	 * @param eventsNotEntered
 	 * @return
 	 */
+	@NotTransactional
 	private EventEntry findEventEntry (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered) {
 		// find event entry for this event
 		EventEntry foundEventEntry = null
@@ -271,6 +325,7 @@ class EventEntryService {
 	 * @param gender
 	 * @return
 	 */
+	@NotTransactional
 	void evaluateRatingsRules (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, int eligibilityRating) {
 		// find event entry for this event
 		EventEntry foundEventEntry = findEventEntry (eventToEvaluate, eventEntries, eventsNotEntered)
@@ -291,6 +346,7 @@ class EventEntryService {
 	 * @param eventsNotEntered
 	 * @param ageYears
 	 */
+	@NotTransactional
 	void evaluateAgeRules (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, int ageYears) {
 		if (eventToEvaluate.maxPlayerAge != 0 || eventToEvaluate.minPlayerAge != 0) {
 			// find event entry for this event
@@ -312,6 +368,7 @@ class EventEntryService {
 	 * @param eventsNotEntered
 	 * @param gender
 	 */
+	@NotTransactional
 	void evaluateGenderRules (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, Event.GenderRestriction playerGender) {
 		if (eventToEvaluate.genderRestriction != Event.GenderRestriction.NONE) {
 			EventEntry foundEventEntry = findEventEntry (eventToEvaluate, eventEntries, eventsNotEntered)
@@ -330,6 +387,7 @@ class EventEntryService {
 	 * @param eventEntries
 	 * @param eventsNotEntered
 	 */
+	@NotTransactional
 	void evaluateTimeConflicts (EventEntry eventNotEntered, List<EventEntry> eventEntries) {
 //		println "event to check time conflict " + eventNotEntered.event.name + ' has starting day ' + eventNotEntered.event.day + " time " + eventNotEntered.event.startTime
 		// check if this event has conflict with any event that is already entered
@@ -355,6 +413,7 @@ class EventEntryService {
 	 * @param eventEntries
 	 * @param eventsNotEntered
 	 */
+	@NotTransactional
 	void evaluatePrices (Event eventToEvaluate, List<EventEntry> eventEntries, List<EventEntry> eventsNotEntered, int ageYears) {
 		EventEntry foundEventEntry = findEventEntry (eventToEvaluate, eventEntries, eventsNotEntered)
 		if (foundEventEntry != null) {

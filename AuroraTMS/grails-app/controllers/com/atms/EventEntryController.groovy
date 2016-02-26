@@ -1,6 +1,9 @@
 package com.atms
 
 import static org.springframework.http.HttpStatus.*
+
+import com.sun.org.apache.xalan.internal.xsltc.compiler.ForEach;
+
 import grails.rest.RestfulController;
 import grails.transaction.Transactional
 import grails.plugin.springsecurity.annotation.Secured
@@ -89,25 +92,10 @@ class EventEntryController extends RestfulController {
 			return
 		}
 
-		def eventId = eventEntry.event.id;
-		// check if there is room to reserve if there is max on the tournament event
-		//def eventId = params.eventId;
-//		def event = eventService.get (eventId)
-		def event = eventEntry.event
-		
-//				def countOfEntries = eventService.countEntries(eventId)
-		def countOfEntries = eventEntryService.count(eventId)
-		// if not respond with 'no room' error
-		if ((event.maxEntries != 0 && countOfEntries < event.maxEntries)
-			|| event.maxEntries == 0) {
-			// there is room
-			eventEntry.dateEntered = new Date()
-		} else {
-			// no room
+		if (eventEntryService.create(eventEntry, params) == null) {
 			render status: NOT_ACCEPTABLE
 		}
-
-		eventEntryService.create(eventEntry, params)
+		
 		respond eventEntry, [status: CREATED]
 	}
 
@@ -128,7 +116,7 @@ class EventEntryController extends RestfulController {
 		eventEntryService.update(eventEntry, params)
 		respond eventEntry, [status: OK]
 	}
-
+	
 	@Transactional
 	@Secured(['ROLE_USER'])
 	def delete(EventEntry eventEntry) {

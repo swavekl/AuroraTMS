@@ -12,8 +12,6 @@ import grails.transaction.Transactional
 @Transactional
 class TournamentService {
 
-	static transactional = false
-
 	def aclPermissionFactory
 	def aclService
 	def aclUtilService
@@ -23,13 +21,13 @@ class TournamentService {
 		addPermission tournament, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, admin)")
 	void addPermission(Tournament tournament, String username, Permission permission) {
 		aclUtilService.addPermission tournament, username, permission
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")
 	Tournament create(Tournament tournament, Map params) {
 		//		Tournament tournament = new Tournament(params)
@@ -51,27 +49,31 @@ class TournamentService {
 	}
 
 	@PreAuthorize("hasPermission(#id, 'com.atms.Tournament', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
+	@Transactional(readOnly = true)
 	Tournament get(long id) {
 		Tournament.get id
 	}
 
 	// anyone can see a tournament
+	@Transactional(readOnly = true)
 	Tournament show(long id) {
 		Tournament.get id
 	}
 
 	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")
 	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
+	@Transactional(readOnly = true)
 	List<Tournament> listOwned(Map params) {
-//		println 'listOwned params ' + springSecurityService.authentication.name
 		Tournament.list params
 	}
 
+	@Transactional(readOnly = true)
 	int count() {
 		Tournament.count()
 	}
 
 	// anybody can use it
+	@Transactional(readOnly = true)
 	List<Tournament> list(Map params) {
 //		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
 //		println "list params " + params
@@ -114,7 +116,7 @@ class TournamentService {
 		}
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, write) or hasPermission(#tournament, admin)")
 	void update(Tournament tournament, Map params) {
 		tournament.save(flush: true)
@@ -129,7 +131,7 @@ class TournamentService {
 		}
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
 	void delete(Tournament tournament) {
 		tournament.delete()
@@ -138,7 +140,7 @@ class TournamentService {
 		aclUtilService.deleteAcl tournament
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, admin)")
 	void deletePermission(Tournament tournament, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(tournament)
@@ -153,5 +155,4 @@ class TournamentService {
 
 		aclService.updateAcl acl
 	}
-
 }

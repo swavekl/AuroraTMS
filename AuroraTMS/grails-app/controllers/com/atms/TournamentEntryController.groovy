@@ -11,9 +11,10 @@ class TournamentEntryController extends RestfulController {
 
 	def tournamentEntryService
 	def userProfileService
+	def eventEntryService
 
 	static responseFormats = ['json', 'xml']
-	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
+	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE", patch: 'PATCH']
 
 	TournamentEntryController () {
 		super(TournamentEntry, false)
@@ -73,50 +74,60 @@ class TournamentEntryController extends RestfulController {
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def save(TournamentEntry tournamenEntry) {
-		if (tournamenEntry == null) {
+	def save(TournamentEntry tournamentEntry) {
+		if (tournamentEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		tournamenEntry.validate()
-		if (tournamenEntry.hasErrors()) {
+		tournamentEntry.validate()
+		if (tournamentEntry.hasErrors()) {
 			render status: NOT_ACCEPTABLE
 			return
 		}
 
-		tournamentEntryService.create(tournamenEntry, params)
-		respond tournamenEntry, [status: CREATED]
+		tournamentEntryService.create(tournamentEntry, params)
+		respond tournamentEntry, [status: CREATED]
 	}
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def update(TournamentEntry tournamenEntry) {
-		if (tournamenEntry == null) {
+	def update(TournamentEntry tournamentEntry) {
+		if (tournamentEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		tournamenEntry.validate()
-		if (tournamenEntry.hasErrors()) {
+		tournamentEntry.validate()
+		if (tournamentEntry.hasErrors()) {
 			render status: NOT_ACCEPTABLE
 			return
 		}
 
-		tournamentEntryService.update(tournamenEntry, params)
-		respond tournamenEntry, [status: OK]
+		tournamentEntryService.update(tournamentEntry, params)
+		respond tournamentEntry, [status: OK]
 	}
+
 
 	@Transactional
 	@Secured(['ROLE_USER'])
-	def delete(TournamentEntry tournamenEntry) {
-
-		if (tournamenEntry == null) {
+	def delete(TournamentEntry tournamentEntry) {
+		if (tournamentEntry == null) {
 			render status: NOT_FOUND
 			return
 		}
 
-		tournamentEntryService.delete tournamenEntry
+		tournamentEntryService.delete tournamentEntry
 		render status: NO_CONTENT
 	}
+	
+	@Transactional
+	@Secured(['ROLE_USER'])
+	def patch (TournamentEntry tournamentEntry) {
+		//long tournamentEntryId = params.tournamentEntryId as Long
+		long tournamentEntryId = tournamentEntry.id as Long
+		eventEntryService.confirmEventEntries (tournamentEntryId)
+		render status: OK
+	}
+
 }

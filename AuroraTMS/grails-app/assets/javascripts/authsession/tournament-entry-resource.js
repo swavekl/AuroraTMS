@@ -51,7 +51,13 @@
 			'update' : {
 				method : 'PUT',
 				headers : headers
+			},
+			'confirmEntries' : {
+				method : 'PATCH',
+				headers : headers,
+				url : url + '?confirmEntries=true'
 			}
+
 		};
 
 		var tournamentEntryResource = $resource(url, {

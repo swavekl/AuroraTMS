@@ -12,6 +12,7 @@ import org.springframework.security.acls.model.Permission
 
 import grails.transaction.Transactional
 
+@Transactional
 class EventService {
 
 	def aclPermissionFactory
@@ -23,7 +24,7 @@ class EventService {
 		addPermission event, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#event, admin)")
 	void addPermission(Event event, String username, Permission permission) {
 		aclUtilService.addPermission event, username, permission
@@ -34,7 +35,7 @@ class EventService {
 		Event.get id
 	}
 
-		@Transactional
+//		@Transactional
 	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")
 	Event create(Event event, Map params) {
 		event.save(flush: true)
@@ -57,6 +58,7 @@ class EventService {
 //	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")
 //	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
 	//@Secured(['permitAll'])
+	@Transactional(readOnly=true)
 	List<Event> list(Map params) {
 		def tournamentId = params.tournamentId
 		Event.where {
@@ -68,15 +70,7 @@ class EventService {
 		Event.count()
 	}
 	
-//	int countEntries(id) {
-//		def criteria = Event.createCriteria()
-//		criteria.list {
-//			projections { count() }
-//			eq ('id', id)
-//		}
-//	}
-
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasRole('ROLE_TOURNAMENT_DIRECTOR')")
 	//@PreAuthorize("hasPermission(#event, write) or hasPermission(#event, admin)")
 	void update(Event event, Map params) {
@@ -92,7 +86,7 @@ class EventService {
 		}
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#event, delete) or hasPermission(#event, admin)")
 	void delete(Event event) {
 		event.delete()
@@ -101,7 +95,7 @@ class EventService {
 		aclUtilService.deleteAcl event
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#event, admin)")
 	void deletePermission(Event event, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(event)
@@ -116,6 +110,4 @@ class EventService {
 
 		aclService.updateAcl acl
 	}
-
-
 }

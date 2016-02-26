@@ -119,7 +119,8 @@
     		userProfileResource, userProfile, 
     		eventEntryResource, eventEntries,
     		financialTransactionResource, financialTransactions) {
-		//console.log ('in tournamentEntryController state = ' + $state.current.name);
+		// console.log ('in tournamentEntryController state = ' +
+		// $state.current.name);
 		// tournament entry
 		$scope.tournament = tournament;
 		$scope.tournamentEntry = tournamentEntry;
@@ -163,14 +164,15 @@
 			// enter yourself only
 		}
 
-		// here is the list of steps.  Membership may not be required if it is up to date
+		// here is the list of steps. Membership may not be required if it is up
+		// to date
 		$scope.steps = []
 		$scope.steps.push ('home.tournamentEntry.events');
-//		if ($scope.needToPayMembership)
+// if ($scope.needToPayMembership)
 			$scope.steps.push ('home.tournamentEntry.membership');
 		$scope.steps.push ('home.tournamentEntry.invoice');
 		$scope.steps.push ('home.tournamentEntry.payment');
-//		$scope.steps.push ('home.tournamentEntry.completed');
+// $scope.steps.push ('home.tournamentEntry.completed');
 		
 		$scope.getCurrentStepIndex = function () {
 			var curState = $state.current.name;
@@ -228,6 +230,10 @@
 		// -------------------------------------------------------------------------------------------------------------------
 		// event entries
 		// -------------------------------------------------------------------------------------------------------------------
+		// status of event entries
+		var STATUS_NOT_SELECTED = 'NOT_SELECTED';
+		var STATUS_PENDING = 'PENDING';
+		var STATUS_CONFIRMED = 'CONFIRMED';
 		
 		$scope.events = events;
 		$scope.eventEntryInfos = eventEntries;
@@ -282,7 +288,8 @@
 				var eventEntryInfo = $scope.eventEntryInfos[i];
 				eventEntryInfo = $scope.makeEventInfo(eventEntryInfo);
 				var availabilityStatus = eventEntryInfo.availabilityStatus;
-//				console.log ('availablility status for ' + eventEntryInfo.eventName + " is " + availabilityStatus);
+// console.log ('availability status for ' + eventEntryInfo.eventName + " is " +
+// availabilityStatus);
 				if (availabilityStatus == 'ENTERED') {
 					$scope.enteredEventsList.push (eventEntryInfo);
 				} else if (availabilityStatus == 'AVAILABLE') {
@@ -303,8 +310,8 @@
 		
 		$scope.editTournamentEntry = function (tournamentId, event) {
 			console.log ('editTournamentEntry tournament ' + tournamentId);
-//			var params = {id: tournamentId};
-//			$state.go('home.tournamentEntry', params);
+// var params = {id: tournamentId};
+// $state.go('home.tournamentEntry', params);
 		}
 		
 		$scope.eventEntrySuccess = function(value, responseHeaders) {
@@ -357,7 +364,7 @@
 			}
 			if (event != null) {
 				var eventEntry = {
-						status: 'PENDING',
+						status: STATUS_PENDING,
 						dateEntered: new Date(),
 						event: event,
 						tournamentEntry: $scope.tournamentEntry,
@@ -383,7 +390,8 @@
 			if ($scope.enteringEventId  != -1) {
 				// if no tournament entry create it first
 				if ($scope.tournamentEntry.id == undefined) {
-					// need this for resource parameter mapping not for GORM persistence
+					// need this for resource parameter mapping not for GORM
+					// persistence
 					$scope.tournamentEntry.tournamentId = $scope.tournament.id;
 					tournamentEntryResource.save ($scope.tournamentEntry, $scope.tournamentEntrySuccess, $scope.tournamentEntryFailure);
 				} else {
@@ -433,11 +441,20 @@
 		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
 		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
 		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
-//		                          {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
+// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1,
+// availableToAdults: 1, membershipType: 9},
 		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
 		                          ];
 
-		$scope.selectedMembershipOption = $scope.membershipOptions[0];		// membership option selected by the user or defaulted to
+		$scope.selectedMembershipOption = $scope.membershipOptions[0];		// membership
+																			// option
+																			// selected
+																			// by
+																			// the
+																			// user
+																			// or
+																			// defaulted
+																			// to
 
 		//
 		// figure out if the current user is an adult
@@ -450,11 +467,13 @@
 			// reset birthday to the current year.
 			birthdayDate.setFullYear(tournamentDate.getFullYear());
 
-			// if the user's birthday has not occurred yet this year, subtract 1.
+			// if the user's birthday has not occurred yet this year, subtract
+			// 1.
 			if (tournamentDate < birthdayDate)
 			    years--;
 			
-			return (years >= 18);		// used to determine whether to display junior membership options or not
+			return (years >= 18);		// used to determine whether to display
+										// junior membership options or not
 		}
 
 		//
@@ -466,9 +485,9 @@
 			$scope.updateSummary();
 		}
 		
-		//----------------------------------------------------------------------------------------------------------------------------------
+		// ----------------------------------------------------------------------------------------------------------------------------------
 		// Summary step
-		//----------------------------------------------------------------------------------------------------------------------------------
+		// ----------------------------------------------------------------------------------------------------------------------------------
 		//
 		// calculate events total and other fees
 		//
@@ -495,7 +514,8 @@
 			currentItems.push({group: 'Events', items: eventItems});
 			grandTotal = eventsTotal;
 
-			// membership (only update this if we are on the membership options page and membership needs to be paid)
+			// membership (only update this if we are on the membership options
+			// page and membership needs to be paid)
 			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
@@ -559,9 +579,9 @@
 		}
 		
 		
-		//---------------------------------------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------------------------------------
 		// payments/refunds
-		//---------------------------------------------------------------------------------------------------------------------------------
+		// ---------------------------------------------------------------------------------------------------------------------------------
 		// see FinancialTransaction.groovy Type enum
 		var CHARGE = 'Charge';
 		var REFUND = 'Refund';
@@ -588,12 +608,36 @@
 		$scope.transactionInProgress = false;
 		
 		//
+		// successful confirmation of entries after payment
+		//
+		$scope.confirmEntriesSuccess = function (value, responseHeaders) {
+			$scope.transactionInProgress = false;
+			$state.go ('home.tournamentEntry.completed');
+		}
+		
+		//
+		// failure confirmation of entries after payment
+		//
+		$scope.confirmEntriesFailure  = function (httpResponse) {
+			$scope.transactionInProgress = false;
+			showError ($mdDialog, httpResponse, "Confirming your event entries failed!");
+		}
+		
+		//
+		// confirms the temporarily reserved entries
+		//
+		$scope.confirmEntries = function (){
+			$scope.tournamentEntry.tournamentId = $scope.tournament.id;
+			// $scope.tournamentEntry.tournamentEntryId =
+			// $scope.tournamentEntry.id;
+			tournamentEntryResource.confirmEntries ($scope.tournamentEntry, $scope.confirmEntriesSuccess, $scope.confirmEntriesFailure);
+		}
+		
+		//
 		// called when successfully conducted charge transaction
 		//
 		$scope.successFinacialTransactionSave = function (value, responseHeaders) {
-			$scope.transactionInProgress = false;
-			//$state.go ('home.tournamentEdit', {id: $scope.tournament.id, selectedTab: 1});
-			$state.go ('home.tournamentEntry.completed');
+			$scope.confirmEntries();
 		}
 		
 		//
@@ -617,9 +661,10 @@
 			    // Show the errors on the form
 				$scope.error = response.error.message;
 				console.log ('error = ' + $scope.error);
-			    //$form.find('button').prop('disabled', false);
+			    // $form.find('button').prop('disabled', false);
 			  } else {
-			    // response contains id and card, which contains additional card details
+			    // response contains id and card, which contains additional card
+				// details
 			    var token = response.id;
 			    console.log ('token = ' + token);
 			    var amount = $scope.invoice.balanceDue * 100;
@@ -647,45 +692,43 @@
 			browserEvent.target.disabled = true;
 			$scope.paymentRefundButton = browserEvent.target; 
 			
-			// disable the button to prevent multiple submission
-			$scope.error = null;
-			
+			// disable the button to prevent multiple submission $scope.error = null;
 			// validate data
-			var validNumber = Stripe.card.validateCardNumber ($scope.card.number);
-			var validCVC = Stripe.card.validateCVC($scope.card.cvc);
-			var validExpiration = Stripe.card.validateExpiry($scope.card.expiration_month, $scope.card.expiration_year);
-			if (validNumber && validCVC && validExpiration) {
-					// This identifies your website in the createToken call
-					// below
-					var stripePublishableKey = $scope.tournament.stripeKey;
-					if (stripePublishableKey != null) {
-						  $scope.transactionInProgress = true;
-						  Stripe.setPublishableKey(stripePublishableKey);
-						  
-						  // create token
-						  Stripe.card.createToken({
-							  number: $scope.card.number,
-							  cvc: $scope.card.cvc,
-							  exp_month: $scope.card.expiration_month,
-							  exp_year:  $scope.card.expiration_year
-							}, $scope.stripeResponseHandler);
-					} else {
-						$scope.error = "missing Stripe gateway key";
-					}
-			} else {
-				$scope.error = "";
-				if (!validNumber)
-					$scope.error += "Invalid number"
-
-				if (!validCVC) {
+			var validNumber = Stripe.card.validateCardNumber($scope.card.number); 
+			var validCVC = Stripe.card.validateCVC($scope.card.cvc); 
+			var validExpiration = Stripe.card.validateExpiry($scope.card.expiration_month, $scope.card.expiration_year); 
+			if (validNumber && validCVC && validExpiration) { 
+			  // This identifies your website in the createToken call below
+			  var stripePublishableKey = $scope.tournament.stripeKey; 
+			  if (stripePublishableKey != null) { 
+				  $scope.transactionInProgress = true;
+				  Stripe.setPublishableKey(stripePublishableKey);
+			
+				  // create token
+			  Stripe.card.createToken({ 
+				  number: $scope.card.number, 
+				  cvc:$scope.card.cvc, 
+				  exp_month: $scope.card.expiration_month, 
+				  exp_year: $scope.card.expiration_year 
+				  }, 
+				  $scope.stripeResponseHandler); 
+			  } else {
+				  $scope.error = "missing Stripe gateway key"; 
+				  } 
+			  } else { 
+				  $scope.error = ""; 
+				  if (!validNumber) 
+					  $scope.error += "Invalid number"
+			  
+				  if (!validCVC) { 
 					$scope.error += ($scope.error != "") ? ", " : "";
-					$scope.error += "Invalid CVC"
-				}
-				
-				if (!validExpiration) {
-					$scope.error += ($scope.error != "") ? ", " : "";
-					$scope.error += "Invalid expiration date";
-				}
+					$scope.error += "Invalid CVC" 
+				  }
+			  
+				  if (!validExpiration) { 
+					  $scope.error += ($scope.error != "") ? ", " : "";
+					  $scope.error += "Invalid expiration date"; 
+				  } 
 			}
 		}
 		

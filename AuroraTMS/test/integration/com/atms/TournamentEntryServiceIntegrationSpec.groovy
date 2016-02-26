@@ -1,6 +1,8 @@
 package com.atms
 
 import grails.test.spock.IntegrationSpec
+import spock.lang.Specification
+
 
 class TournamentEntryServiceIntegrationSpec extends IntegrationSpec {
 

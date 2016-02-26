@@ -168,6 +168,14 @@ log4j.main = {
 //			'grails.app.services.grails.plugin.springsecurity',
 //			'org.pac4j',
 //			'org.springframework.security'
+		   
+		   // Enable Hibernate SQL logging with param values,
+		   // this is in addition to 'logSql = true' in DataSource for development environment data source
+//		   trace 'org.hibernate.type'
+//		   trace 'org.hibernate.SQL'
+//		   debug 'org.hibernate.transaction'
+//		   debug 'org.springframework.transaction.support'
+	   
 }
 
 grails.plugin.springsecurity.portMapper.httpPort = 8080

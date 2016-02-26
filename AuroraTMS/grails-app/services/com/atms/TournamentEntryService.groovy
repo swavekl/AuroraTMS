@@ -12,8 +12,6 @@ import grails.transaction.Transactional
 @Transactional
 class TournamentEntryService {
 
-	static transactional = false
-
 	def aclPermissionFactory
 	def aclService
 	def aclUtilService
@@ -23,13 +21,13 @@ class TournamentEntryService {
 		addPermission tournamentEntry, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, admin)")
 	void addPermission(TournamentEntry tournamentEntry, String username, Permission permission) {
 		aclUtilService.addPermission tournamentEntry, username, permission
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, admin)")
 	void deletePermission(TournamentEntry tournamentEntry, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(tournament)
@@ -45,31 +43,30 @@ class TournamentEntryService {
 		aclService.updateAcl acl
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	TournamentEntry create(TournamentEntry tournamentEntry, Map params) {
-		//		TournamentEntry tournamentEntryEntry = new tournamentEntry(params)
+		println 'Saving TournamentEntry...'
 		tournamentEntry.save(flush: true)
+		println 'Saved TournamentEntry with id ' + tournamentEntry.id
 		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
-		
+
 		// Grant the current principal administrative permission
 		addPermission tournamentEntry, currentPrincipal, BasePermission.ADMINISTRATION
-		
+
 		grantEntryPermissions (tournamentEntry, currentPrincipal)
 
-		tournamentEntry
+		tournamentEntry = TournamentEntry.get(tournamentEntry.id)
 	}
-	
-	@Transactional
+
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournamentEntry, write) or hasPermission(#tournamentEntry, admin)")
 	void update(TournamentEntry tournamentEntry, Map params) {
 		tournamentEntry.save(flush: true)
-		
-		grantEntryPermissions(tournamentEntry)
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
 	void delete(TournamentEntry tournamentEntry) {
 		tournamentEntry.delete()
@@ -89,7 +86,7 @@ class TournamentEntryService {
 				addPermission tournamentEntry, it.username, BasePermission.ADMINISTRATION
 			}
 		}
-		
+
 		def adminRole = SecRole.findByAuthority("ROLE_ADMIN")
 		def admins = SecUserSecRole.findAllBySecRole(adminRole).secUser
 		admins.each {
@@ -101,33 +98,37 @@ class TournamentEntryService {
 	}
 
 	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
+	@Transactional(readOnly = true)
 	TournamentEntry get(long id) {
 		TournamentEntry.get id
 	}
 
 	// anyone can see a tournamentEntry
+	@Transactional(readOnly = true)
 	TournamentEntry show(long id) {
 		TournamentEntry.get id
 	}
 
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
+	@Transactional(readOnly = true)
 	List<TournamentEntry> listOwned(Map params) {
-//		println 'listOwned params ' + springSecurityService.authentication.name
+		//		println 'listOwned params ' + springSecurityService.authentication.name
 		TournamentEntry.list params
 	}
 
+	@Transactional(readOnly = true)
 	int count() {
 		TournamentEntry.count()
 	}
 
 	// anybody can use it
+	@Transactional(readOnly = true)
 	List<TournamentEntry> list(Map params) {
-//		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
-//		println "list params " + params
+		//		println "list for user " + (springSecurityService.authentication) ? springSecurityService.authentication.name : 'anonymous'
+		//		println "list params " + params
 
 		TournamentEntry.list params
 	}
-
 }
 

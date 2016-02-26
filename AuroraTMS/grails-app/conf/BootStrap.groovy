@@ -28,6 +28,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.AuthorityUtils
 import org.springframework.security.core.context.SecurityContextHolder as SCH
 
+import grails.util.Environment
+
 class BootStrap {
 	
 	def aclService
@@ -123,10 +125,12 @@ class BootStrap {
 		def tournament6 = new Tournament (name: "U.S.Open", venue: 'Las Vegas Convention Center', address: '123 W. Strip Ave', city: "Las Vegas", state: "NV", startDate: df.parse('07/11/2015'), endDate: df.parse('07/16/2015'), starLevel: 5)
 		fillOtherTournamentDefaults (tournament6, "Tiffany Oldland", "tiffanyol@yahoo.com")
 		tournamentService.create(tournament6, params1)
-
-		importPlayerData()
+		
+		if (Environment.current != Environment.TEST) {
+			importPlayerData()
+		}
 		sessionFactory.currentSession.flush()
-
+		
 		// logout
 		SCH.clearContext()
 	}

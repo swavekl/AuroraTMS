@@ -35,6 +35,7 @@ class FinancialTransactionController {
 
         financialTransactionInstance.validate()
         if (financialTransactionInstance.hasErrors()) {
+			def errors = ['errors']
 			financialTransactionInstance.errors.allErrors.each {
 				def defaultMsg = it.defaultMessage
 				def errorMsg = message(code: it, args: it.arguments)
@@ -75,8 +76,8 @@ class FinancialTransactionController {
 			}
 	  } catch (CardException e) {
 		// Since it's a decline, CardException will be caught
-		System.out.println("Status is: " + e.getCode());
-		System.out.println("Message is: " + e.getMessage());
+//		System.out.println("Status is: " + e.getCode());
+//		System.out.println("Message is: " + e.getMessage());
 		def errors = ['errors', e.getCode(), e.getMessage()]
 		respond errors, [status: NOT_ACCEPTABLE]
 //	  } catch (RateLimitException e) {
@@ -112,7 +113,6 @@ class FinancialTransactionController {
             return
         }
 
-        //financialTransactionInstance.save flush:true
 		financialTransactionService.update(financialTransactionInstance)
         respond financialTransactionInstance, [status: OK]
     }
@@ -126,7 +126,6 @@ class FinancialTransactionController {
             return
         }
 
-        //financialTransactionInstance.delete flush:true
 		financialTransactionService.delete(financialTransactionInstance)
         render status: NO_CONTENT
     }
