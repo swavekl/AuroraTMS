@@ -76,6 +76,16 @@
 			</div>
 		</div>
 		
+		<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;" ng-show="!tournamentRegistrationClosed()">
+			<div layout="row" style="border: 0px solid red;">
+				<div flex="80" style="border: 0px solid green;">
+						<md-button ng-show="!isRegistered()" class="md-raised md-primary" aria-label="Register Now" ng-click="enterTournament(tournament.id, $event)">
+							<ng-md-icon icon="person_add"></ng-md-icon>Register Now
+						</md-button>
+				</div>
+			</div>
+		</div>
+
 		<div layout-gt-md="row" layout-sm="column">					
 		 	<div flex-gt-md="100" flex>
 				<md-divider></md-divider>
@@ -108,15 +118,6 @@
 				</div>
 			</div>
 		
-			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;" ng-show="!tournamentRegistrationClosed()">
-				<div layout="row" style="border: 0px solid red;">
-					<div flex="80" style="border: 0px solid green;">
-							<md-button class="md-raised md-primary" aria-label="Enter Tournament" ng-click="enterTournament(tournament.id, $event)">
-								<ng-md-icon icon="person_add"></ng-md-icon>Register Now
-							</md-button>
-					</div>
-				</div>
-			</div>
 		</div>
 					
 	</md-conent>

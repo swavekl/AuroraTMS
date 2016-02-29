@@ -25,19 +25,19 @@ class FinancialTransactionService {
 		addPermission financialTransaction, username, aclPermissionFactory.buildFromMask(permission)
 	}
 
-	@Transactional
 	@PreAuthorize("hasPermission(#financialTransaction, admin)")
 	void addPermission(FinancialTransaction financialTransaction, String username, Permission permission) {
 		aclUtilService.addPermission financialTransaction, username, permission
 	}
 	
+	@Transactional (readOnly = true)
 	@PreAuthorize("hasRole('ROLE_USER')")
 //	@PreAuthorize("hasPermission(#financialTransaction, read) or hasPermission(#financialTransaction, admin)")
 	FinancialTransaction show(long id) {
 		FinancialTransaction.get id
 	}
 
-	@Transactional
+	//@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	FinancialTransaction create(FinancialTransaction financialTransaction) {
 		financialTransaction.save(flush: true)
@@ -56,11 +56,13 @@ class FinancialTransactionService {
 
 		financialTransaction
 	}
+	
 	/**
 	 * List all transactions associated with a tournament entry (user) or all transactions
 	 * @param params
 	 * @return
 	 */
+	@Transactional (readOnly = true)
 	@PreAuthorize("hasRole('ROLE_USER')")
 	@PostFilter("hasPermission(filterObject, read) or hasPermission(filterObject, admin)")
 	List<FinancialTransaction> list(Map params) {
@@ -78,11 +80,12 @@ class FinancialTransactionService {
 		}
 	}
 
+	@Transactional (readOnly = true)
 	int count() {
 		FinancialTransaction.count()
 	}
 	
-	@Transactional
+//	@Transactional
 //	@PreAuthorize("hasRole('ROLE_USER')")
 	@PreAuthorize("hasPermission(#financialTransaction, write) or hasPermission(#financialTransaction, admin)")
 	void update(FinancialTransaction financialTransaction) {
@@ -98,7 +101,7 @@ class FinancialTransactionService {
 		}
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#financialTransaction, delete) or hasPermission(#financialTransaction, admin)")
 	void delete(FinancialTransaction financialTransaction) {
 		financialTransaction.delete()
@@ -107,7 +110,7 @@ class FinancialTransactionService {
 		aclUtilService.deleteAcl financialTransaction
 	}
 
-	@Transactional
+//	@Transactional
 	@PreAuthorize("hasPermission(#financialTransaction, admin)")
 	void deletePermission(FinancialTransaction financialTransaction, String username, Permission permission) {
 		def acl = aclUtilService.readAcl(financialTransaction)
@@ -121,5 +124,67 @@ class FinancialTransactionService {
 		}
 
 		aclService.updateAcl acl
+	}
+	
+	/**
+	 * Make a list of refund transactions (there may be partial refunds of partially refunded charges)
+	 * @param tournamentEntryId
+	 * @param amountToRefund
+	 * @return
+	 */
+	@Transactional (readOnly = true)
+	@PreAuthorize("hasPermission(#financialTransaction, read) or hasPermission(#financialTransaction, admin)")
+	List<FinancialTransaction> makeRefundTransactions (long tournamentEntryId, long amountToRefund) {
+		
+		def transactionIdToAmountMap = [:]
+
+				// get all transactions made by this user
+		def allTransactions = FinancialTransaction.where {
+			tournamentEntry.id == tournamentEntryId
+		}.list(sort:'createdDate')
+		// prepare transactions which will amount to amountToRefund
+
+		// first collect all charges and their original amounts
+		allTransactions.each {
+			FinancialTransaction financialTransaction = it as FinancialTransaction
+			if (financialTransaction.type == FinancialTransaction.Type.Charge) {
+				transactionIdToAmountMap[financialTransaction.stripeChargeIdentifier] = financialTransaction.amount
+			}
+		}
+		
+		// then subtract refunds from each of charge transaction to get amount still available for refund for each charge transaction
+		allTransactions.each {
+			FinancialTransaction financialTransaction = it as FinancialTransaction
+			if (financialTransaction.type == FinancialTransaction.Type.Refund) {
+				// whatever amount is still available for refund from this transaction
+				def remainingAmountAvailableForRefund = transactionIdToAmountMap [financialTransaction.stripeChargeIdentifier]
+				if (remainingAmountAvailableForRefund != null) {
+					long amountAvailable = remainingAmountAvailableForRefund as Long
+					amountAvailable -= financialTransaction.refundedAmount
+					transactionIdToAmountMap[financialTransaction.stripeChargeIdentifier] = amountAvailable
+				}
+			}
+		}
+		
+		// make refund transactions using amounts available for refund from each transaction
+		List<FinancialTransaction> refundTransactions = []
+		transactionIdToAmountMap.each { key, value -> 
+			String stripeChargeIdentifier = key as String
+			long amountAvailableForRefund = value as Long
+			if (amountToRefund >= amountAvailableForRefund) {
+				amountToRefund -= amountAvailableForRefund
+				
+				FinancialTransaction refundTransaction = new FinancialTransaction()
+				refundTransaction.createdDate = new Date()
+				refundTransaction.createdBy = springSecurityService.authentication.name
+				refundTransaction.amount = amountAvailableForRefund
+				refundTransaction.refundedAmount = amountAvailableForRefund
+				refundTransaction.type = FinancialTransaction.Type.Refund
+				// original credit card charge transaction
+				refundTransaction.stripeChargeIdentifier = stripeChargeIdentifier
+				refundTransactions.add(refundTransaction)
+			}
+		}		
+		return refundTransactions
 	}
 }

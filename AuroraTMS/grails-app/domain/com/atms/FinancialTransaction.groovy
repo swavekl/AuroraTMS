@@ -18,7 +18,6 @@ class FinancialTransaction {
 	
 	Type type
 	
-	
 	enum PaymentMethod {
 		CreditCard, Check, Cash, PayPal 
 	}
@@ -26,6 +25,15 @@ class FinancialTransaction {
 	
 	// some identifier for this transaction e.g. Stripe token representing credit card, check number 
 	String paymentMethodIdentifier
+	
+	// identifier for the charge made by Stripe in case in needs to be refunded
+	String stripeChargeIdentifier
+	
+	// identifier for the refund of the given transaction (also stripeChargeIdentifier will contain the charge that was refunded), null for charge
+	String stripeRefundIdentifier
+	
+	// if this transaction is a refund this the amount that was refunded (which could be less than amount for partial refunds), 0 for initial charge
+	long refundedAmount
 	
 	// is owned by tournament entry but, and has reference back to it, has FK to tournament entry PK in db
 	static belongsTo = [tournamentEntry: TournamentEntry]
@@ -38,6 +46,9 @@ class FinancialTransaction {
 //		createdBy blank: false
 //		type nullable: false
 //		paymentMethod nullable: false
-//		paymentMethodIdentifier blank: false, nullable: false
+//		paymentMethodIdentifier blank: false, nullable: true
+		stripeChargeIdentifier blank: false
+		stripeRefundIdentifier blank: true, nullable: true
+		//refundedAmount
     }
 }

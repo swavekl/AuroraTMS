@@ -12,6 +12,9 @@ class TournamentEntry {
 	// current rating used for seeding within events
 	int seedRating
 	
+	// selected USATT membership option (from 1 through 8)
+	int membershipOption
+	
 	// reference back to Tournament, but cascading saves and deletes
 	static belongsTo = [tournament:Tournament]
 	

@@ -47,9 +47,20 @@
 
 						// the entry
 						tournamentEntryResource: 'tournamentEntryResource',
-						tournamentEntry: function(tournamentEntryResource, $stateParams, session) {
+						tournamentEntryList: function(tournamentEntryResource, $stateParams, session) {
+							console.log ('getting entry list owned by user');
 							var params = {tournamentId: $stateParams.tournamentId};
-							return tournamentEntryResource.create (params).$promise;
+							return tournamentEntryResource.list (params).$promise;
+							
+						},
+						tournamentEntry: function(tournamentEntryResource, $stateParams, session, tournamentEntryList) {
+							console.log ('getting entry or creating a new one');
+							if (tournamentEntryList != null && tournamentEntryList.length == 0) {
+								var params = {tournamentId: $stateParams.tournamentId};
+								return tournamentEntryResource.create (params).$promise;
+							} else {
+								return tournamentEntryList[0];
+							}
 						},
 						
 						// entered events
@@ -433,6 +444,7 @@
 		// -------------------------------------------------------------------------------------------------------------------
 
 		$scope.membershipOptions = [
+		                          {membershipName: 'Membership is current', fee: 0, availableToMembers: 1, availableToAdults: 1, membershipType: 0},
 		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
 		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
 		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3},
@@ -441,20 +453,18 @@
 		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
 		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
 		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
-// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1,
-// availableToAdults: 1, membershipType: 9},
+// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
 		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
 		                          ];
 
-		$scope.selectedMembershipOption = $scope.membershipOptions[0];		// membership
-																			// option
-																			// selected
-																			// by
-																			// the
-																			// user
-																			// or
-																			// defaulted
-																			// to
+		// option selected by the user or defaulted to
+		$scope.selectedMembershipOption = $scope.membershipOptions[0];	
+		for (var i = 0; i < $scope.membershipOptions.length; i++) {
+			if ($scope.tournamentEntry.membershipOption == $scope.membershipOptions[i].membershipType) {
+				$scope.selectedMembershipOption = $scope.membershipOptions[i];
+				break;
+			}
+		}
 
 		//
 		// figure out if the current user is an adult
@@ -482,6 +492,7 @@
 		$scope.selectMembership = function (option) {
 			console.log ('selecting membership option ' + option.membershipName);
 			$scope.selectedMembershipOption = option;
+			$scope.tournamentEntry.membershipOption = option.membershipType;
 			$scope.updateSummary();
 		}
 		
@@ -497,7 +508,8 @@
 				previousTransactionsItems: [], 
 				balanceDue: 0,
 				actionLabel: 'Balance Due'};
-		$scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00}, {paymentDate: "12/25/2015", amount: -20.00}];
+//		$scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00}, {paymentDate: "12/25/2015", amount: -20.00}];
+		$scope.previousTransactions = financialTransactions;
 		
 		$scope.updateSummary = function () {
 			var currentItems = [];
@@ -516,7 +528,8 @@
 
 			// membership (only update this if we are on the membership options
 			// page and membership needs to be paid)
-			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
+//			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
+			if ($scope.needToPayMembership) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
 				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});
@@ -550,11 +563,11 @@
 			var previousTransactionItems = [];
 			if ($scope.previousTransactions != null) {
 				for (var i = 0; i < $scope.previousTransactions.length; i++) {
-					var payment = $scope.previousTransactions[i];
-					var name = (payment.amount > 0) ? "Payment" : "Refund";
-					name += " on " + payment.paymentDate;
-					previousTransactionItems.push ({name: name, price: payment.amount});
-					previousTransactionsTotal += payment.amount;
+					var transaction = $scope.previousTransactions[i];
+					var amount = transaction.amount / 100;
+					var name = transaction.type.name + " on " + moment(transaction.createdDate).format('LL');
+					previousTransactionItems.push ({name: name, price: amount});
+					previousTransactionsTotal += amount;
 				}
 				previousTransactionItems.push ({name: 'Total', price: previousTransactionsTotal});
 			}
@@ -564,6 +577,7 @@
 			$scope.invoice.actionLabel = ($scope.invoice.balanceDue >= 0) ? "Balance Due" : 'Refund Due';
 			
 		}
+		
 		
 		//
 		// determine if entry is late
@@ -578,7 +592,9 @@
 			return isLate;
 		}
 		
-		
+		// call the above method to refresh the entries 
+		$scope.updateSummary();
+
 		// ---------------------------------------------------------------------------------------------------------------------------------
 		// payments/refunds
 		// ---------------------------------------------------------------------------------------------------------------------------------
@@ -653,7 +669,7 @@
 		// handler for token creation
 		//
 		$scope.stripeResponseHandler = function (status, response) {
-			console.log ('in stripeResponseHandler');
+//			console.log ('in stripeResponseHandler');
 			
 			$scope.paymentRefundButton.disabled = false; 
 			if (response.error) {
@@ -666,7 +682,7 @@
 			    // response contains id and card, which contains additional card
 				// details
 			    var token = response.id;
-			    console.log ('token = ' + token);
+//			    console.log ('token = ' + token);
 			    var amount = $scope.invoice.balanceDue * 100;
 			    var financialTransaction = {
 			    		createdDate: new Date(),
@@ -675,6 +691,8 @@
 			    		type: CHARGE,
 			    		paymentMethod: CREDITCARD,
 			    		paymentMethodIdentifier: token,
+			    		stripeChargeIdentifier: "ch_temporary_not_null",  // will be assigned after transaction completes
+			    		stripeRefundIdentifier: "ref_temp_not_null",
 			    		// required by resource for parameter mapping
 			    		tournamentEntryId: $scope.tournamentEntry.id,
 			    		account: {id: 1},
@@ -746,8 +764,23 @@
 			$scope.error = null;
 			
 			console.log ('performing refund of ' + $scope.invoice.balanceDue);
-			// now go to this
-		    $state.go ('home.tournamentEntry.completed');
+		    var amount = $scope.invoice.balanceDue * 100;
+		    var financialTransaction = {
+		    		createdDate: new Date(),
+		    		createdBy: session.getUser(),
+		    		amount: amount,
+		    		type: REFUND,
+		    		paymentMethod: CREDITCARD,
+		    		paymentMethodIdentifier: "token_not_null",
+		    		stripeChargeIdentifier: "ch_temporary_not_null",
+		    		stripeRefundIdentifier: "ref_temp_not_null",
+		    		// required by resource for parameter mapping
+		    		tournamentEntryId: $scope.tournamentEntry.id,
+		    		account: {id: 1},
+		    		tournamentEntry: $scope.tournamentEntry
+		    };
+		    // initiate the transaction
+		    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);
 		}
 		
 		$scope.viewTournament = function (browserEvent) {

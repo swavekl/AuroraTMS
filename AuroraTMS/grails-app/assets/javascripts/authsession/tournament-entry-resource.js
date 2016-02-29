@@ -42,7 +42,7 @@
 				method : 'GET',
 				isArray : true,
 				headers : headers,
-				url : applicationRoot
+				url : applicationRoot + '?owned=true'
 			},
 			'delete' : {
 				method : 'DELETE',
