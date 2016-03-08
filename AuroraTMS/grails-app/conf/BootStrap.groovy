@@ -265,6 +265,7 @@ class BootStrap {
 		tournament.lateEntryFee = 10.0f
 		
 		def account = createAccount ()
+		account.tournament = tournament
 		tournament.accounts = []
 		tournament.accounts.add (account)
 		tournament.stripeKey = account.stripePublicKey

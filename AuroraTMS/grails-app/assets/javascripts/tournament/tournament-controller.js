@@ -27,6 +27,12 @@
 								events: function (eventResource, $stateParams, session, tournament) {
 									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50, username: session.getUser()};
 									return eventResource.query(queryOptions).$promise;
+								},
+								
+								accountResource: 'accountResource',
+								accounts: function (accountResource, $stateParams, session, tournament) {
+									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50};
+									return accountResource.query(queryOptions).$promise;
 								}
 							},
 							controller : 'tournamentController'
@@ -55,6 +61,12 @@
 									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50, username: session.getUser()};
 									//console.log ('tournament = ' + queryOptions.tournamentId + " username "+ queryOptions.username);
 									return eventResource.query(queryOptions).$promise;
+								},
+								
+								accountResource: 'accountResource',
+								accounts: function (accountResource, $stateParams, session, tournament) {
+									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50};
+									return accountResource.query(queryOptions).$promise;
 								}
 							},
 							controller : 'tournamentController', 
@@ -99,6 +111,11 @@
 								events: function (eventResource, $stateParams, session) {
 									// new tournament has no events
 									return [];
+								},
+								
+								accountResource: 'accountResource',
+								accounts: function (accountResource, $stateParams, session) {
+									return accountResource.create({}).$promise;
 								}
 							},
 							controller : 'tournamentController'
@@ -125,8 +142,8 @@
 			
 	// define controller functions
 	.controller('tournamentController', 
-			['$scope', '$state', 'session','$mdDialog', 'tournamentResource', 'tournament', 'eventResource', 'events', 
-    function($scope, $state, session, $mdDialog, tournamentResource, tournament, eventResource, events) {
+			['$scope', '$state', 'session','$mdDialog', 'tournamentResource', 'tournament', 'eventResource', 'events', 'accountResource', 'accounts',
+    function($scope, $state, session, $mdDialog, tournamentResource, tournament, eventResource, events, accountResource, accounts) {
 		
 		// when coming back from editing events switch back to the 'Events' tab
 		$scope.selectedTab = ($state.params.selectedTab == undefined) ? 0 : ($state.params.selectedTab);
@@ -162,7 +179,6 @@
                 			  'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC',
                 			  'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
                         ];
-
 		
 		$scope.enterTournament = function (tournamentId, browserEvent) {
 			console.log ('entering tournament ' + tournamentId);
@@ -454,10 +470,38 @@
         //===================================================================================================
         // Payment Info
         //===================================================================================================
-        $scope.account = null;
-        
-        
+        $scope.account = accounts[0];
+
+//		$scope.account.stripePublicKey = (account.stripePublicKey == "" ? null : account.stripePublicKey);
+//		$scope.account.stripeSecretKey = (account.stripeSecretKey == "" ? null : account.stripeSecretKey);
+		
+		$scope.testPayment = function() {
+			console.log ('Testing Payment');
+			if ($scope.account.stripePublicKey == null || $scope.account.stripeSecretKey == null)
+			{
+				alert('Please make sure a testing public key is entered');				
+			}
+			else
+			{
+				alert('Testing Payment - Please make sure a testing public key is used');			
+			}
+		}
+
+		$scope.testRefund = function() {
+			console.log ('Testing Refund');
+			if ($scope.account.stripePublicKey == null || $scope.account.stripeSecretKey == null)
+			{
+				alert('Please make sure a testing secret key is entered');				
+			}
+			else
+			{
+				alert('Testing Payment - Please make sure a testing secret key is used');			
+			}
+		}
+		$scope.saveTournamentPaymentInfo = function () {
+			// Implement the save function
+		}
 	} 
 	])
 })();
-   
+      

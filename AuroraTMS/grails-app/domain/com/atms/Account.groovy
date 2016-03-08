@@ -18,7 +18,7 @@ class Account {
 	String stripeSecretKey
 
 	// is owned by tournament entry (but doesn't need reference back to it)
-	static belongsTo = Tournament
+	static belongsTo = [tournament:Tournament]
 	
 	// is associated with many transactions
 	static hasMany = [financialTransactions: FinancialTransaction]

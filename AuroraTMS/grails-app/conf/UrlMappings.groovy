@@ -11,6 +11,8 @@ class UrlMappings {
 			"/evententries"(resources: "eventEntry")
 		}
 		
+		"/api/accounts"(resources: "account")
+		
 		"/api/financialtransactions"(resources: "financialTransaction")
 		
         "/$controller/$action?/$id?(.$format)?"{
