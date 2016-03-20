@@ -10,6 +10,8 @@ hibernate {
 	cache.region.factory_class = 'grails.plugin.cache.ehcache.hibernate.BeanEhcacheRegionFactory4' // For EhCache method caching + Hibernate 4.0 and higher	
 	singleSession = true // configure OSIV singleSession mode
     flush.mode = 'manual' // OSIV session flush mode outside of transactional context
+//      format_sql = true
+//      use_sql_comments = true
 }
 
 // environment specific settings

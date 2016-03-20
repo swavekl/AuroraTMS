@@ -25,7 +25,8 @@
 			},
 			'save' : {
 				method : 'POST',
-				headers : headers
+				headers : headers,
+				url : applicationRoot
 			},
 			'create' : {
 				method : 'GET',
@@ -58,8 +59,8 @@
 			id : '@id',
 			offset : '@offset',
 			max : '@max',
-			tournamentEntryId: '@tournamentEntryId',
-			tournamentId: '@tournamentId'
+//			tournamentEntryId: '@tournamentEntryId',
+//			tournamentId: '@tournamentId'
 		}, actions);
 
 		return financialTransactionResource;

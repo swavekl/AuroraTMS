@@ -67,7 +67,7 @@ class TournamentEntryService {
 	}
 
 //	@Transactional
-	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
+	@PreAuthorize("hasPermission(#tournamentEntry, delete) or hasPermission(#tournamentEntry, admin)")
 	void delete(TournamentEntry tournamentEntry) {
 		tournamentEntry.delete()
 
@@ -97,7 +97,7 @@ class TournamentEntryService {
 		}
 	}
 
-	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
+	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.TournamentEntry', admin)")
 	@Transactional(readOnly = true)
 	TournamentEntry get(long id) {
 		TournamentEntry.get id

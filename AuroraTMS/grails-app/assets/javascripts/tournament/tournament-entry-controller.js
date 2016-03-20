@@ -59,7 +59,8 @@
 								var params = {tournamentId: $stateParams.tournamentId};
 								return tournamentEntryResource.create (params).$promise;
 							} else {
-								return tournamentEntryList[0];
+								var params = {tournamentId: $stateParams.tournamentId, id: tournamentEntryList[0].id};
+								return tournamentEntryResource.get(params).$promise;
 							}
 						},
 						
@@ -431,11 +432,18 @@
 					eventEntry = enteredEventInfo.eventEntry;
 				}
 			}
-
+			
 			if (eventEntry != null) {
 				eventEntry.tournamentEntryId = $scope.tournamentEntry.id
-				console.log ('deleting eventEntry.tournamentEntryId = ' + eventEntry.tournamentEntryId);
+				console.log ('deleting eventEntry.id = ' + eventEntry.id);
 				eventEntryResource.delete (eventEntry, $scope.eventEntryDeleteSuccess, $scope.eventEntryDeleteFailure);
+
+				// remove the deleted event entry from tournament entry list of entries, so the two are in sync without refreshing from backend
+				for (var k = 0; k < $scope.tournamentEntry.eventEntries.length; k++) {
+					if ($scope.tournamentEntry.eventEntries[k].id == eventEntry.id) {
+						$scope.tournamentEntry.eventEntries.splice(k, 1);
+					}
+				}
 			}
 		}
 
@@ -529,7 +537,7 @@
 			// membership (only update this if we are on the membership options
 			// page and membership needs to be paid)
 //			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
-			if ($scope.needToPayMembership) {
+			if ($scope.needToPayMembership && eventsTotal > 0) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
 				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});
@@ -540,15 +548,17 @@
 			// other fees
 			if ($scope.tournament.adminFee != 0 || $scope.tournament.lateFee != 0) {
 				var otherFeesItems = [];
-				if ($scope.tournament.adminFee != 0) {
+				if ($scope.tournament.adminFee != 0 && eventsTotal > 0) {
 					otherFeesItems.push ({name: 'Administrative fee', price: $scope.tournament.adminFee});
 					grandTotal += $scope.tournament.adminFee;
 				}
-				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry()) {
+				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry() && eventsTotal > 0) {
 					otherFeesItems.push ({name: 'Late fee', price: $scope.tournament.lateEntryFee});
 					grandTotal += $scope.tournament.lateEntryFee; 
 				}
-				currentItems.push({group: 'Other fees', items: otherFeesItems});
+				if (otherFeesItems.length > 0) {
+					currentItems.push({group: 'Other fees', items: otherFeesItems});
+				}
 			}
 			
 			// all items
@@ -565,7 +575,11 @@
 				for (var i = 0; i < $scope.previousTransactions.length; i++) {
 					var transaction = $scope.previousTransactions[i];
 					var amount = transaction.amount / 100;
-					var name = transaction.type.name + " on " + moment(transaction.createdDate).format('LL');
+					var name = transaction.type.name + " on " + moment(transaction.createdDate).format('lll');
+					console.log ('transaction type ' + transaction.type.name);
+					if (transaction.type.name == 'Refund') {
+						amount = -amount;
+					}
 					previousTransactionItems.push ({name: name, price: amount});
 					previousTransactionsTotal += amount;
 				}
@@ -644,8 +658,6 @@
 		//
 		$scope.confirmEntries = function (){
 			$scope.tournamentEntry.tournamentId = $scope.tournament.id;
-			// $scope.tournamentEntry.tournamentEntryId =
-			// $scope.tournamentEntry.id;
 			tournamentEntryResource.confirmEntries ($scope.tournamentEntry, $scope.confirmEntriesSuccess, $scope.confirmEntriesFailure);
 		}
 		
@@ -696,7 +708,13 @@
 			    		// required by resource for parameter mapping
 			    		tournamentEntryId: $scope.tournamentEntry.id,
 			    		account: {id: 1},
-			    		tournamentEntry: $scope.tournamentEntry
+			    		tournamentEntry: {class: $scope.tournamentEntry.class, 
+			    			id: $scope.tournamentEntry.id, 
+			    			tournament: {
+			    				class: $scope.tournamentEntry.tournament.class,
+			    				id: $scope.tournamentEntry.tournament.id
+			    			}
+			    		}
 			    };
 			    // initiate the transaction
 			    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);
@@ -777,7 +795,13 @@
 		    		// required by resource for parameter mapping
 		    		tournamentEntryId: $scope.tournamentEntry.id,
 		    		account: {id: 1},
-		    		tournamentEntry: $scope.tournamentEntry
+		    		tournamentEntry: {class: $scope.tournamentEntry.class, 
+		    			id: $scope.tournamentEntry.id, 
+		    			tournament: {
+		    				class: $scope.tournamentEntry.tournament.class,
+		    				id: $scope.tournamentEntry.tournament.id
+		    			}
+		    		}
 		    };
 		    // initiate the transaction
 		    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);

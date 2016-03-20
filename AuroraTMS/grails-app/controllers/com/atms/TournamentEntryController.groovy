@@ -48,6 +48,15 @@ class TournamentEntryController extends RestfulController {
 		respond tournamentEntry
 	}
 
+	@Transactional
+	@Secured(['ROLE_USER'])
+    def edit() {
+        if(handleReadOnly()) {
+            return
+        }
+        respond queryForResource(params.id)
+    }
+	
 	/**
 	 * Creates a new tournament entry without saving it
 	 */
@@ -124,7 +133,8 @@ class TournamentEntryController extends RestfulController {
 	@Transactional
 	@Secured(['ROLE_USER'])
 	def patch (TournamentEntry tournamentEntry) {
-		//long tournamentEntryId = params.tournamentEntryId as Long
+		println "te is attached " + tournamentEntry.attached
+		
 		long tournamentEntryId = tournamentEntry.id as Long
 		eventEntryService.confirmEventEntries (tournamentEntryId)
 		render status: OK

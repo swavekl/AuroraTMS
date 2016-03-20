@@ -3,7 +3,7 @@ package com.atms
 
 
 import static org.springframework.http.HttpStatus.*
-//import grails.rest.RestfulController;
+import grails.rest.RestfulController;
 import grails.transaction.Transactional
 import grails.plugin.springsecurity.annotation.Secured
 
@@ -12,13 +12,21 @@ import com.stripe.model.Refund
 import com.stripe.exception.CardException;
 import com.stripe.Stripe;
 
-@Transactional(readOnly = true)
-class FinancialTransactionController {
+@Transactional (readOnly = true)
+class FinancialTransactionController extends RestfulController {
 
 	static responseFormats = ['json', 'xml']
-	static allowedMethods = [save: "POST", update: "PUT", delete: "DELETE"]
+    static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
 
 	def financialTransactionService
+
+	FinancialTransactionController () {
+		super(FinancialTransaction, false)
+	}
+
+	FinancialTransactionController (boolean readOnly) {
+		super(FinancialTransaction, readOnly)
+	}
 
 	@Secured(['ROLE_USER'])
 	def index(Integer max) {
@@ -51,6 +59,7 @@ class FinancialTransactionController {
 			def apiKey = null
 			def tournamentEntry = financialTransactionInstance.tournamentEntry
 			if (tournamentEntry != null) {
+				//tournamentEntry = tournamentEntry.merge()
 				if (tournamentEntry.tournament != null)
 					tournamentEntry.tournament.accounts.each {
 						apiKey = it.stripeSecretKey
@@ -89,16 +98,30 @@ class FinancialTransactionController {
 							Map<String, Object> refundParams = new HashMap<String, Object>();
 							refundParams.put("charge", refundTransaction.stripeChargeIdentifier);
 							refundParams.put("amount", refundTransaction.amount);
-							refundParams.put("currency", "usd");
+							//refundParams.put("currency", "usd");
 							def refundResponse = Refund.create(refundParams);
 							
 							// record the refund
 							refundTransaction.refundedAmount = refundResponse.amount
 							refundTransaction.stripeRefundIdentifier = refundResponse.id
-							financialTransactionService.create(refundTransaction)
-							
-							// make a string with many refund identifiers because we can't return an array of refunds from 'save' method
-							refundIdentifiers = (refundIdentifiers == "") ? refundTransaction.stripeRefundIdentifier : ", " + refundTransaction.stripeRefundIdentifier
+							refundTransaction.paymentMethod = financialTransactionInstance.paymentMethod
+							refundTransaction.paymentMethodIdentifier = "non_null_paymentMethodIdentifier";
+							refundTransaction.account = financialTransactionInstance.account
+							refundTransaction.tournamentEntry = financialTransactionInstance.tournamentEntry;
+							refundTransaction.validate()
+							if (!refundTransaction.hasErrors()) {
+								financialTransactionService.create(refundTransaction)
+								
+								// make a string with many refund identifiers because we can't return an array of refunds from 'save' method
+								refundIdentifiers = (refundIdentifiers == "") ? refundTransaction.stripeRefundIdentifier : ", " + refundTransaction.stripeRefundIdentifier
+							} else {
+								refundTransaction.getErrors().each {
+									println "error: " + it
+//									def defaultMsg = it.defaultMessage
+//									def errorMsg = message(code: it, args: it.arguments)
+//									println errorMsg
+								}
+							}
 					}
 					// return one transaction with many refund identifiers 
 					financialTransactionInstance.stripeRefundIdentifier = refundIdentifiers
@@ -112,7 +135,7 @@ class FinancialTransactionController {
 			//		System.out.println("Message is: " + e.getMessage());
 			def errors = ['errors', e.getCode(), e.getMessage()]
 			respond errors, [status: NOT_ACCEPTABLE]
-			return
+//			return
 			//	  } catch (RateLimitException e) {
 			//		// Too many requests made to the API too quickly
 			//	  } catch (InvalidRequestException e) {
@@ -127,6 +150,10 @@ class FinancialTransactionController {
 			//		// yourself an email
 		} catch (Exception e) {
 			// Something else happened, completely unrelated to Stripe
+		println "e " + e.getMessage();
+			def errors = ['errors', e.getCode(), e.getMessage()]
+			respond errors, [status: NOT_ACCEPTABLE]
+//			return
 		}
 		render status: NOT_ACCEPTABLE
 		return

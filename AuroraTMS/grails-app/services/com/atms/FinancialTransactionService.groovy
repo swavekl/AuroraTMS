@@ -133,7 +133,7 @@ class FinancialTransactionService {
 	 * @return
 	 */
 	@Transactional (readOnly = true)
-	@PreAuthorize("hasPermission(#financialTransaction, read) or hasPermission(#financialTransaction, admin)")
+	//@PreAuthorize("hasPermission(#financialTransaction, read) or hasPermission(#financialTransaction, admin)")
 	List<FinancialTransaction> makeRefundTransactions (long tournamentEntryId, long amountToRefund) {
 		
 		def transactionIdToAmountMap = [:]
@@ -161,7 +161,12 @@ class FinancialTransactionService {
 				if (remainingAmountAvailableForRefund != null) {
 					long amountAvailable = remainingAmountAvailableForRefund as Long
 					amountAvailable -= financialTransaction.refundedAmount
-					transactionIdToAmountMap[financialTransaction.stripeChargeIdentifier] = amountAvailable
+					if (amountAvailable > 0) {
+						transactionIdToAmountMap[financialTransaction.stripeChargeIdentifier] = amountAvailable
+					} else {
+						// remove fully refunded transactions	
+						transactionIdToAmountMap.remove(financialTransaction.stripeChargeIdentifier)
+					}
 				}
 			}
 		}
@@ -171,19 +176,19 @@ class FinancialTransactionService {
 		transactionIdToAmountMap.each { key, value -> 
 			String stripeChargeIdentifier = key as String
 			long amountAvailableForRefund = value as Long
-			if (amountToRefund >= amountAvailableForRefund) {
-				amountToRefund -= amountAvailableForRefund
-				
-				FinancialTransaction refundTransaction = new FinancialTransaction()
-				refundTransaction.createdDate = new Date()
-				refundTransaction.createdBy = springSecurityService.authentication.name
-				refundTransaction.amount = amountAvailableForRefund
-				refundTransaction.refundedAmount = amountAvailableForRefund
-				refundTransaction.type = FinancialTransaction.Type.Refund
-				// original credit card charge transaction
-				refundTransaction.stripeChargeIdentifier = stripeChargeIdentifier
-				refundTransactions.add(refundTransaction)
-			}
+			// refund the smaller of remaining amount to refund and what is available in this charge transaction
+			long amountToRefundFromThisTransaction = Math.min(amountToRefund, amountAvailableForRefund);
+			amountToRefund -= amountToRefundFromThisTransaction
+			
+			FinancialTransaction refundTransaction = new FinancialTransaction()
+			refundTransaction.createdDate = new Date()
+			refundTransaction.createdBy = springSecurityService.authentication.name
+			refundTransaction.amount = amountToRefundFromThisTransaction
+			refundTransaction.refundedAmount = amountToRefundFromThisTransaction
+			refundTransaction.type = FinancialTransaction.Type.Refund
+			// original credit card charge transaction
+			refundTransaction.stripeChargeIdentifier = stripeChargeIdentifier
+			refundTransactions.add(refundTransaction)
 		}		
 		return refundTransactions
 	}

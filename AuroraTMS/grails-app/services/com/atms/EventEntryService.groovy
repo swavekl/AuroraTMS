@@ -72,7 +72,8 @@ class EventEntryService {
 		TournamentEntry tournamentEntry = TournamentEntry.get(teid)
 		tournamentEntry.addToEventEntries (eventEntry)
 		tournamentEntry.save (flush : true)
-
+//		dumpTournamentEntryEvents (teid)
+		
 		println 'Saved EventEntry with id ' + eventEntry.id  
 		def currentPrincipal = springSecurityService.authentication.name
 		
@@ -80,7 +81,7 @@ class EventEntryService {
 		addPermission eventEntry, currentPrincipal, BasePermission.ADMINISTRATION
 		
 		grantAdminPermissions (eventEntry)
-
+		println "EventEntry contents " + eventEntry.dump()
 		// return
 		eventEntry
 	}
@@ -96,11 +97,36 @@ class EventEntryService {
 //	@Transactional
 	@PreAuthorize("hasPermission(#eventEntry, delete) or hasPermission(#eventEntry, admin)")
 	void delete(EventEntry eventEntry) {
-		eventEntry.delete()
+		println 'Deleting EventEntry... ' + eventEntry.id
+		// remove from association
+		long teid = eventEntry.tournamentEntry.id as Long
+//		dumpTournamentEntryEvents (teid)
+		TournamentEntry tournamentEntry = TournamentEntry.get(teid)
+		tournamentEntry.removeFromEventEntries (eventEntry)
 
 		// Delete the ACL information as well
 		aclUtilService.deleteAcl eventEntry
+
+		eventEntry.delete()
+//		println "after deleting entry"
+//		dumpTournamentEntryEvents (teid)
 	}
+	
+//	void dumpTournamentEntryEvents (long tournamentEntryId) {
+//		println "------------------- Tournament Entries for tournament id " + tournamentEntryId
+//		TournamentEntry tournamentEntry = TournamentEntry.get(tournamentEntryId)
+//		println "TournamentEntry contents " + tournamentEntry.dump()
+//		println "tournament Entry is dirty " + tournamentEntry.dirty
+//		tournamentEntry.dirtyPropertyNames.each {
+//			println "dirty property " + it
+//		}
+//		println "number of event entries is " + ((tournamentEntry.eventEntries != null) ? tournamentEntry.eventEntries.size() : " eventEntries is null")
+//		tournamentEntry.eventEntries.each {
+//			def eventName = (it.event != null) ? it.event.name : "null event"
+//			println "EventEntry with id " + it.id + " for event " + eventName
+//		}
+//		println "------------------- End of Tournament Entries"
+//	}
 
 	void grantAdminPermissions (EventEntry eventEntry) {
 		// find tournament director who configured this tournament and grant him admin privileges on this entry
@@ -165,6 +191,8 @@ class EventEntryService {
 	//
 	@PreAuthorize("hasRole('ROLE_USER')")
 	void confirmEventEntries (long tournamentEntryId) {
+		println "Confirming event entries"
+//		dumpTournamentEntryEvents (tournamentEntryId)
 		def eventEntries = EventEntry.where{
 			tournamentEntry.id == tournamentEntryId &&
 			status == EventEntry.EntryStatus.PENDING
@@ -200,7 +228,8 @@ class EventEntryService {
 		if (tournamentEntryId != 0) {
 			tournamentEntry = TournamentEntry.get(tournamentEntryId)
 			if (tournamentEntry.eventEntries != null) {
-				println 'tournamentEntry.eventEntries is not null'
+//				println 'tournamentEntry.eventEntries is not null'
+//				dumpTournamentEntryEvents(tournamentEntryId)
 			}
 			tournamentEntry.eventEntries.each {
 				eventEntries.push(it)
