@@ -127,7 +127,12 @@ class BootStrap {
 		tournamentService.create(tournament6, params1)
 		
 		if (Environment.current != Environment.TEST) {
-			importPlayerData()
+			int countExisting = UsattProfile.count()
+			if (countExisting > 0) {
+				println countExisting + " players already imported.  Skipping import"
+			} else {
+				importPlayerData()
+			}
 		}
 		sessionFactory.currentSession.flush()
 		
@@ -285,7 +290,7 @@ class BootStrap {
 			if (count % 1000 == 0) {
 				println  count
 			}
-
+			
 			//			println 'player ' + table.LastName.text() + ", " + table.FirstName.text()
 
 			def dateOfBirth = table.DOB.text() != "" ? dateFormatter.parse(table.DOB.text()) : null

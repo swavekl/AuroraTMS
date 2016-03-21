@@ -39,19 +39,18 @@ environments {
 //			url = "jdbc:mysql://localhost/auroratms_test"
 //			driverClassName = "com.mysql.jdbc.Driver"
 //			dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-//		    username = "root"
-//		    password = "AuroraTMS2015"
+//		    username = "atmsuser"
+//		    password = "atmsuser2015"
         }
     }
     production {
         dataSource {
             dbCreate = "update"
-//            url = "jdbc:h2:prodDb;MVCC=TRUE;LOCK_TIMEOUT=10000;DB_CLOSE_ON_EXIT=FALSE"
 			url = "jdbc:mysql://localhost/auroratms"
 			driverClassName = "com.mysql.jdbc.Driver"
 			dialect = "org.hibernate.dialect.MySQL5InnoDBDialect"
-		    username = "root"
-		    password = "AuroraTMS2015"
+		    username = "atmsuser"
+		    password = "atmsuser2015"
 
             properties {
                // See http://grails.org/doc/latest/guide/conf.html#dataSource for documentation

@@ -82,6 +82,7 @@ class FinancialTransactionController extends RestfulController {
 
 					def chargeResponse = Charge.create(chargeParams);
 					financialTransactionInstance.stripeChargeIdentifier = chargeResponse.id
+					financialTransactionInstance.createdDate = new Date();
 
 					financialTransactionService.create(financialTransactionInstance)
 					respond financialTransactionInstance, [status: CREATED]
