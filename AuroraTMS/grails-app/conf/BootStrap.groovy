@@ -278,6 +278,8 @@ class BootStrap {
 
 	def importPlayerData() {
 		Date start = new Date();
+		def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+		
 		println "Importing USATT player data"
 		def xmlFile = "C:\\grails\\data\\USATT_Membership.xml"
 		//def xmlFile = "C:\\grails\\newworkspace\\AuroraTMS\\USATT_Membership_Medium.xml"
@@ -287,6 +289,15 @@ class BootStrap {
 		def dateFormatter = new SimpleDateFormat('M/d/yyyy') // 9/30/1958
 		parsedFile.Table.each() {table ->
 			count++
+			
+			// push into database to speed things up
+			if (count % 100 == 0) {
+				def session = sessionFactory.currentSession
+				session.flush()
+				session.clear()
+				propertyInstanceMap.get().clear()
+			}
+
 			if (count % 1000 == 0) {
 				println  count
 			}
@@ -314,23 +325,22 @@ class BootStrap {
 			String country = table.Country.text() ?: 'USA'
 			String gender = table.Sex.text() ?: 'M'
 			int rating = table.Rating.toInteger();
-			new UsattProfile(memberId: memberId,
-			lastName: lastName,
-			firstName: firstName,
-			middleName: middleName,
-			address1: address1,
-			address2: address2,
-			city: city,
-			state: state,
-			zipCode: zipCode,
-			country: country,
-			gender: gender,
-			dateOfBirth: dateOfBirth,
-			rating: rating,
-			expirationDate: expirationDate,
-			lastPlayedDate: lastPlayed
-			)
-			.save(failOnError: true)
+			def up = new UsattProfile()
+			up.lastName = lastName
+			up.firstName = firstName
+			up.middleName = middleName
+			up.address1 = address1
+			up.address2 = address2
+			up.city = city
+			up.state = state
+			up.zipCode = zipCode
+			up.country = country
+			up.gender = gender
+			up.dateOfBirth = dateOfBirth
+			up.rating = rating
+			up.expirationDate = expirationDate
+			up.lastPlayedDate = lastPlayed
+			up.save(failOnError: true)
 		}
 		Date end = new Date();
 		TimeDuration td = TimeCategory.minus( end, start )

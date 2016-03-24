@@ -74,6 +74,8 @@ grails.project.dependency.resolution = {
 		compile ":spring-security-ui:1.0-RC2"
 		compile "org.grails.plugins:rest:0.8"
 		
+		compile "org.grails.plugins:quartz:1.0.2"
+		
         // plugins needed at runtime but not for compilation
         runtime ":hibernate4:4.3.8.1", {  // or ":hibernate:3.6.10.18"
 			// to prevent old ehcache

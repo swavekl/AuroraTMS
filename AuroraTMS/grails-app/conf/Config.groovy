@@ -301,3 +301,6 @@ grails {
 	
 	// specify date formats submitted by Angular JS $resource calls and accepted by REST implementation e.g. - 1960-10-26T00:00:00.000Z
 	grails.databinding.dateFormats = ['MM/dd/yyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'", "yyyy-MM-dd'T'hh:mm:ss'Z'"]
+
+// staging directory where ratings file will be downloaded
+ratingsStagingDir="c:\\grails\\data\\ratings"

@@ -27,10 +27,10 @@ class USATTDataSourceSpec extends Specification {
 		
 		listOfRecords.size() == 1
 		def playerRecordMap = listOfRecords[0]
-		playerRecordMap['Name'] == 'Swavek Lorenc'
+		playerRecordMap['Name'].equals('Swavek Lorenc')
 		playerRecordMap['Location'].contains('Aurora')
 		playerRecordMap['Location'].contains('IL')
-		playerRecordMap['USATT #'] == '84639'
+		playerRecordMap['USATT #'].equals('84639')
 	}
 
 	void "test player record by last name"() {
@@ -79,19 +79,19 @@ class USATTDataSourceSpec extends Specification {
 		def listOfRecords0 = USATTDataSource.getPlayerRecordsByState ('IL', 0)
 		def listOfRecords1 = USATTDataSource.getPlayerRecordsByState ('IL', 1)
 		def listOfRecords2 = USATTDataSource.getPlayerRecordsByState ('IL', 2)
-		def listOfRecordsLast = USATTDataSource.getPlayerRecordsByState ('IL', 178)
-		def listOfRecordsEmpty = USATTDataSource.getPlayerRecordsByState ('IL', 179)
+		def listOfRecordsLast = USATTDataSource.getPlayerRecordsByState ('IL', 35)
+		def listOfRecordsEmpty = USATTDataSource.getPlayerRecordsByState ('IL', 36)
 
 		then:
-		listOfRecords0.size() == 20
+		listOfRecords0.size() == 100
 		listOfRecords0.each () {playerRecordMap ->
 			playerRecordMap.size() == 5
 		}
-		listOfRecords1.size() == 20
+		listOfRecords1.size() == 100
 		listOfRecords1.each () {playerRecordMap ->
 			playerRecordMap.size() == 5
 		}
-		listOfRecords2.size() == 20
+		listOfRecords2.size() == 100
 				listOfRecords2.each () {playerRecordMap ->
 				playerRecordMap.size() == 5
 		}
@@ -101,4 +101,5 @@ class USATTDataSourceSpec extends Specification {
 		}
 		listOfRecordsEmpty.size() == 0
 	}
+	
 }

@@ -75,9 +75,13 @@ class USATTDataSource {
 	 * @return
 	 */
 	static List<Map<String, String>> getPlayerRecordsByState (String state, int pageNum) {
-		String ratingsPage = baseUrl + "?arh=&amp;max=20&query=" + state + "&searchBy=state&arl=&format="
-		int offset = pageNum * 20
-		if (offset > 0) {
+		int pageSize = 100
+		// https://usatt.simplycompete.com/userAccount/s?max=100&query=IL&searchBy=state&format=
+		// https://usatt.simplycompete.com/userAccount/s?max=100&query=IL&searchBy=state&format=&offset=100
+		// https://usatt.simplycompete.com/userAccount/s?max=100&query=IL&searchBy=state&format=&offset=200
+		String ratingsPage = baseUrl + "?arh=&max=" + pageSize + "&query=" + state + "&searchBy=state&arl=&format="
+		int offset = pageNum * pageSize
+		if (pageNum > 0) {
 			ratingsPage += "&offset=" + offset
 		}
 		return getPlayerRecords (ratingsPage)
@@ -106,17 +110,19 @@ class USATTDataSource {
 	}
 	
 	/**
-	 * Extracts player records from a given HTML page
-	 * @param playerRecordsUrl
+	 * Extracts player records from a given HTML page and places them in the list of maps (field to value)
+	 * 
+	 * @param playerRecordsUrl url to fetch the data from.
 	 * @return
 	 */
 	static List<Map<String, String>> getPlayerRecords (String playerRecordsUrl) {
 		def indexToFieldMap = [:]
 		def listOfRecords = []
 		def page = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser()).parse(playerRecordsUrl)
-		// <tr class="user-row list-item"
+		// find all nodes
 		def node = page.'**'.grep {
 
+			// get the names of the columns
 			//	<table class="table table-striped list-area">
 			//		<thead>
 			//			<tr>
@@ -135,13 +141,17 @@ class USATTDataSource {
 					}
 				}
 			}
-
-			// <table class="table table-striped list-area">
+			 
+			// get the values for the columns and place them in the map of field name to value
+			//  <tr class="user-row list-item"
+//			 println "it.name() = " + it.name() + " it.@class.toString() = " + it.@class.toString()
 			if (it.name().equals("TR") && it.@class.toString().equals("user-row list-item")) {
 				// Name 	Location 	Rating 	USATT # 	Expiration Date
 				// Swavek Lorenc 	Aurora, IL 	1774 	84639 	03/31/2018
 				def fieldToValueMap = [:]
+				// add map to the list of maps
 				listOfRecords.add(fieldToValueMap)
+//				println "adding record and processing its children "
 				it.TD.eachWithIndex { td, index2 ->
 					String fieldValue = td.text()
 					fieldValue = fieldValue.replaceAll("\n", "")
@@ -153,6 +163,7 @@ class USATTDataSource {
 				}
 			}
 		}
+//		println "Found " + listOfRecords.size() + " records"
 		return listOfRecords
 	}
 
