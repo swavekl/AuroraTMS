@@ -59,7 +59,7 @@ class UserProfilePublicController extends RestfulController {
 				userProfileInfo.expirationDate = df.parse(strExpirationDate)
 			} else {
 				// perhaps user was a new USATT member and had a temporary USATT id
-				recordList = USATTDataSource.getPlayerRecordByLastName(userProfile.lastName)
+				recordList = USATTDataSource.getPlayerRecordBy(userProfile.lastName, userProfile.firstName, userProfile.city, userProfile.state)
 				if (recordList.size() > 0) {
 					recordList.each () {record ->
 						if (record['Name'].equals(fullName)) {

@@ -65,7 +65,74 @@ class USATTDataSource {
 	 */
 	static List<Map<String, String>> getPlayerRecordByLastName (String lastName) {
 		String ratingsPage = baseUrl + "?searchBy=lastname&query=" + lastName + "&max=20"
-		return getPlayerRecords (ratingsPage)
+				return getPlayerRecords (ratingsPage)
+	}
+	
+	/**
+	 * Gets player records for players with the specified last name, first name, living in a city and state
+	 * @param lastName
+	 * @return
+	 */
+	static List<Map<String, String>> getPlayerRecordBy (String lastName, String firstName, String city, String state) {
+		// https://usatt.simplycompete.com/userAccount/s?searchBy=lastname&query=Liu&max=100
+		// https://usatt.simplycompete.com/userAccount/s?max=100&query=Liu&searchBy=lastname&format=&offset=100
+		
+		// some vary popular last names result in several hundred hits so we need to go through all of them to find the right person
+		String ratingsPage = baseUrl + "?searchBy=lastname&query=" + lastName + "&max=100"
+		println ratingsPage
+		def pageResults = getPlayerRecords (ratingsPage)
+		println "pageResults.size() = " + pageResults.size()
+		def allRecords = []
+		int pageSize = 100
+		int pageNum = 0
+		while (pageResults.size() > 0) {
+			allRecords.addAll (pageResults)
+			// skip last request if there are fewer than page worth of results in current page - i.e. that was the last page
+			if (pageResults.size() == pageSize) {
+				// get next page
+				pageNum++
+				int offset = pageNum * pageSize
+				ratingsPage = baseUrl + "?max=" + pageSize + "&query=" + lastName + "&searchBy=lastname&format=&offset=" + offset
+				println ratingsPage
+				pageResults = getPlayerRecords (ratingsPage)
+				println "pageResults.size() = " + pageResults.size()
+			} else {
+				pageResults = []
+			}
+		}
+		
+		// now filter out the records that are not not matching 
+		String firstAndAndLastName = firstName + " " + lastName
+		def playerRecords = allRecords.findAll () { record ->
+			String recFirstAndAndLastName = record['Name']
+			if (firstAndAndLastName.equals(recFirstAndAndLastName)) {
+				String location = record['Location']
+				return isMatchingCityState(location, city, state)
+			} else {
+				return false
+			}
+		}
+			
+		return playerRecords
+	}
+	
+	/**
+	 * 
+	 * @param location
+	 * @param city
+	 * @param state
+	 * @return
+	 */
+	static boolean isMatchingCityState (String location, String city, String state) {
+		// location is city and state with extra spacing e.g. 'Aurora,     IL'
+		String [] locationParts = location.split(',')
+		String locationCity = (locationParts.length > 1) ? locationParts[0].trim() : ""
+		String locationState = (locationParts.length > 1) ? locationParts[1].trim() : ""
+		if (!locationCity.isEmpty() && !city.isEmpty() && city.equalsIgnoreCase(locationCity) &&
+			!locationState.isEmpty() && !state.isEmpty() && state.equals(locationState)) {
+			return true
+		}
+		return false
 	}
 
 	/**
