@@ -53,10 +53,10 @@
 							return tournamentEntryResource.list (params).$promise;
 							
 						},
-						tournamentEntry: function(tournamentEntryResource, $stateParams, session, tournamentEntryList) {
+						tournamentEntry: function(tournamentEntryResource, $stateParams, session, tournamentEntryList, userProfile) {
 							console.log ('getting entry or creating a new one');
 							if (tournamentEntryList != null && tournamentEntryList.length == 0) {
-								var params = {tournamentId: $stateParams.tournamentId};
+								var params = {tournamentId: $stateParams.tournamentId, userProfileId: userProfile.id};
 								return tournamentEntryResource.create (params).$promise;
 							} else {
 								var params = {tournamentId: $stateParams.tournamentId, id: tournamentEntryList[0].id};

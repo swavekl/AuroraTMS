@@ -4,6 +4,7 @@ import static org.springframework.http.HttpStatus.*
 import grails.rest.RestfulController;
 import grails.transaction.Transactional
 import grails.plugin.springsecurity.annotation.Secured
+import com.atms.utils.USATTDataSource
 
 @Transactional(readOnly = true)
 
@@ -12,6 +13,8 @@ class TournamentEntryController extends RestfulController {
 	def tournamentEntryService
 	def userProfileService
 	def eventEntryService
+	def usattRatingsHistoryService
+	def tournamentService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE", patch: 'PATCH']
@@ -70,13 +73,26 @@ class TournamentEntryController extends RestfulController {
 		
 		tournamentEntry.dateEntered = new Date();
 		
-//		long userId = params.userId as Long
-//		tournamentEntry.userProfile = userId 
+		// find user profile 
+		long userProfileId = params.userProfileId as Long
+		def userProfile = userProfileService.get (userProfileId)
+		int memberId = (userProfile != null) ? userProfile.usattID : 0
+		// find players latest rating
+		int latestRating = (memberId != 0) ? USATTDataSource.getPlayerRatingById(memberId) : 0
+		
+		// find tournament information to get ratingCutoffDate date
+		int tournamentId = params.tournamentId as Integer
+		def tournament = tournamentService.get(tournamentId)
+		Date ratingCutoffDate = (tournament != null) ? tournament.ratingCutoffDate : new Date()
 
-		// find the player's rating on the date specified in the tournament eligibility date
-		tournamentEntry.eligibilityRating = 1532
-		// find current rating
-		tournamentEntry.seedRating = 1587
+		// find the player's rating on the date specified in the tournament ratingCutoffDate date
+		tournamentEntry.eligibilityRating = usattRatingsHistoryService.findLatestRatingAsOf (memberId, ratingCutoffDate)
+
+		// just in case we don't have it just use the latest if we have it
+		tournamentEntry.eligibilityRating = (tournamentEntry.eligibilityRating == 0) ? latestRating : tournamentEntry.eligibilityRating
+		
+		// save current rating for seeding purposes - can be different if player played in tournaments after ratingCutoffDate date
+		tournamentEntry.seedRating = latestRating
 		
 		respond tournamentEntry
 	}

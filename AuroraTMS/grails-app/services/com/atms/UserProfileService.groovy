@@ -26,4 +26,8 @@ class UserProfileService {
 		return userProfile
 
 	}
+	
+	def UserProfile get(long id) {
+		return UserProfile.get(id)
+	}
 }

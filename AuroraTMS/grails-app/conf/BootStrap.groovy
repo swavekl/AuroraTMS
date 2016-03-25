@@ -342,6 +342,12 @@ class BootStrap {
 			up.lastPlayedDate = lastPlayed
 			up.save(failOnError: true)
 		}
+
+		def session = sessionFactory.currentSession
+		session.flush()
+		session.clear()
+		propertyInstanceMap.get().clear()
+
 		Date end = new Date();
 		TimeDuration td = TimeCategory.minus( end, start )
 		println "Done importing " + count + " player's records in " + td
