@@ -9,10 +9,8 @@
 <title>Aurora TMS</title>
 
 <asset:stylesheet href="application.css" />
-<link rel="stylesheet"
-	href="//fonts.googleapis.com/css?family=RobotoDraft:400,500,700,400italic" />
-<link href="https://fonts.googleapis.com/icon?family=Material+Icons"
-      rel="stylesheet">
+<link href='https://fonts.googleapis.com/css?family=Roboto:400,700,500' rel='stylesheet' type='text/css'>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 <script type="text/javascript" src="https://js.stripe.com/v2/"></script>
       </head>
 <body ng-app="auroraTmsApp" layout="column" ng-controller="MenuController" class="ng-cloak">

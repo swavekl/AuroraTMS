@@ -14,6 +14,10 @@
 
 		// Assemble actions with custom headers attached
 		var actions = {
+			'view' : {
+				method : 'GET',
+				url : "/AuroraTMS/api/public/userprofiles/:id"
+			},
 			'get' : {
 				method : 'GET',
 				headers : headers,

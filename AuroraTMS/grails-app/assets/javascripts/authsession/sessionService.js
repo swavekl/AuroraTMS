@@ -29,8 +29,14 @@
 
     this.setUserProfileId = function(userProfileId){
         this._userProfileId = userProfileId;
-        console.log ('setting userprofile id to ' + userProfileId);
-        //localStorageService.set('session.userProfileId', JSON.stringify(userProfileId));
+        if(localStorageService.isSupported) {
+        	// don't erase the id stored in local storage
+        	if (userProfileId != null) {
+                localStorageService.set('userProfileId', userProfileId);
+        	}
+        } else {
+        	console.log ('localStorageService is NOT supported')
+        }
         return this;
     };
     

@@ -1,1 +1,9 @@
-<div style="border: 1px solid red">Welcome to Aurora Tournament Management System</div>
+<div layout="column" layout-align="start center" layout-fill layout-padding ng-hide="hideProfile"
+	style="font-family: 'Roboto', sans-serif; font-weight: 400;">
+	<div style="font-size: 18px;">Hello</div>
+	<div style="font-size: 24px;">{{userProfile.firstName}}</div>
+	<div style="font-size: 12px;">Your rating is</div>
+	<div style="font-size: 30px;">{{userProfile.rating}}</div>
+	<div style="font-size: 12px;">USATT membership expires:</div>
+	<div style="font-size: 18px;">{{userProfile.expirationDate | date:'MMM, dd yyyy'}}</div>
+</div>

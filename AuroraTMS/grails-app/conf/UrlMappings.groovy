@@ -3,6 +3,7 @@ class UrlMappings {
 	static mappings = {
 		"/api/usattprofiles"(resources: "usattProfile")
 		"/api/userprofiles"(resources: "userProfile")
+		"/api/public/userprofiles/$id"(controller: 'userProfilePublic', action:'show', method: 'GET')
 		"/api/tournaments"(resources: "tournament") {
 			"/events"(resources: "event")
 			"/tournamententries"(resources: "tournamentEntry") 
