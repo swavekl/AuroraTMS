@@ -98,6 +98,9 @@
 			
 		// user profile info retrieved
 		$scope.profile = userProfile;
+		if (userProfile != undefined && userProfile.id != null) {
+			session.setUserProfileId(userProfile.id);
+		}
 		$scope.dateOfBirthText = moment(userProfile.dateOfBirth).format('LL');
 		$scope.dateOfBirthTextSaved = $scope.dateOfBirthText;
 		

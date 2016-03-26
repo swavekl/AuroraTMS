@@ -12,7 +12,7 @@ app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIc
     $urlRouterProvider.otherwise('/');
     
     localStorageServiceProvider
-    .setStorageType('sessionStorage')
+    .setStorageType('localStorage')
     .setStorageCookie(45, '/')
     .setStorageCookieDomain('window.location')
     .setPrefix('auroraTmsApp');

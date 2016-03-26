@@ -37,7 +37,7 @@
 			<button type="submit" ng-if="invoice.balanceDue > 0" ng-click="performPayment($event)"
 				class="md-raised md-primary">Pay Now</button>
 			</md-input-container>
-			<div ng-if="invoice.balanceDue < 0" layout-gt-sm="row">Get refund of: {{ invoice.balanceDue | currency }}</div>
+			<div ng-if="invoice.balanceDue < 0" layout-gt-sm="row">Get refund of: {{ (invoice.balanceDue * -1) | currency }}</div>
 			<md-input-container>
 			<button type="submit" ng-if="invoice.balanceDue < 0" ng-click="performRefund($event)"
 				class="md-raised md-primary">Get Refund Now</button>
