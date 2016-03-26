@@ -67,21 +67,21 @@ class EventEntryService {
 			return null
 		}
 		
-		println 'Saving EventEntry...'
+		//println 'Saving EventEntry...'
 		long teid = eventEntry.tournamentEntry.id as Long
 		TournamentEntry tournamentEntry = TournamentEntry.get(teid)
 		tournamentEntry.addToEventEntries (eventEntry)
 		tournamentEntry.save (flush : true)
 //		dumpTournamentEntryEvents (teid)
 		
-		println 'Saved EventEntry with id ' + eventEntry.id  
+//		println 'Saved EventEntry with id ' + eventEntry.id  
 		def currentPrincipal = springSecurityService.authentication.name
 		
 		// Grant the current principal administrative permission
 		addPermission eventEntry, currentPrincipal, BasePermission.ADMINISTRATION
 		
 		grantAdminPermissions (eventEntry)
-		println "EventEntry contents " + eventEntry.dump()
+		//println "EventEntry contents " + eventEntry.dump()
 		// return
 		eventEntry
 	}

@@ -11,11 +11,13 @@ import net.sf.ehcache.CacheManager
 
 import com.atms.Event.GenderRestriction;
 import com.atms.Account
+import com.atms.EventEntry
 import com.atms.SecRole
 import com.atms.SecUser
 import com.atms.SecUserSecRole
 import com.atms.Tournament
 import com.atms.Event
+import com.atms.TournamentEntry
 import com.atms.UsattProfile
 import com.atms.UserProfile
 
@@ -38,6 +40,9 @@ class BootStrap {
 	def sessionFactory
 	def tournamentService
 	def eventService
+	def tournamentEntryService
+	def eventEntryService
+	def userProfileService
 
 	def grailsCacheManager // generic grails cache manager (contains ehcache cache manager)
 	CacheManager ehcacheCacheManager // uses DataSource properties to register mbean
@@ -57,62 +62,25 @@ class BootStrap {
 		loginAsAdmin()
 		grantPermissions()
 		
-
-		// create via service
-		def tournament5 = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", startDate: df.parse('05/16/2016'), endDate: df.parse('05/17/2016'), starLevel: 4)
-		fillOtherTournamentDefaults (tournament5, "Swavek Lorenc", "swaveklorenc@yahoo.com")
-		
-		tournament5.lateEntryStartDate = df.parse ('04/27/2016')
-		Map params1 = [:];
-		tournamentService.create(tournament5, params1)
-		
-		Map paramsE = [:];
-		
-		def event1 = new Event(ordinalNumber: 1, name:'Open Singles', day: 1, startTime: 9.0, feeAdult: 32.0, feeJunior: 28.0) 
-		event1.tournament = tournament5
-		eventService.create(event1, paramsE)
-		
-		def event2 = new Event(ordinalNumber: 2, name:'U2600', day: 1, startTime: 11.5, maxPlayerRating: 2599, feeAdult: 32.0, feeJunior: 28.0) 
-		event2.tournament = tournament5
-		eventService.create(event2, paramsE)
-
-		def event3 = new Event(ordinalNumber: 3, name:'U2200', day: 2, startTime: 16.0, maxPlayerRating: 2199, feeAdult: 32.0, feeJunior: 28.0) 
-		event3.tournament = tournament5
-		eventService.create(event3, paramsE)
-		
-		def event4 = new Event(ordinalNumber: 4, name:'U2100', day: 2, startTime: 14.0, maxPlayerRating: 2099, feeAdult: 32.0, feeJunior: 28.0) 
-		event4.tournament = tournament5
-		eventService.create(event4, paramsE)
-		
-		def event5 = new Event(ordinalNumber: 5, name:'U1900', day: 1, startTime: 11.5, maxPlayerRating: 1899, feeAdult: 28.0, feeJunior: 25.0) 
-		event5.tournament = tournament5
-		eventService.create(event5, paramsE)
-		
-		def event6 = new Event(ordinalNumber: 6, name:'U1700', day: 2, startTime: 9.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 25.0) 
-		event6.tournament = tournament5
-		eventService.create(event6, paramsE)
-		
-		def event7 = new Event(ordinalNumber: 7, name:'U1600', day: 2, startTime: 11.0, maxPlayerRating: 1599, feeAdult: 28.0, feeJunior: 25.0)
-		event7.tournament = tournament5
-		eventService.create(event7, paramsE)
-		
-		def event8 = new Event(ordinalNumber: 8, name:'Women Singles', day: 2, startTime: 11.0, genderRestriction: GenderRestriction.FEMALE, feeAdult: 25.0, feeJunior: 22.0)
-		event8.tournament = tournament5
-		eventService.create(event8, paramsE)
-
-		def event9 = new Event(ordinalNumber: 9, name:'Boys Under 18', day: 1, startTime: 9.0, genderRestriction: GenderRestriction.MALE, maxPlayerAge: 17, feeAdult: 0, feeJunior: 20.0)
-		event9.tournament = tournament5
-		eventService.create(event9, paramsE)
-
-		def event10 = new Event(ordinalNumber: 10, name:'40 and Over', day: 1, startTime: 11.0, minPlayerAge: 40, feeAdult: 32.0, feeJunior: 0)
-		event10.tournament = tournament5
-		eventService.create(event10, paramsE)
-
+		if (Environment.current != Environment.TEST) {
+			int countExisting = UsattProfile.count()
+			if (countExisting > 0) {
+				println countExisting + " players already imported.  Skipping import"
+			} else {
+				importPlayerData()
+			}
+		}
 		sessionFactory.currentSession.flush()
 		
-		def paramsT = [ tournament : tournament5.id]
-		def tournamentCheck = tournamentService.list(paramsT)
-		def events = tournamentCheck.events
+		if (Environment.current != Environment.TEST) {
+			def tournament5 = configureAuroraCup ()
+	
+			sessionFactory.currentSession.flush()
+			
+			def paramsT = [ tournament : tournament5.id]
+			def tournamentCheck = tournamentService.list(paramsT)
+			def events = tournamentCheck.events
+		}
 
 		// logout
 		SCH.clearContext()
@@ -124,21 +92,213 @@ class BootStrap {
 
 		def tournament6 = new Tournament (name: "U.S.Open", venue: 'Las Vegas Convention Center', address: '123 W. Strip Ave', city: "Las Vegas", state: "NV", startDate: df.parse('07/11/2015'), endDate: df.parse('07/16/2015'), starLevel: 5)
 		fillOtherTournamentDefaults (tournament6, "Tiffany Oldland", "tiffanyol@yahoo.com")
+		Map params1 = [:]
 		tournamentService.create(tournament6, params1)
-		
-		if (Environment.current != Environment.TEST) {
-			int countExisting = UsattProfile.count()
-			if (countExisting > 0) {
-				println countExisting + " players already imported.  Skipping import"
-			} else {
-				importPlayerData()
-			}
-		}
-		sessionFactory.currentSession.flush()
 		
 		// logout
 		SCH.clearContext()
 	}
+	
+	def configureAuroraCup () {
+		println 'Configuring 2016 Aurora Cup tournament'
+		// create via service
+		Tournament tournament = new Tournament (name: "2016 Aurora Cup", venue: 'Vaughan Athletic Center', address: '2121 W. Indian Trail', city: "Aurora", state: "IL", 
+			startDate: df.parse('05/16/2016'), endDate: df.parse('05/17/2016'), starLevel: 4)
+		fillOtherTournamentDefaults (tournament, "Swavek Lorenc", "swaveklorenc@yahoo.com")
+		tournament.lateEntryStartDate = df.parse ('04/27/2016')
+		Map params1 = [:];
+		tournamentService.create(tournament, params1)
+		
+		int ordinalNum = 0
+		def eventsMap = [:]
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 3800 Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 18 Youth', day: 1, startTime: 18.5, maxPlayerAge: 17, feeAdult: 0, feeJunior: 20.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Over 50 RR', day: 1, startTime: 18.5, minPlayerAge: 50, feeAdult: 32.0, feeJunior: 0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1500 RR', day: 1, startTime: 18.5, maxPlayerRating: 1499, feeAdult: 28.0, feeJunior: 28.0))
+		
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Singles RR', day: 2, startTime: 9.0, feeAdult: 46.0, feeJunior: 46.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1200 RR', day: 2, startTime: 9.0, maxPlayerRating: 1199, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR', day: 2, startTime: 11.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR', day: 2, startTime: 11.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1400 RR', day: 2, startTime: 11.5, maxPlayerRating: 1399, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2000 RR', day: 2, startTime: 14.0, maxPlayerRating: 1999, feeAdult: 32.0, feeJunior: 32.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 14 Youth', day: 2, startTime: 14.0, maxPlayerAge: 14, feeAdult: 0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2300 RR', day: 2, startTime: 16.0, maxPlayerRating: 2299, feeAdult: 32.0, feeJunior: 32.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under  800 RR', day: 2, startTime: 17.5, maxPlayerRating: 799, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1800 RR', day: 2, startTime: 18.0, maxPlayerRating: 1799, feeAdult: 28.0, feeJunior: 28.0))
+		
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2600 RR', day: 3, startTime: 9.0, maxPlayerRating: 2599, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'40 and Over', day: 3, startTime: 9.0, minPlayerAge: 40, feeAdult: 32.0, feeJunior: 0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2100 RR', day: 3, startTime: 11.0, maxPlayerRating: 2099, feeAdult: 32.0, feeJunior: 32.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1600 RR', day: 3, startTime: 11.0, maxPlayerRating: 1599, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2400 RR', day: 3, startTime: 13.0, maxPlayerRating: 2399, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1750 RR', day: 3, startTime: 13.5, maxPlayerRating: 1749, feeAdult: 28.0, feeJunior: 28.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2200 RR', day: 3, startTime: 15.0, maxPlayerRating: 2199, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1000 RR', day: 3, startTime: 16.0, maxPlayerRating: 999, feeAdult: 28.0, feeJunior: 28.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Women Singles RR', day: 3, startTime: 16.0, genderRestriction: GenderRestriction.FEMALE, feeAdult: 28.0, feeJunior: 28.0))
+		// early start ??
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0))
+		
+		importPlayers (tournament, eventsMap)
+		
+		return tournament
+	}
+	
+	def makeEvent (Tournament tournament, Map eventsMap,  Event event) {
+		event.tournament = tournament
+		def paramsE = [:]
+		eventService.create(event, paramsE)
+		eventsMap[event.name] = event
+	}
+	
+	def importPlayers (tournament, eventsMap) {
+		def userRole = SecRole.findByAuthority ('ROLE_USER') ?: new SecRole (authority: 'ROLE_USER').save(failOnError: true)
+		
+		def registrationFileURL = "C:\\grails\\data\\AuroraCupPlayers.html"
+		println 'Registering players for Aurora Cup'
+		Date today = new Date()
+		def page = new XmlSlurper(new org.cyberneko.html.parsers.SAXParser()).parse(registrationFileURL)
+		int count = 0
+		int fakeMemberId = 91000
+		// find all nodes
+		def node = page.'**'.grep {
+			//	<tr>
+			//		<td Align="Left" title="Club: Wheaton TTC"><a
+			//			href="http://www.omnipong.com/T-tourney.asp?t=102&r=210&h=nh&e=11|24|"
+			//			target="_self">Adarkwa, Sam</a></td>
+			//		<td Align="Center">1542</td>
+			//		<td Align="Left"><b title="Under 1800 RR">&nbsp;&nbsp;U1800</b>&nbsp;&nbsp;<b
+			//			title="Over 50 RR">&nbsp;&nbsp;OVR50</b>&nbsp;&nbsp;</td>
+			//	</tr>
+//			 println "it.name() = " + it.name() + " it.@class.toString() = " + it.@class.toString()
+			if (it.name().equals("TR")) {
+				def tournamentEntry = new TournamentEntry()
+				tournamentEntry.dateEntered = today
+				tournamentEntry.membershipOption = 0
+				tournamentEntry.tournament = tournament
+				tournamentEntry = tournamentEntryService.create(tournamentEntry, [:])
+				String cLastName = null
+				String cFirstName = null
+				//println "adding player "
+				it.TD.eachWithIndex { td, index ->
+					switch (index) {
+						case 0:
+							String club = td.@title.toString()
+							//println 'club ' + club
+							def a = td.A
+							String lastFirstName = a.text()
+							String [] names = lastFirstName.split(",")
+							cLastName = names[0].trim()
+							cFirstName = names[1].trim()
+							//println "last name " + lastName + " first name " + firstName
+						break;
+						
+						case 1:
+							String rating = td.text()
+							//println 'rating ' + rating
+							tournamentEntry.eligibilityRating = rating as Integer
+							tournamentEntry.seedRating = tournamentEntry.eligibilityRating
+							break;
+							
+						case 2:
+							//tournamentEntry.eventEntries = []
+							//print "events "
+							td.B.each { b ->
+								String eventName = b.@title.toString().trim()
+								//print eventName + " "
+								def eventEntry = new EventEntry()
+								eventEntry.status = EventEntry.EntryStatus.CONFIRMED
+								eventEntry.dateEntered = today
+								eventEntry.availabilityStatus = EventEntry.AvailabilityStatus.ENTERED
+								int doubles = eventName.indexOf(' - Partner:');
+								if (doubles != -1) {
+									eventName = eventName.substring(0, doubles).trim()
+								}
+								eventEntry.event = eventsMap[eventName]
+								if (eventEntry.event != null) {
+									eventEntry.fee = eventEntry.event.feeAdult
+									eventEntry.tournamentEntry = tournamentEntry
+									eventEntryService.create(eventEntry, [:])
+								} else {
+									println 'event ' + eventName + " not found"
+								}							
+							}
+							//println ""
+						break;
+					}
+				}
+//				String firstLastName = cFirstName + " " + cLastName
+//				firstLastName = firstLastName.trim()
+//				def userProfile = userProfileService.findByFirstLastName(firstLastName)
+//				if (userProfile != null) {
+////				def userProfiles = UserProfile.where {firstName == cFirstName && lastName == cLastName}.list()
+////				if (userProfiles != null && userProfiles.size() >= 1) {
+//					println 'profile FOUND for ' + cFirstName + " " + cLastName
+////					def userProfile = userProfiles.get(0)
+//					userProfile.addToTournamentEntries(tournamentEntry)
+//					userProfile.save(failOnError: true)
+////					if (userProfiles.size() > 1) {
+////						println 'Duplicate profiles found for '  + cFirstName + " " + cLastName 
+////					}
+//				} else {
+////					println "Creating user profile for " + cFirstName + " " + cLastName
+					// now save the User profile so we can enter users in
+//					fakeMemberId++
+//					def userProfile = new UserProfile ()
+//					userProfile.firstName = cFirstName
+//					userProfile.lastName = cLastName
+//					userProfile.dateOfBirth =  new Date()
+//					userProfile.usattID = fakeMemberId
+//					userProfile.expirationDate = new Date()
+//					userProfile.email = 'abc@yahoo.com'
+//					userProfile.phone = '630-111-22222'
+//					userProfile.streetAddress = "123 Nice street"
+//					userProfile.city = 'Aurora'
+//					userProfile.state = 'IL'
+//					userProfile.zipCode = '60504'
+//					userProfile.country = 'USA'
+//					userProfile.gender = 'M'
+//					userProfile.club = 'FVTTC'
+//					userProfile.save(failOnError: true)
+//				
+//					String userName = (!cFirstName.isEmpty())? cFirstName.toLowerCase().charAt(0) : ""
+//					userName += cLastName.toLowerCase().trim()
+//					userName += fakeMemberId
+//					String email = userName + '@yahoo.com'
+//					def user = SecUser.findByUsername(userName)
+//					if (user == null) {
+//						user = new SecUser()
+//						user.username = userName
+//						user.enabled = true
+//						user.password = userName
+//						user.email = email
+//						user.save(failOnError: true)
+//					}
+//					if (!user.authorities.contains(userRole)) {
+//						SecUserSecRole.create(user, userRole, true)
+//					}
+//					user.userProfile = userProfile
+//					user.save(failOnError: true)
+//				}
+				
+				count++
+				if (count % 20 == 0) {
+					println 'Registered ' + count + ' players'
+					cleanUpGorm()
+				}
+			}
+		}
+		cleanUpGorm()
+		
+		println 'Registered a total of ' + count + ' players'
+		Date end = new Date();
+		TimeDuration td = TimeCategory.minus( end, today )
+
+		println 'Done importing registrations ' + td 
+	}
+	
 
 	def createUsers () {
 		def userRole = SecRole.findByAuthority ('ROLE_USER') ?: new SecRole (authority: 'ROLE_USER').save(failOnError: true)
@@ -275,10 +435,18 @@ class BootStrap {
 		tournament.accounts.add (account)
 		tournament.stripeKey = account.stripePublicKey
 	}
+	
+	def cleanUpGorm () {
+		def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
+		def session = sessionFactory.currentSession
+		session.flush()
+		session.clear()
+		propertyInstanceMap.get().clear()
+
+	}
 
 	def importPlayerData() {
 		Date start = new Date();
-		def propertyInstanceMap = org.codehaus.groovy.grails.plugins.DomainClassGrailsPlugin.PROPERTY_INSTANCE_MAP
 		
 		println "Importing USATT player data"
 		def xmlFile = "C:\\grails\\data\\USATT_Membership.xml"
@@ -292,10 +460,7 @@ class BootStrap {
 			
 			// push into database to speed things up
 			if (count % 100 == 0) {
-				def session = sessionFactory.currentSession
-				session.flush()
-				session.clear()
-				propertyInstanceMap.get().clear()
+				cleanUpGorm()
 			}
 
 			if (count % 1000 == 0) {
@@ -325,28 +490,26 @@ class BootStrap {
 			String country = table.Country.text() ?: 'USA'
 			String gender = table.Sex.text() ?: 'M'
 			int rating = table.Rating.toInteger();
-			def up = new UsattProfile()
-			up.lastName = lastName
-			up.firstName = firstName
-			up.middleName = middleName
-			up.address1 = address1
-			up.address2 = address2
-			up.city = city
-			up.state = state
-			up.zipCode = zipCode
-			up.country = country
-			up.gender = gender
-			up.dateOfBirth = dateOfBirth
-			up.rating = rating
-			up.expirationDate = expirationDate
-			up.lastPlayedDate = lastPlayed
-			up.save(failOnError: true)
+			def usattProfile = new UsattProfile()
+			usattProfile.lastName = lastName
+			usattProfile.firstName = firstName
+			usattProfile.middleName = middleName
+			usattProfile.address1 = address1
+			usattProfile.address2 = address2
+			usattProfile.city = city
+			usattProfile.state = state
+			usattProfile.zipCode = zipCode
+			usattProfile.country = country
+			usattProfile.gender = gender
+			usattProfile.dateOfBirth = dateOfBirth
+			usattProfile.rating = rating
+			usattProfile.expirationDate = expirationDate
+			usattProfile.lastPlayedDate = lastPlayed
+			usattProfile.save(failOnError: true)
+			
 		}
 
-		def session = sessionFactory.currentSession
-		session.flush()
-		session.clear()
-		propertyInstanceMap.get().clear()
+		cleanUpGorm()
 
 		Date end = new Date();
 		TimeDuration td = TimeCategory.minus( end, start )
