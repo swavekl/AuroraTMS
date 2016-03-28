@@ -263,9 +263,9 @@
 		}
 		
 		// calculate total number of players
-		$scope.totalPlayers = 0;
+		$scope.totalEventEntries = 0;
 		for (var i = 0; i < $scope.eventInfoList.length; i++) {
-			$scope.totalPlayers += $scope.eventInfoList[i].players;
+			$scope.totalEventEntries += $scope.eventInfoList[i].players;
 		}
 		
 		// calculate total number of available event spots for the tournament
@@ -275,7 +275,7 @@
 		}
 
 		// indicates if the number of sign-up players is equal to number of available tournament spots
-		$scope.maxPlayersReached = ($scope.totalPlayers == $scope.totalAvailableEventSpots);
+		$scope.maxPlayersReached = ($scope.totalEventEntries == $scope.totalAvailableEventSpots);
 
 		//
 		// is the tournament closed for registration (either the number of entries reached max or sign-up cutoff date is in the past)

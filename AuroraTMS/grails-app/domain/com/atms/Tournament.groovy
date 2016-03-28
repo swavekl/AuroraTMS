@@ -56,7 +56,10 @@ class Tournament {
 	
 	// stripe key used for charging/refunding
 	String stripeKey
-	
+
+	// count of players who entered a tournament - added here so we can send it back when requested
+	int entriesCount
+
 	// tournament owns events, tournamentEntries, and multiple payment accounts
 	static hasMany = [events:Event, tournamentEntries: TournamentEntry, accounts:Account]
 

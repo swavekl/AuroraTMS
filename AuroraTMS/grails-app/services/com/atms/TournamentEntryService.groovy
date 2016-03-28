@@ -130,5 +130,18 @@ class TournamentEntryService {
 
 		TournamentEntry.list params
 	}
+	
+	/**
+	 * Gets count of entries in a tournament
+	 * @param tournamentId
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	int getTournamentEntriesCount (long tournamentId) {
+		def c = TournamentEntry.createCriteria()
+		return c.count {
+			eq("tournament.id", tournamentId)
+		}
+	}
 }
 
