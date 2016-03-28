@@ -9,6 +9,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class EventController extends RestfulController {
 
 	def eventService
+	def eventEntryService
 	
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -25,6 +26,23 @@ class EventController extends RestfulController {
 	def index(Integer max) {
         params.max = Math.min(max ?: 10, 100)
 		def eventList = eventService.list(params)
+		if (params.tournamentId != null) {
+			def eventInfoList = []
+			def tournamentId = params.tournamentId as Long
+			def entriesCountsMap = eventEntryService.getEventEntriesCount(tournamentId, EventEntry.EntryStatus.CONFIRMED)
+			
+			eventList.each() { event ->
+				Long eventId = event.id
+				Long count = entriesCountsMap[eventId] as Long
+				count = (count != null) ? count : 0
+				EventInfo eventInfo = new EventInfo()
+				eventInfo.confirmedEntriesCount = count
+				org.springframework.beans.BeanUtils.copyProperties (event, eventInfo)
+				eventInfoList.add(eventInfo)
+			}
+			eventList = eventInfoList
+		}
+
         respond eventList, [status: OK]
     }
 	

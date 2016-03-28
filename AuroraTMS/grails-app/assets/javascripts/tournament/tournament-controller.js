@@ -246,8 +246,7 @@
 					singleElimination: event.singleElimination,
 					doubles: event.doubles,
 					maxEntries: event.maxEntries,
-					players: 1, 
-					maxPlayers: 32
+					players: (event.confirmedEntriesCount != undefined) ? event.confirmedEntriesCount : 0 
 					};
 			return eventInfo;
 		}

@@ -74,7 +74,7 @@ class BootStrap {
 		
 		if (Environment.current != Environment.TEST) {
 			def tournament5 = configureAuroraCup ()
-	
+			
 			sessionFactory.currentSession.flush()
 			
 			def paramsT = [ tournament : tournament5.id]
@@ -108,38 +108,38 @@ class BootStrap {
 		tournament.lateEntryStartDate = df.parse ('04/27/2016')
 		Map params1 = [:];
 		tournamentService.create(tournament, params1)
-		
+		println 'tournament id for Aurora Cup is ' + tournament.id
 		int ordinalNum = 0
 		def eventsMap = [:]
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 3800 Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 18 Youth', day: 1, startTime: 18.5, maxPlayerAge: 17, feeAdult: 0, feeJunior: 20.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Over 50 RR', day: 1, startTime: 18.5, minPlayerAge: 50, feeAdult: 32.0, feeJunior: 0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1500 RR', day: 1, startTime: 18.5, maxPlayerRating: 1499, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 32)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 3800 Doubles RR', day: 1, startTime: 18.5, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 32)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 18 Youth', day: 1, startTime: 18.5, maxPlayerAge: 17, feeAdult: 0, feeJunior: 20.0, maxEntries: 16))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Over 50 RR', day: 1, startTime: 18.5, minPlayerAge: 50, feeAdult: 32.0, feeJunior: 0, maxEntries: 20))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1500 RR', day: 1, startTime: 18.5, maxPlayerRating: 1499, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 28))
 		
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Singles RR', day: 2, startTime: 9.0, feeAdult: 46.0, feeJunior: 46.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1200 RR', day: 2, startTime: 9.0, maxPlayerRating: 1199, feeAdult: 28.0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR', day: 2, startTime: 11.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR', day: 2, startTime: 11.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1400 RR', day: 2, startTime: 11.5, maxPlayerRating: 1399, feeAdult: 28.0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2000 RR', day: 2, startTime: 14.0, maxPlayerRating: 1999, feeAdult: 32.0, feeJunior: 32.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 14 Youth', day: 2, startTime: 14.0, maxPlayerAge: 14, feeAdult: 0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2300 RR', day: 2, startTime: 16.0, maxPlayerRating: 2299, feeAdult: 32.0, feeJunior: 32.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under  800 RR', day: 2, startTime: 17.5, maxPlayerRating: 799, feeAdult: 28.0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1800 RR', day: 2, startTime: 18.0, maxPlayerRating: 1799, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Open Singles RR', day: 2, startTime: 9.0, feeAdult: 46.0, feeJunior: 46.0, maxEntries: 44)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1200 RR', day: 2, startTime: 9.0, maxPlayerRating: 1199, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 36))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR', day: 2, startTime: 11.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 64)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR', day: 2, startTime: 11.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 48))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1400 RR', day: 2, startTime: 11.5, maxPlayerRating: 1399, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 40))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2000 RR', day: 2, startTime: 14.0, maxPlayerRating: 1999, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 64))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 14 Youth', day: 2, startTime: 14.0, maxPlayerAge: 14, feeAdult: 0, feeJunior: 28.0, maxEntries: 16))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2300 RR', day: 2, startTime: 16.0, maxPlayerRating: 2299, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 64))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under  800 RR', day: 2, startTime: 17.5, maxPlayerRating: 799, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 32))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1800 RR', day: 2, startTime: 18.0, maxPlayerRating: 1799, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 64))
 		
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2600 RR', day: 3, startTime: 9.0, maxPlayerRating: 2599, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'40 and Over', day: 3, startTime: 9.0, minPlayerAge: 40, feeAdult: 32.0, feeJunior: 0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2100 RR', day: 3, startTime: 11.0, maxPlayerRating: 2099, feeAdult: 32.0, feeJunior: 32.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1600 RR', day: 3, startTime: 11.0, maxPlayerRating: 1599, feeAdult: 28.0, feeJunior: 28.0))
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2400 RR', day: 3, startTime: 13.0, maxPlayerRating: 2399, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1750 RR', day: 3, startTime: 13.5, maxPlayerRating: 1749, feeAdult: 28.0, feeJunior: 28.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2200 RR', day: 3, startTime: 15.0, maxPlayerRating: 2199, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1000 RR', day: 3, startTime: 16.0, maxPlayerRating: 999, feeAdult: 28.0, feeJunior: 28.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Women Singles RR', day: 3, startTime: 16.0, genderRestriction: GenderRestriction.FEMALE, feeAdult: 28.0, feeJunior: 28.0))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2600 RR', day: 3, startTime: 9.0, maxPlayerRating: 2599, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 32)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'40 and Over', day: 3, startTime: 9.0, minPlayerAge: 40, feeAdult: 32.0, feeJunior: 0, maxEntries: 28))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2100 RR', day: 3, startTime: 11.0, maxPlayerRating: 2099, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 64))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1600 RR', day: 3, startTime: 11.0, maxPlayerRating: 1599, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 48))
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2400 RR', day: 3, startTime: 13.0, maxPlayerRating: 2399, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 48)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1750 RR', day: 3, startTime: 13.5, maxPlayerRating: 1749, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 48)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 2200 RR', day: 3, startTime: 15.0, maxPlayerRating: 2199, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 64)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1000 RR', day: 3, startTime: 16.0, maxPlayerRating: 999, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 32)) 
+		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Women Singles RR', day: 3, startTime: 16.0, genderRestriction: GenderRestriction.FEMALE, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 8))
 		// early start ??
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0)) 
-		makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0))
+		//makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1900 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1899, feeAdult: 32.0, feeJunior: 32.0, maxEntries: 8)) 
+		//makeEvent(tournament, eventsMap, new Event(ordinalNumber: ++ordinalNum, name:'Under 1700 RR 9 AM start', day: 2, startTime: 9.0, maxPlayerRating: 1699, feeAdult: 28.0, feeJunior: 28.0, maxEntries: 8))
 		
 		importPlayers (tournament, eventsMap)
 		

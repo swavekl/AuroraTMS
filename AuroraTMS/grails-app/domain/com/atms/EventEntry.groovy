@@ -24,7 +24,7 @@ class EventEntry {
 	// price per event dependent on age or other criteria
 	float fee
 
-	static transients = [ "availabilityStatus", "price" ]
+	static transients = [ "availabilityStatus", "fee" ]
 
 	// reference property back to TournamentEntry FK created in database, cascading saves and deletes from TournamentEntry
 	static belongsTo = [tournamentEntry: TournamentEntry]

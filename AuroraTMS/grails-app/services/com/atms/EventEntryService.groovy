@@ -291,6 +291,35 @@ class EventEntryService {
 	}
 	
 	/**
+	 * Gets count of players in each event of the specified tournament
+	 * 
+	 * @param tournamentId id of tournament to get this information for
+	 * @param status confirmed, waiting list or pending payment status
+	 * @return map of event id to count of entries in this event
+	 */
+	def Map getEventEntriesCount (long tournamentId, EventEntry.EntryStatus status) {
+		// TODO: IN clause has limit of 1000 so need to rework this to use a join
+		String query = $/
+			 select 
+			 ee.event.id as eventId, 
+			 count(ee.event.id) AS countEntries 
+			 from EventEntry ee 
+			 where ee.status = :status and  
+			 ee.tournamentEntry.id IN 
+			 (select te.id from TournamentEntry te where te.tournament.id = :tournamentId) 
+			 group by ee.event.id
+		/$
+		List queryResults = EventEntry.executeQuery(query, [status: status, tournamentId: tournamentId])
+
+		// convert into a map of eventId to count
+		def map = [:]
+		queryResults.each() {
+			map[it[0]] = it[1]	
+		}
+		return map
+	}
+		
+	/**
 	 * 
 	 * @param eventToEvaluate
 	 * @param eventEntries
