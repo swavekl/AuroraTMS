@@ -211,22 +211,28 @@ class USATTDataSource {
 			 
 			// get the values for the columns and place them in the map of field name to value
 			//  <tr class="user-row list-item"
-//			 println "it.name() = " + it.name() + " it.@class.toString() = " + it.@class.toString()
-			if (it.name().equals("TR") && it.@class.toString().equals("user-row list-item")) {
-				// Name 	Location 	Rating 	USATT # 	Expiration Date
-				// Swavek Lorenc 	Aurora, IL 	1774 	84639 	03/31/2018
-				def fieldToValueMap = [:]
-				// add map to the list of maps
-				listOfRecords.add(fieldToValueMap)
-//				println "adding record and processing its children "
-				it.TD.eachWithIndex { td, index2 ->
-					String fieldValue = td.text()
-					fieldValue = fieldValue.replaceAll("\n", "")
-					fieldValue = fieldValue.trim()
-					fieldValue = fieldValue.replaceAll("  ", " ")
-					String fieldName = indexToFieldMap[index2];
-					fieldToValueMap[fieldName] = fieldValue;
-//					println "fieldToValueMap ['" + fieldName + "'] = '" + fieldValue + "'"
+			 // or 
+			 // <tr class="list-item"
+			 //println "it.name() = " + it.name() + " it.@class.toString() = " + it.@class.toString()
+			if (it.name().equals("TR")) {
+				String className = it.@class.toString()
+				if (className.equals("list-item") || className.equals("user-row list-item")) {
+					// Name 	Location 	Rating 	USATT # 	Expiration Date
+					// Swavek Lorenc 	Aurora, IL 	1774 	84639 	03/31/2018
+					def fieldToValueMap = [:]
+					// add map to the list of maps
+					listOfRecords.add(fieldToValueMap)
+	//				println "adding record and processing its children "
+					it.TD.eachWithIndex { td, index2 ->
+						String fieldValue = td.text()
+						fieldValue = fieldValue.replaceAll("\n", "")
+						fieldValue = fieldValue.trim()
+						fieldValue = fieldValue.replaceAll("  ", " ")
+						String fieldName = indexToFieldMap[index2];
+						fieldToValueMap[fieldName] = fieldValue;
+	//					println "fieldToValueMap ['" + fieldName + "'] = '" + fieldValue + "'"
+					}
+	
 				}
 			}
 		}
