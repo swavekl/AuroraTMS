@@ -9,8 +9,6 @@ gulp.task('default', ['build']);
 
 gulp.task('build', ['build:js', 'build:js-min', 'build:css', 'build:css-min']);
 
-var rubySassOptions = {'sourcemap=none': true};
-
 gulp.task('templates', function() {
   return gulp.src('src/**/*.html')
     .pipe($.angularTemplatecache({
@@ -44,17 +42,24 @@ gulp.task('build:js-min', ['templates'], function() {
 });
 
 gulp.task('build:css', function() {
-  return gulp.src('./src/**/*.scss')
-    .pipe($.rubySass(rubySassOptions))
+  return $.rubySass('./src/', {'sourcemap': true})
+    .on('error', function (err) {
+      console.error('Error', err.message);
+    })
     .pipe($.concat('angular-material-components.css'))
+    .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./dist/'));
+
 });
 
 gulp.task('build:css-min', function() {
-  return gulp.src('./src/**/*.scss')
-    .pipe($.rubySass(rubySassOptions))
+  return $.rubySass('./src/')
+    .on('error', function (err) {
+      console.error('Error', err.message);
+    })
     .pipe($.concat('angular-material-components.min.css'))
     .pipe($.csso())
+    .pipe($.sourcemaps.write())
     .pipe(gulp.dest('./dist/'));
 });
 

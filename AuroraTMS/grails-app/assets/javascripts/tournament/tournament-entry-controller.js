@@ -147,7 +147,7 @@
 		$scope.membershipWillExpire = false;
 		
 		// check if new USATT member
-		if ($scope.userProfile.usattID == 0 || $scope.userProfile.usattID > 90000) {
+		if ($scope.userProfile.usattID == 0 || $scope.userProfile.usattID > 900000) {
 			$scope.isNewMember = true;
 		} else {
 			// check if expires before tournament

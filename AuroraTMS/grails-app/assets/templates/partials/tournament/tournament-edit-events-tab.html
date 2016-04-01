@@ -1,79 +1,58 @@
-<md-data-table-container>
-  <table md-data-table md-row-select="selected" md-progress="deferred">
-    <thead md-order="query.order">
-      <tr>
-        <th name="Number" order-by="ordinaNumber"></th>
-        <th name="Name" order-by="name"></th>
-        <th name="Day & Time" order-by="eventDateTime"></th>
-        <th name="Players"></th>
-        <th name="Free Spots"></th>
-        <th name=" "></th>
-        <th name=" "></th>
+<md-table-container id="events-table">
+  <table md-table>
+    <thead md-head md-order="query.order">
+      <tr md-row>
+        <th md-column order-by="ordinaNumber">#</th>
+        <th md-column>Edit</th>
+        <th md-column>Delete</th>
+        <th md-column order-by="name">Name</th>
+        <th md-column order-by="eventDateTime">Day & Time</th>
+        <th md-column>Max Spots</th>
+        <th md-column>Players</th>
+        <th md-column>Free Spots</th>
+        <th md-column> </th>
       </tr>
     </thead>
-    <tbody>
-      <tr ng-repeat="event in eventInfoList | orderBy: query.order">
-        <td>{{event.ordinalNumber}}</td>
-        <td>{{event.name}}</td>
-        <td>{{event.eventDateTime}}</td>
-        <td>{{event.players | number}}</td>
-        <td>{{event.maxPlayers | number}}</td>
-		<td>
-		<td>
+    <tbody md-body>
+      <tr md-row ng-repeat="event in eventInfoList | orderBy: query.order | limitTo: query.limit: (query.page - 1) * query.limit">
+        <td md-cell>{{event.ordinalNumber}}</td>
+		<td md-cell>
 	        <md-button class="md-icon-button" aria-label="Edit" ng-click="editEvent(event, $event)">
 	          <ng-md-icon icon="create">
 	          </ng-md-icon> 
 	          	<md-tooltip>Edit event</md-tooltip> 
 	        </md-button>
 		</td>
-		<td>
+		<td md-cell>
 	        <md-button class="md-icon-button" aria-label="Delete" ng-click="deleteEvent(event, $event)">
 	          <ng-md-icon icon="delete">
 	          </ng-md-icon> 
 	          	<md-tooltip>Delete event</md-tooltip> 
 	        </md-button>
 		</td>
+        <td md-cell>{{event.name}}</td>
+        <td md-cell>{{event.eventDateTime}}</td>
+        <td md-cell>{{event.maxEntries | number}}</td>
+        <td md-cell>{{event.players | number}}</td>
+        <td md-cell>{{(event.maxEntries - event.players) | number}}</td>
+        <td md-cell>&nbsp;&nbsp;&nbsp;</td>
       </tr>
     </tbody>
  </table>
-</md-data-table-container>
+</md-table-container>
 
+<md-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{eventInfoList.length}}"></md-table-pagination>
 
-<div layout="row">
+	<md-button class="md-fab md-fab-top-right"
+			aria-label="Add" ng-click="addEvent($event)"> <ng-md-icon
+			icon="add"></ng-md-icon> 
+	</md-button>
+
+<!-- <div layout="row">
   <span flex="45"></span>
 	<span flex="25">Total players: {{tournament.entriesCount}}</span>
   <span flex="30"></span>
 </div>
-<md-button class="md-fab md-fab-top-right"
-		aria-label="Add" ng-click="addEvent($event)"> <ng-md-icon
-		icon="add"></ng-md-icon> </md-button>
-
-<!-- <md-data-table-toolbar>
-  <span flex></span>
-  <md-button type="submit" class="md-raised md-primary" ng-click="addEvent($event)">Add Event</md-button>
-</md-data-table-toolbar>
- --><!-- <md-data-table-pagination md-limit="query.limit" md-page="query.page" md-total="{{eventInfoList.length}}" md-trigger="onPaginationChange"></md-data-table-pagination>
  -->
-
  
-<!-- 
-	<md-whiteframe class="md-whiteframe-3dp" flex="25" layout-margin>
-	<md-content layout="row" layout-align="end center" layout-padding>
-	<md-button type="submit" class="md-raised md-primary"
-		ng-click="addEvent($event)">Add Event</md-button> </md-content>
-	<div ng-show="eventInfoList.length == 0">No events are configured
-		for this tournament. Press Add to add event.</div>
-	<md-content> <md-list> <md-list-item
-		class="md-3-line" ng-repeat="event in eventInfoList"
-		ng-click="editEvent(event, $event)">
-	<div class="md-list-item-text">
-		<h3>{{event.name}}</h3>
-		<h4>{{event.eventDateTime}}</h4>
-		<h4>Players / Free Spots: {{event.players }} / {{event.maxPlayers
-			- event.players}}</h4>
-	</div>
-	<md-icon md-svg-icon="delete" ng-click="deleteEvent(event, $event)"
-		class="md-secondary md-hue-3" aria-label="Delete"> <md-tooltip>Delete event</md-tooltip> </md-icon> 
-	<md-divider></md-divider> </md-list-item> </md-list> </md-content> </md-whiteframe> 
-	
-	-->
+
