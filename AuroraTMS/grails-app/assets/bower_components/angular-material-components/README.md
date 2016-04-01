@@ -2,6 +2,8 @@
 
 ## Additional components for [Angular Material](https://material.angularjs.org/)
 
+[![npm version](http://img.shields.io/npm/v/angular-material-components.svg?style=flat)](https://npmjs.org/package/angular-material-components) 
+
 [Angular Material](https://material.angularjs.org/) still lacks some components, like date picker and select dropdown. 
 This project aims to bring those missing components.
 

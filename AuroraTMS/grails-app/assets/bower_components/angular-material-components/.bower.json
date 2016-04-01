@@ -1,6 +1,6 @@
 {
   "name": "angular-material-components",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "homepage": "https://github.com/Toilal/angular-material-components",
   "authors": [
     "Rémi Alvergnat <toilal.dev@gmail.com> (http://www.pragmasphere.com)"
@@ -31,14 +31,14 @@
   "devDependencies": {
     "bourbon": "~4.1.1"
   },
-  "_release": "0.0.1",
+  "_release": "0.1.0",
   "_resolution": {
     "type": "version",
-    "tag": "v0.0.1",
-    "commit": "b2744cd94b0b26499e952d87dfe146e4773743de"
+    "tag": "v0.1.0",
+    "commit": "d279fec689d2de26cdc791b176ddf511086af9b3"
   },
   "_source": "git://github.com/Toilal/angular-material-components.git",
-  "_target": "~0.0.1",
+  "_target": "0.1.0",
   "_originalSource": "angular-material-components",
   "_direct": true
 }

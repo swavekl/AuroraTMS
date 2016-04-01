@@ -4,19 +4,21 @@ var gulp = require('gulp'),
     uglify = require('gulp-uglify'),
     less = require('gulp-less'),
     rename = require('gulp-rename'),
-    minify = require('gulp-minify-css'),
+    minify = require('gulp-cssnano'),
     sourcemaps = require('gulp-sourcemaps'),
     wrap = require('gulp-wrap'),
     concat = require('gulp-concat'),
+    autoprefixer = require('gulp-autoprefixer'),
     path = require('path');
 
 var outputFolder = 'dist/';
 var moduleName = 'mdPickers';
 
 gulp.task('assets', function() {
-  return gulp.src('src/components/**/*.less')
+  return gulp.src(['src/core/**/*.less', 'src/components/**/*.less'])
         .pipe(concat('mdPickers.less'))
         .pipe(less())
+        .pipe(autoprefixer())
         .pipe(gulp.dest(outputFolder))
         .pipe(rename({suffix: '.min'}))
         .pipe(minify())
@@ -24,7 +26,7 @@ gulp.task('assets', function() {
 });
 
 gulp.task('build-app', function() {  
-    return gulp.src(['src/mdPickers.js', 'src/components/**/*.js'])
+    return gulp.src(['src/mdPickers.js', 'src/core/**/*.js', 'src/components/**/*.js'])
         .pipe(concat('mdPickers.js'))
         .pipe(wrap('(function() {\n"use strict";\n<%= contents %>\n})();'))
         .pipe(sourcemaps.init())
@@ -33,6 +35,10 @@ gulp.task('build-app', function() {
         .pipe(uglify())
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest(outputFolder));
+});
+
+gulp.task('watch', function() {
+    gulp.watch('src/**/*', ['assets', 'build-app']);
 });
 
 gulp.task('default', ['assets', 'build-app']);

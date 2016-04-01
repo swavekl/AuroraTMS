@@ -2,7 +2,7 @@
 	'use strict';
 
 	// configure ui.router routes
-	angular.module('tournament', [ 'ui.router', 'ngResource', 'date-range' ])
+	angular.module('tournament', [ 'ui.router', 'ngResource', 'date-range'])
 
 	.config([ '$stateProvider', '$urlRouterProvider',
 			function($stateProvider, $urlRouterProvider) {
@@ -419,11 +419,10 @@
 		// event list table sorting and pagination
 		//=================================================================================================
 		  $scope.selected = [];
-
 		  $scope.query = {
 		    filter: '',
 		    order: 'ordinaNumber',
-		    limit: 5,
+		    limit: (screen.availHeight > 1000) ? 15 : 10,
 		    page: 1
 		  };
 
