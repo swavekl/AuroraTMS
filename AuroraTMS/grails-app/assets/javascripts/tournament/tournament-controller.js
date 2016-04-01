@@ -470,36 +470,98 @@
         //===================================================================================================
         // Payment Info
         //===================================================================================================
-        $scope.account = accounts[0];
+        
+// I don't know where it gets created. Are we creating accounts here or somewhere else?
+// If here, then we need to check first if one exists and if not, create one
+        
+        // Gateway Types
+		$scope.gatewayTypesArray = [ 'Stripe', 'PayPal' ];        
+        
+        // Default to some payment type
+        if (accounts.length == 0)
+        {
+        	// No account exists so create one now
+        	$scope.account = createAccount();
+        }
+        else
+        {
+        	// Select the first existing account by default
+        	$scope.account = accounts[0];
+        }
 
-//		$scope.account.stripePublicKey = (account.stripePublicKey == "" ? null : account.stripePublicKey);
-//		$scope.account.stripeSecretKey = (account.stripeSecretKey == "" ? null : account.stripeSecretKey);
+		// Switch to the selected account
+		$scope.gatewayTypeSelected = function (gatewayType) {
+			console.log ('Gateway Type ' + gatewayType + ' was Selected');
+			$scope.account = getAccount(gatewayType);
+		}
+
+		// Create a new account
+		function createAccount()
+		{
+			console.log ('Creating a new account');
+			// Needs implementation
+		}
 		
-		$scope.testPayment = function() {
-			console.log ('Testing Payment');
-			if ($scope.account.stripePublicKey == null || $scope.account.stripeSecretKey == null)
+		// Return the account with the gateway type
+        function getAccount(gatewayType) {
+        	for (var i = 0; i < accounts.length; i++)
+        	{
+        		if (accounts[i].gatewayType.name == gatewayType)
+        			return accounts[i];
+        	}
+			console.log ('Payment Type ' + gatewayType + ' not found!');
+        	return null;
+        }
+
+		$scope.testInProgress = false;
+		
+        // Run a transaction test (payment and refund) using the entered payment info for the selected gateway type
+		$scope.testTransaction = function(browserEvent) {
+			browserEvent.preventDefault();
+
+			if ($scope.testInProgress == true)
+				return;
+			
+			$scope.testInProgress = true;
+
+			if ($scope.account.gatewayType.name == 'Stripe')
 			{
-				alert('Please make sure a testing public key is entered');				
+				if ($scope.account.stripePublicKey == null || $scope.account.stripeSecretKey == null)
+				{
+					alert('Please make sure both public and secret keys are entered');
+				}
+				else
+				{
+					console.log ('Testing Payment with ' + $scope.account.gatewayType.name + ' gateway');
+					
+					console.log ('Testing Refund with ' + $scope.account.gatewayType.name + ' gateway');
+				}
 			}
-			else
+			else if ($scope.account.gatewayType.name == 'PayPal')
 			{
-				alert('Testing Payment - Please make sure a testing public key is used');			
+				console.log ('PayPal Testing is not implemented');
+				alert('PayPal Testing is not implemented');
+//				if ($scope.account.payPalKey == null)
+//				{
+//					alert('Please make sure both public and secret keys are entered');
+//				}
+//				else
+//				{
+//					console.log ('Testing Payment with ' + $scope.account.gatewayType.name + ' gateway');
+//					
+//					console.log ('Testing Refund with ' + $scope.account.gatewayType.name + ' gateway');
+//				}
 			}
+			
+			// Move this to a success handler
+			$scope.testInProgress = false;
 		}
 
-		$scope.testRefund = function() {
-			console.log ('Testing Refund');
-			if ($scope.account.stripePublicKey == null || $scope.account.stripeSecretKey == null)
-			{
-				alert('Please make sure a testing secret key is entered');				
-			}
-			else
-			{
-				alert('Testing Payment - Please make sure a testing secret key is used');			
-			}
-		}
+
 		$scope.saveTournamentPaymentInfo = function () {
+			
 			// Implement the save function
+			console.log ('Saving Payment Info');
 		}
 	} 
 	])
