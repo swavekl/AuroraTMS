@@ -13,8 +13,6 @@ import grails.plugin.springsecurity.annotation.Secured
 class EventEntryController extends RestfulController {
 
 	def eventEntryService
-	def eventService
-	def userProfileService
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -41,7 +39,8 @@ class EventEntryController extends RestfulController {
 		} else {
 			eventEntries = eventEntryService.list(params)
 		}
-
+		
+		// convert to infos with additional information
 		def eventEntryInfos = []
 		eventEntries.each {
 			def eventEntryInfo = new EventEntryInfo()
@@ -50,6 +49,7 @@ class EventEntryController extends RestfulController {
 			eventEntryInfo.fee = it.fee
 			eventEntryInfos.push(eventEntryInfo)
 		}
+		
 
 		respond eventEntryInfos, [status: OK]
 	}

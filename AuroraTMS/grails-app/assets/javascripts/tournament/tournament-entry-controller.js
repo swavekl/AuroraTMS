@@ -53,13 +53,14 @@
 							return tournamentEntryResource.list (params).$promise;
 							
 						},
-						tournamentEntry: function(tournamentEntryResource, $stateParams, session, tournamentEntryList) {
+						tournamentEntry: function(tournamentEntryResource, $stateParams, session, tournamentEntryList, userProfile) {
 							console.log ('getting entry or creating a new one');
 							if (tournamentEntryList != null && tournamentEntryList.length == 0) {
-								var params = {tournamentId: $stateParams.tournamentId};
+								var params = {tournamentId: $stateParams.tournamentId, userProfileId: userProfile.id};
 								return tournamentEntryResource.create (params).$promise;
 							} else {
-								return tournamentEntryList[0];
+								var params = {tournamentId: $stateParams.tournamentId, id: tournamentEntryList[0].id};
+								return tournamentEntryResource.get(params).$promise;
 							}
 						},
 						
@@ -431,11 +432,20 @@
 					eventEntry = enteredEventInfo.eventEntry;
 				}
 			}
-
+			
 			if (eventEntry != null) {
 				eventEntry.tournamentEntryId = $scope.tournamentEntry.id
-				console.log ('deleting eventEntry.tournamentEntryId = ' + eventEntry.tournamentEntryId);
+				console.log ('deleting eventEntry.id = ' + eventEntry.id);
 				eventEntryResource.delete (eventEntry, $scope.eventEntryDeleteSuccess, $scope.eventEntryDeleteFailure);
+
+				// remove the deleted event entry from tournament entry list of
+				// entries, so the two are in sync without refreshing from
+				// backend
+				for (var k = 0; k < $scope.tournamentEntry.eventEntries.length; k++) {
+					if ($scope.tournamentEntry.eventEntries[k].id == eventEntry.id) {
+						$scope.tournamentEntry.eventEntries.splice(k, 1);
+					}
+				}
 			}
 		}
 
@@ -453,7 +463,8 @@
 		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
 		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
 		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
-// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9},
+// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1,
+// availableToAdults: 1, membershipType: 9},
 		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
 		                          ];
 
@@ -508,7 +519,8 @@
 				previousTransactionsItems: [], 
 				balanceDue: 0,
 				actionLabel: 'Balance Due'};
-//		$scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00}, {paymentDate: "12/25/2015", amount: -20.00}];
+// $scope.previousTransactions = [{paymentDate: "12/23/2015", amount: 91.00},
+// {paymentDate: "12/25/2015", amount: -20.00}];
 		$scope.previousTransactions = financialTransactions;
 		
 		$scope.updateSummary = function () {
@@ -528,8 +540,8 @@
 
 			// membership (only update this if we are on the membership options
 			// page and membership needs to be paid)
-//			if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
-			if ($scope.needToPayMembership) {
+// if ($scope.needToPayMembership && $scope.getCurrentStepIndex() == 1) {
+			if ($scope.needToPayMembership && eventsTotal > 0) {
 				var membershipItems = [];
 				var membershipName = $scope.selectedMembershipOption.membershipName.substr(0, $scope.selectedMembershipOption.membershipName.length - 3);
 				membershipItems.push ({name: membershipName, price: $scope.selectedMembershipOption.fee});
@@ -540,15 +552,17 @@
 			// other fees
 			if ($scope.tournament.adminFee != 0 || $scope.tournament.lateFee != 0) {
 				var otherFeesItems = [];
-				if ($scope.tournament.adminFee != 0) {
+				if ($scope.tournament.adminFee != 0 && eventsTotal > 0) {
 					otherFeesItems.push ({name: 'Administrative fee', price: $scope.tournament.adminFee});
 					grandTotal += $scope.tournament.adminFee;
 				}
-				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry()) {
+				if ($scope.tournament.lateEntryFee != 0 && $scope.isLateEntry() && eventsTotal > 0) {
 					otherFeesItems.push ({name: 'Late fee', price: $scope.tournament.lateEntryFee});
 					grandTotal += $scope.tournament.lateEntryFee; 
 				}
-				currentItems.push({group: 'Other fees', items: otherFeesItems});
+				if (otherFeesItems.length > 0) {
+					currentItems.push({group: 'Other fees', items: otherFeesItems});
+				}
 			}
 			
 			// all items
@@ -565,7 +579,16 @@
 				for (var i = 0; i < $scope.previousTransactions.length; i++) {
 					var transaction = $scope.previousTransactions[i];
 					var amount = transaction.amount / 100;
-					var name = transaction.type.name + " on " + moment(transaction.createdDate).format('LL');
+					// in Zulu time (i.e. UTC)
+					var dateFormat = "YYYY-DD-MM'T'HH:mm:ss.SSSZ"
+					var transTime = moment.utc(transaction.createdDate);
+					var local = transTime.local();
+					var name = transaction.type.name + " on " + local.format('lll');
+					// console.log ('transaction type ' +
+					// transaction.type.name);
+					if (transaction.type.name == 'Refund') {
+						amount = -amount;
+					}
 					previousTransactionItems.push ({name: name, price: amount});
 					previousTransactionsTotal += amount;
 				}
@@ -592,7 +615,7 @@
 			return isLate;
 		}
 		
-		// call the above method to refresh the entries 
+		// call the above method to refresh the entries
 		$scope.updateSummary();
 
 		// ---------------------------------------------------------------------------------------------------------------------------------
@@ -644,8 +667,6 @@
 		//
 		$scope.confirmEntries = function (){
 			$scope.tournamentEntry.tournamentId = $scope.tournament.id;
-			// $scope.tournamentEntry.tournamentEntryId =
-			// $scope.tournamentEntry.id;
 			tournamentEntryResource.confirmEntries ($scope.tournamentEntry, $scope.confirmEntriesSuccess, $scope.confirmEntriesFailure);
 		}
 		
@@ -669,7 +690,7 @@
 		// handler for token creation
 		//
 		$scope.stripeResponseHandler = function (status, response) {
-//			console.log ('in stripeResponseHandler');
+// console.log ('in stripeResponseHandler');
 			
 			$scope.paymentRefundButton.disabled = false; 
 			if (response.error) {
@@ -682,7 +703,7 @@
 			    // response contains id and card, which contains additional card
 				// details
 			    var token = response.id;
-//			    console.log ('token = ' + token);
+// console.log ('token = ' + token);
 			    var amount = $scope.invoice.balanceDue * 100;
 			    var financialTransaction = {
 			    		createdDate: new Date(),
@@ -691,12 +712,23 @@
 			    		type: CHARGE,
 			    		paymentMethod: CREDITCARD,
 			    		paymentMethodIdentifier: token,
-			    		stripeChargeIdentifier: "ch_temporary_not_null",  // will be assigned after transaction completes
+			    		stripeChargeIdentifier: "ch_temporary_not_null",  // will
+																			// be
+																			// assigned
+																			// after
+																			// transaction
+																			// completes
 			    		stripeRefundIdentifier: "ref_temp_not_null",
 			    		// required by resource for parameter mapping
 			    		tournamentEntryId: $scope.tournamentEntry.id,
 			    		account: {id: 1},
-			    		tournamentEntry: $scope.tournamentEntry
+			    		tournamentEntry: {class: $scope.tournamentEntry.class, 
+			    			id: $scope.tournamentEntry.id, 
+			    			tournament: {
+			    				class: $scope.tournamentEntry.tournament.class,
+			    				id: $scope.tournamentEntry.tournament.id
+			    			}
+			    		}
 			    };
 			    // initiate the transaction
 			    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);
@@ -710,7 +742,8 @@
 			browserEvent.target.disabled = true;
 			$scope.paymentRefundButton = browserEvent.target; 
 			
-			// disable the button to prevent multiple submission $scope.error = null;
+			// disable the button to prevent multiple submission $scope.error =
+			// null;
 			// validate data
 			var validNumber = Stripe.card.validateCardNumber($scope.card.number); 
 			var validCVC = Stripe.card.validateCVC($scope.card.cvc); 
@@ -777,7 +810,13 @@
 		    		// required by resource for parameter mapping
 		    		tournamentEntryId: $scope.tournamentEntry.id,
 		    		account: {id: 1},
-		    		tournamentEntry: $scope.tournamentEntry
+		    		tournamentEntry: {class: $scope.tournamentEntry.class, 
+		    			id: $scope.tournamentEntry.id, 
+		    			tournament: {
+		    				class: $scope.tournamentEntry.tournament.class,
+		    				id: $scope.tournamentEntry.tournament.id
+		    			}
+		    		}
 		    };
 		    // initiate the transaction
 		    financialTransactionResource.save (financialTransaction, $scope.successFinacialTransactionSave, $scope.errorFinancialTransactionSave);

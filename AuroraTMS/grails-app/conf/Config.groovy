@@ -163,6 +163,7 @@ log4j.main = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 		   
+// uncomment to debug the filter chain if you are getting 404, 403 or other error codes		   
 //	debug   'grails.plugin.springsecurity',
 //			'grails.app.controllers.grails.plugin.springsecurity',
 //			'grails.app.services.grails.plugin.springsecurity',
@@ -236,7 +237,8 @@ grails {
 				'/**/images/**':                  ['permitAll'],
 				'/**/favicon.ico':                ['permitAll'],
 				'/dbconsole/**':         		  ['ROLE_ADMIN'],
-				'/register/**':                   ['permitAll']
+				'/register/**':                   ['permitAll'],
+				'/api/public/**':                 ['permitAll']
 //				'/api/logout':                 ['isAuthenticated()']
 			]
 		}
@@ -249,6 +251,7 @@ grails.plugin.springsecurity.filterChain.chainMap = [
 //                    '/api/**': 'JOINED_FILTERS,-anonymousAuthenticationFilter,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter',
 //                    '/**': 'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'
 	
+	'/api/public/**': 'anonymousAuthenticationFilter,restTokenValidationFilter,restExceptionTranslationFilter,filterInvocationInterceptor',
 	'/api/**': 'JOINED_FILTERS,-exceptionTranslationFilter,-authenticationProcessingFilter,-securityContextPersistenceFilter,-rememberMeAuthenticationFilter',  // Stateless chain
 	'/**': 'JOINED_FILTERS,-restTokenValidationFilter,-restExceptionTranslationFilter'                                                                          // Traditional chain
 ]
@@ -301,3 +304,6 @@ grails {
 	
 	// specify date formats submitted by Angular JS $resource calls and accepted by REST implementation e.g. - 1960-10-26T00:00:00.000Z
 	grails.databinding.dateFormats = ['MM/dd/yyyy', 'yyyy-MM-dd HH:mm:ss.S', "yyyy-MM-dd'T'hh:mm:ss.SSS'Z'", "yyyy-MM-dd'T'hh:mm:ss'Z'"]
+
+// staging directory where ratings file will be downloaded
+ratingsStagingDir="c:\\grails\\data\\ratings"

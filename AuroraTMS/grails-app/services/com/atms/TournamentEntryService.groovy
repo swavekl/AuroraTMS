@@ -46,10 +46,10 @@ class TournamentEntryService {
 //	@Transactional
 	@PreAuthorize("hasRole('ROLE_USER')")
 	TournamentEntry create(TournamentEntry tournamentEntry, Map params) {
-		println 'Saving TournamentEntry...'
+//		println 'Saving TournamentEntry...'
 		tournamentEntry.save(flush: true)
-		println 'Saved TournamentEntry with id ' + tournamentEntry.id
-		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
+//		println 'Saved TournamentEntry with id ' + tournamentEntry.id
+//		println "granting ownership of tournament Entry to user " + springSecurityService.authentication.name
 		def currentPrincipal = springSecurityService.authentication.name
 
 		// Grant the current principal administrative permission
@@ -67,7 +67,7 @@ class TournamentEntryService {
 	}
 
 //	@Transactional
-	@PreAuthorize("hasPermission(#tournament, delete) or hasPermission(#tournament, admin)")
+	@PreAuthorize("hasPermission(#tournamentEntry, delete) or hasPermission(#tournamentEntry, admin)")
 	void delete(TournamentEntry tournamentEntry) {
 		tournamentEntry.delete()
 
@@ -81,7 +81,7 @@ class TournamentEntryService {
 		def tournamentDirectors = SecUserSecRole.findAllBySecRole(tdRole).secUser
 		tournamentDirectors.each {
 			if (it.username != currentPrincipal) {
-				println 'granting access to TOURNAMENT_DIRECTOR" ' + it.username
+				//println 'granting access to TOURNAMENT_DIRECTOR" ' + it.username
 				// check if this TD created it
 				addPermission tournamentEntry, it.username, BasePermission.ADMINISTRATION
 			}
@@ -91,13 +91,13 @@ class TournamentEntryService {
 		def admins = SecUserSecRole.findAllBySecRole(adminRole).secUser
 		admins.each {
 			if (it.username != currentPrincipal) {
-				println 'granting access to ADMIN ' + it.username
+				//println 'granting access to ADMIN ' + it.username
 				addPermission tournamentEntry, it.username, BasePermission.ADMINISTRATION
 			}
 		}
 	}
 
-	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.Tournament', admin)")
+	@PreAuthorize("hasPermission(#id, 'com.atms.TournamentEntry', read) or hasPermission(#id, 'com.atms.TournamentEntry', admin)")
 	@Transactional(readOnly = true)
 	TournamentEntry get(long id) {
 		TournamentEntry.get id
@@ -129,6 +129,19 @@ class TournamentEntryService {
 		//		println "list params " + params
 
 		TournamentEntry.list params
+	}
+	
+	/**
+	 * Gets count of entries in a tournament
+	 * @param tournamentId
+	 * @return
+	 */
+	@Transactional(readOnly = true)
+	int getTournamentEntriesCount (long tournamentId) {
+		def c = TournamentEntry.createCriteria()
+		return c.count {
+			eq("tournament.id", tournamentId)
+		}
 	}
 }
 

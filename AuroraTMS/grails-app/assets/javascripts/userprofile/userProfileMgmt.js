@@ -98,6 +98,9 @@
 			
 		// user profile info retrieved
 		$scope.profile = userProfile;
+		if (userProfile != undefined && userProfile.id != null) {
+			session.setUserProfileId(userProfile.id);
+		}
 		$scope.dateOfBirthText = moment(userProfile.dateOfBirth).format('LL');
 		$scope.dateOfBirthTextSaved = $scope.dateOfBirthText;
 		
@@ -133,7 +136,7 @@
 		
 		$scope.successUpdate = function(value, responseHeaders) {
 			console.log ('successfully updated association');
-			$state.go('home.campaigns');
+			$state.go('home');
 		}
 		
 		$scope.failureUpdate = function(value, responseHeaders) {
@@ -153,7 +156,7 @@
 			$scope.profile.id = value.id;
 			session.setUserProfileId (value.id);
 			console.log ('set user profile id to ' + session.getUserProfileId());
-			$state.go('home.campaigns');
+			$state.go('home');
 		}
 		
 		$scope.failure = function (httpResponse) {

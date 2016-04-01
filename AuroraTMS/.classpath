@@ -7,6 +7,8 @@
 	<classpathentry kind="src" path="grails-app/services"/>
 	<classpathentry kind="src" path="grails-app/utils"/>
 	<classpathentry kind="src" path="test/unit"/>
+	<classpathentry kind="src" path="grails-app/jobs"/>
+	<classpathentry kind="src" path="test/integration"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_DSL_SUPPORT"/>
 	<classpathentry exported="true" kind="con" path="GROOVY_SUPPORT"/>
@@ -171,6 +173,11 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="src" path=".link_to_grails_plugins/mail-1.0.5/src/groovy">
+		<attributes>
+			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
+		</attributes>
+	</classpathentry>
+	<classpathentry kind="src" path=".link_to_grails_plugins/rest-0.8/src/groovy">
 		<attributes>
 			<attribute name="org.grails.ide.eclipse.core.SOURCE_FOLDER" value="true"/>
 		</attributes>

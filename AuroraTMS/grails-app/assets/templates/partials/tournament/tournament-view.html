@@ -96,12 +96,12 @@
 					<h3>{{event.name}}</h3>
 					<h4>{{event.eventDateTime}}</h4>
 					<h4>Players / Free Spots: {{event.players }} /
-						{{event.maxPlayers - event.players}}</h4>
+						{{event.maxEntries - event.players}}</h4>
 				</div>
 				<div hide-sm class="md-list-item-text">
 					<h3>{{event.name}} - {{event.eventDateTime}} - 
 					Players / Free Spots: <strong>{{event.players }}</strong> /
-						<strong>{{event.maxPlayers - event.players}}</strong></h3>
+						<strong>{{event.maxEntries - event.players}}</strong></h3>
 				</div>
 				<ng-md-icon icon="expand_more" size="40"></ng-md-icon>
 				<md-divider></md-divider> 
@@ -113,7 +113,7 @@
 			<div flex-md="50" flex-gt-md="33" flex style="border: 0px solid blue;">
 				<div layout="row" style="border: 0px solid red;">
 					<div flex="80" style="border: 0px solid green;">
-						<h2 class="md-subhead">Total Registered Players: <strong>{{totalPlayers}}</strong></h2>
+						<h2 class="md-subhead">Total Registered Players: <strong>{{tournament.entriesCount}}</strong></h2>
 					</div>
 				</div>
 			</div>

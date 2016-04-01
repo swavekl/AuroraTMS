@@ -10,6 +10,7 @@ import grails.plugin.springsecurity.annotation.Secured
 class TournamentController extends RestfulController {
 
 	def tournamentService
+	def tournamentEntryService
 
 	static responseFormats = ['json', 'xml']
     static allowedMethods = [index: 'GET', save: "POST", update: "PUT", delete: "DELETE"]
@@ -66,7 +67,11 @@ class TournamentController extends RestfulController {
 		long id = params.id as Long
 		def tournament = tournamentService.show(id)
 		cloneAccounts (tournament)
-        respond tournament
+		
+		// get count of entries (i.e. players) who entered the tournament
+		tournament.entriesCount = tournamentEntryService.getTournamentEntriesCount(id)
+
+		respond tournament
     }
 
     /**

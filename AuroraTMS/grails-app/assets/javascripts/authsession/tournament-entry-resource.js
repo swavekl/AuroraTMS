@@ -29,7 +29,7 @@
 			'create' : {
 				method : 'GET',
 				headers : headers,
-				url : applicationRoot + '/create'
+				url : applicationRoot + '/create?userProfileId=:userProfileId'
 			}, 
 			// public method for getting entries of a tournament
 			'query' : {   
@@ -65,7 +65,8 @@
 			id : '@id',
 			offset : '@offset',
 			max : '@max',
-			userId: '@userId'
+			userId: '@userId',
+			userProfileId: '@userProfileId'
 		}, actions);
 
 		return tournamentEntryResource;

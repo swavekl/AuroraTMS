@@ -7,13 +7,36 @@ var app = angular.module('auroraTmsApp', ['ui.router', 'ngMaterial', 'ngMessages
                                           'registerUser', 'userProfile',
                                           'usattSearch', 'tournament', 'tournamentList', 'event',
                                           'tournamentEntry']);
-app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIconProvider', 
-            function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider) {
+app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIconProvider', 'localStorageServiceProvider',
+            function($stateProvider, $urlRouterProvider, $mdThemingProvider, $mdIconProvider, localStorageServiceProvider) {
     $urlRouterProvider.otherwise('/');
+    
+    localStorageServiceProvider
+    .setStorageType('localStorage')
+    .setStorageCookie(45, '/')
+    .setStorageCookieDomain('window.location')
+    .setPrefix('auroraTmsApp');
 
     $stateProvider
         .state('home',{
         url: '/',
+		resolve: {
+			session: 'session',
+			
+			userProfileResource: 'userProfileResource',
+			userProfile: function($stateParams, userProfileResource, localStorageService) {
+				// fetch user profile without logging in to get the latest ratings
+				var userProfileId = localStorageService.get ('userProfileId');
+				if (userProfileId != null) {
+					console.log ('getting latest user profile info for user with id ' + userProfileId);
+					return userProfileResource.view({id: userProfileId}).$promise;
+				} else {
+					console.log ('No user profile id');
+					return {}
+				}
+			}
+		},
+
         views: {
 //            'header': {
 //                templateUrl: 'assets/partials/header.html',
@@ -48,9 +71,11 @@ app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIc
 		$scope.somthing = 5;
 	} ]);
 
-	app.controller('ContentController', [ '$scope', function($scope) {
+	app.controller('ContentController', [ '$scope','userProfile', 
+	                                    function($scope, userProfile) {
 		$scope.somthing = 6;
-
+		$scope.userProfile = userProfile;
+		$scope.hideProfile = (userProfile.usattID == undefined);
 	} ]);
 
 	app.controller('FooterController', [ '$scope', function($scope) {
