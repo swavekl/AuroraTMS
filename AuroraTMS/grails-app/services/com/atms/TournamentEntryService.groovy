@@ -131,6 +131,15 @@ class TournamentEntryService {
 		TournamentEntry.list params
 	}
 	
+	@Transactional(readOnly = true)
+	List<TournamentEntry> listForEventEntries(List<EventEntry> eventEntryList) {
+		def tournamentEntryIds = []
+		eventEntryList.each () { 
+			tournamentEntryIds.add(it.tournamentEntry.id)
+		}
+		return TournamentEntry.findAllByIdInList(tournamentEntryIds)
+	}
+	
 	/**
 	 * Gets count of entries in a tournament
 	 * @param tournamentId

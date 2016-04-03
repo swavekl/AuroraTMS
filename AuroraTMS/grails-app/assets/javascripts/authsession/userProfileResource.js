@@ -16,7 +16,7 @@
 		var actions = {
 			'view' : {
 				method : 'GET',
-				url : "/AuroraTMS/api/public/userprofiles/:id"
+				url : applicationRoot + ":id"
 			},
 			'get' : {
 				method : 'GET',

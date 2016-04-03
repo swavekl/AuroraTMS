@@ -33,7 +33,10 @@
 								accounts: function (accountResource, $stateParams, session, tournament) {
 									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50};
 									return accountResource.query(queryOptions).$promise;
-								}
+								},
+								
+								userProfilePublicResource: 'userProfilePublicResource'
+
 							},
 							controller : 'tournamentController'
 						}
@@ -67,7 +70,10 @@
 								accounts: function (accountResource, $stateParams, session, tournament) {
 									var queryOptions = {tournamentId: tournament.id, offset: 0, max: 50};
 									return accountResource.query(queryOptions).$promise;
-								}
+								},
+								
+								userProfilePublicResource: 'userProfilePublicResource'
+
 							},
 							controller : 'tournamentController', 
 						},
@@ -116,7 +122,9 @@
 								accountResource: 'accountResource',
 								accounts: function (accountResource, $stateParams, session) {
 									return accountResource.create({}).$promise;
-								}
+								},
+								
+								userProfilePublicResource: 'userProfilePublicResource'
 							},
 							controller : 'tournamentController'
 						},
@@ -142,8 +150,8 @@
 			
 	// define controller functions
 	.controller('tournamentController', 
-			['$scope', '$state', 'session','$mdDialog', 'tournamentResource', 'tournament', 'eventResource', 'events', 'accountResource', 'accounts',
-    function($scope, $state, session, $mdDialog, tournamentResource, tournament, eventResource, events, accountResource, accounts) {
+			['$scope', '$state', 'session','$mdDialog', 'tournamentResource', 'tournament', 'eventResource', 'events', 'accountResource', 'accounts','userProfilePublicResource',
+    function($scope, $state, session, $mdDialog, tournamentResource, tournament, eventResource, events, accountResource, accounts, userProfilePublicResource) {
 		
 		// when coming back from editing events switch back to the 'Events' tab
 		$scope.selectedTab = ($state.params.selectedTab == undefined) ? 0 : ($state.params.selectedTab);
@@ -443,6 +451,31 @@
 
 		  $scope.onPaginationChange = function (page, limit) {
 //		    return $nutrition.desserts.get($scope.query, $scope.success).$promise; 
+		  };
+		  
+		  // list of players for the currently expanded event
+		  $scope.eventPlayersList = [];
+		  // fetch players for this event
+		  $scope.eventId = -1;
+		  $scope.showEventPlayersSuccess = function(value, responseHeaders) {
+			console.log ('in showEventPlayersSuccess ');
+			$scope.eventPlayersList[$scope.eventId] = value;
+			$scope.eventId = -1;
+		  };
+		  
+		  $scope.showEventPlayersFailed = function (httpResponse) {
+				showError ($mdDialog, httpResponse, 'Failed to list player events');
+		  };
+		  
+		  $scope.toggleShowEventPlayers = function (eventId) {
+			  console.log ('showEventPlayers for ' + eventId);
+			  $scope.eventId = eventId;
+			  if ($scope.eventPlayersList[eventId] == null) {
+				  var params = {eventId: eventId};
+				  userProfilePublicResource.query (params, $scope.showEventPlayersSuccess, $scope.showEventPlayersFailed);
+			  } else {
+				  $scope.eventPlayersList[eventId] = null;
+			  }
 		  };
 		
 		//=================================================================================================

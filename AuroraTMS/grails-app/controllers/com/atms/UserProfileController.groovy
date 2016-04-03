@@ -20,6 +20,8 @@ class UserProfileController extends RestfulController {
 
 	static responseFormats = ['json', 'xml']
 	static allowedMethods = [index: "GET", save: "POST", update: "PUT", patch: "PATCH", delete: "DELETE"]
+	
+	def userProfileService
 
 	UserProfileController () {
 		super(UserProfile, false)
@@ -45,30 +47,13 @@ class UserProfileController extends RestfulController {
 			if (result == null) {
 				result = createResource()
 
-								// if this is user profile for user without USATT membership
+				// if this is user profile for user without USATT membership
 				// then assign a temporary number
 				def createParamsMap = []
 				if (params.memberId != null && params.memberId == '0') {
-					def query = UserProfile.where {
-						usattID > 90000
-					}.projections {
-						max ('usattID')
-					}
-					def maxUSATTid = query.find()
-					println 'maxUSATTid string ' + maxUSATTid
-					if (maxUSATTid != null) {
-						maxUSATTid = maxUSATTid as Integer
-					} else {
-						maxUSATTid = 90000
-					}
-					maxUSATTid += 1
-					println 'maxUSATTid ' + maxUSATTid
-					result.usattID = maxUSATTid
-					// createParamsMap = [usattID : maxUSATTid]
+					result.usattID = userProfileService.computeTemporaryMemberId()
 				}
-
 			}
-			
 		} else {
 			result = resource.get(id)
 		}

@@ -22,9 +22,15 @@ import groovy.json.JsonBuilder
 @Secured(['permitAll'])
 class UserProfilePublicController extends RestfulController {
 
-	static responseFormats = ['json', 'xml']
-	static allowedMethods = [show: "GET"]
+	static namespace = 'public'
 
+	static responseFormats = ['json', 'xml']
+	static allowedMethods = [show: "GET", index: "GET"]
+	
+	def eventEntryService
+	def tournamentEntryService
+	def userProfileService
+	
 	UserProfilePublicController () {
 		super(UserProfile, false)
 	}
@@ -73,5 +79,54 @@ class UserProfilePublicController extends RestfulController {
 		} 
 		
 		respond userProfileInfo
+	}
+	
+	/**
+	 * Lists public information for players who entered a particular event 
+	 * 
+	 * @return
+	 */
+	List<UserProfileInfo> index () {
+		
+		List<UserProfileInfo> userProfileInfoList = []
+		if (params.eventId != null) {
+			long eventId = params.eventId as Long
+			
+			// first find all event entries for this event
+			def eventEntries = eventEntryService.listEventEntries(eventId, EventEntry.EntryStatus.CONFIRMED)
+			// then get tournament entries associated with them
+			def tournamentEntries = tournamentEntryService.listForEventEntries(eventEntries)
+			// make a map of tournament entry id to eligibility rating
+			def teIdToratingMap = [:]
+			tournamentEntries.each {
+				TournamentEntry te = it as TournamentEntry
+				teIdToratingMap [te.id] = te.eligibilityRating
+			}
+			
+			// finally get user profiles
+			def userProfiles = userProfileService.listProfilesForTournamentEntries(tournamentEntries)
+			// extract public information from them
+			userProfiles.each () {
+				UserProfileInfo upi = new UserProfileInfo()
+				userProfileInfoList.add (upi)
+				upi.id = it.id
+				upi.firstName = it.firstName
+				upi.lastName = it.lastName
+				upi.usattID = it.usattID
+				// find the rating in the map
+				def playerTournamentEntries = it.tournamentEntries
+				playerTournamentEntries.each () { te ->
+					def eligibilityRating = teIdToratingMap[te.id]
+					if (eligibilityRating != null) {
+						upi.rating = eligibilityRating as Integer
+					}
+				}
+			}
+			
+			// sort by rating in descending order
+			userProfileInfoList.sort{it.rating}
+			Collections.reverse(userProfileInfoList)
+		}
+		respond userProfileInfoList
 	}
 }

@@ -33,7 +33,7 @@ import org.springframework.security.core.context.SecurityContextHolder as SCH
 import grails.util.Environment
 
 class BootStrap {
-	
+	def grailsApplication
 	def aclService
 	def aclUtilService
 	def objectIdentityRetrievalStrategy
@@ -43,6 +43,7 @@ class BootStrap {
 	def tournamentEntryService
 	def eventEntryService
 	def userProfileService
+	
 
 	def grailsCacheManager // generic grails cache manager (contains ehcache cache manager)
 	CacheManager ehcacheCacheManager // uses DataSource properties to register mbean
@@ -57,6 +58,13 @@ class BootStrap {
 
 		displayName = servletContext.servletContextName
 		log.info "Started application: ${displayName}"
+		
+		println 'ENCRYPTION_CONFIG_LOCATION = ' + System.getenv('ENCRYPTION_CONFIG_LOCATION')
+		println 'grailsApplication.config.locations = ' + grailsApplication.config.locations
+		grailsApplication.config.locations.each() {
+			boolean exists = new File (it).exists()
+			println it + ' exists = ' + exists
+		}
 
 		createUsers()
 		loginAsAdmin()
@@ -175,10 +183,6 @@ class BootStrap {
 //			 println "it.name() = " + it.name() + " it.@class.toString() = " + it.@class.toString()
 			if (it.name().equals("TR")) {
 				def tournamentEntry = new TournamentEntry()
-				tournamentEntry.dateEntered = today
-				tournamentEntry.membershipOption = 0
-				tournamentEntry.tournament = tournament
-				tournamentEntry = tournamentEntryService.create(tournamentEntry, [:])
 				String cLastName = null
 				String cFirstName = null
 				//println "adding player "
@@ -197,9 +201,13 @@ class BootStrap {
 						
 						case 1:
 							String rating = td.text()
-							//println 'rating ' + rating
+							//print 'rating ' + rating
+							tournamentEntry.dateEntered = today
+							tournamentEntry.membershipOption = 0
+							tournamentEntry.tournament = tournament
 							tournamentEntry.eligibilityRating = rating as Integer
 							tournamentEntry.seedRating = tournamentEntry.eligibilityRating
+							tournamentEntry = tournamentEntryService.create(tournamentEntry, [:])
 							break;
 							
 						case 2:
@@ -220,11 +228,14 @@ class BootStrap {
 								if (eventEntry.event != null) {
 									eventEntry.fee = eventEntry.event.feeAdult
 									eventEntry.tournamentEntry = tournamentEntry
-									eventEntryService.create(eventEntry, [:])
+//									eventEntryService.create(eventEntry, [:])
+									tournamentEntry.addToEventEntries (eventEntry)
+									eventEntry.save(flush: true)
 								} else {
 									println 'event ' + eventName + " not found"
 								}							
 							}
+							tournamentEntry.save(flush: true)
 							//println ""
 						break;
 					}
@@ -243,26 +254,27 @@ class BootStrap {
 ////						println 'Duplicate profiles found for '  + cFirstName + " " + cLastName 
 ////					}
 //				} else {
-////					println "Creating user profile for " + cFirstName + " " + cLastName
+//					println "Creating user profile for " + cFirstName + " " + cLastName
 					// now save the User profile so we can enter users in
-//					fakeMemberId++
-//					def userProfile = new UserProfile ()
-//					userProfile.firstName = cFirstName
-//					userProfile.lastName = cLastName
-//					userProfile.dateOfBirth =  new Date()
-//					userProfile.usattID = fakeMemberId
-//					userProfile.expirationDate = new Date()
-//					userProfile.email = 'abc@yahoo.com'
-//					userProfile.phone = '630-111-22222'
-//					userProfile.streetAddress = "123 Nice street"
-//					userProfile.city = 'Aurora'
-//					userProfile.state = 'IL'
-//					userProfile.zipCode = '60504'
-//					userProfile.country = 'USA'
-//					userProfile.gender = 'M'
-//					userProfile.club = 'FVTTC'
-//					userProfile.save(failOnError: true)
-//				
+					fakeMemberId++
+					def userProfile = new UserProfile ()
+					userProfile.firstName = cFirstName
+					userProfile.lastName = cLastName
+					userProfile.dateOfBirth =  new Date()
+					userProfile.usattID = fakeMemberId
+					userProfile.expirationDate = new Date()
+					userProfile.email = 'abc@yahoo.com'
+					userProfile.phone = '630-111-22222'
+					userProfile.streetAddress = "123 Nice street"
+					userProfile.city = 'Aurora'
+					userProfile.state = 'IL'
+					userProfile.zipCode = '60504'
+					userProfile.country = 'USA'
+					userProfile.gender = 'M'
+					userProfile.club = 'FVTTC'
+					userProfile.addToTournamentEntries(tournamentEntry)
+					userProfile.save(failOnError: true)
+				
 //					String userName = (!cFirstName.isEmpty())? cFirstName.toLowerCase().charAt(0) : ""
 //					userName += cLastName.toLowerCase().trim()
 //					userName += fakeMemberId
