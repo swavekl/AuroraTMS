@@ -23,13 +23,13 @@ app.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$mdIc
 		resolve: {
 			session: 'session',
 			
-			userProfileResource: 'userProfileResource',
-			userProfile: function($stateParams, userProfileResource, localStorageService) {
+			userProfilePublicResource: 'userProfilePublicResource',
+			userProfile: function($stateParams, userProfilePublicResource, localStorageService) {
 				// fetch user profile without logging in to get the latest ratings
 				var userProfileId = localStorageService.get ('userProfileId');
 				if (userProfileId != null) {
 					console.log ('getting latest user profile info for user with id ' + userProfileId);
-					return userProfileResource.view({id: userProfileId}).$promise;
+					return userProfilePublicResource.view({id: userProfileId}).$promise;
 				} else {
 					console.log ('No user profile id');
 					return {}

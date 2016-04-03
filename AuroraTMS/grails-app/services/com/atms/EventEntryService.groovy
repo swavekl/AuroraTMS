@@ -168,6 +168,19 @@ class EventEntryService {
 		EventEntry.list params
 	}
 
+	/**
+	 * Lists information about players who entered a particular event (name, rating,  
+	 * 
+	 * @param tournamentId
+	 * @param eventId
+	 * @return
+	 */
+	List<EventEntry> listEventEntries (long eventId, EventEntry.EntryStatus cStatus) {
+		return EventEntry.where {
+			event.id == eventId && status == cStatus
+		}.list()
+	}
+	
 	int count() {
 		EventEntry.count()
 	}

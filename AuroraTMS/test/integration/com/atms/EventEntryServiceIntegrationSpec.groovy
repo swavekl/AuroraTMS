@@ -95,5 +95,12 @@ class EventEntryServiceIntegrationSpec extends IntegrationSpec {
 				def expectedValue = expectedValues [key]
 				expectedValue == value  
 			}
+		
+		when:
+			def eventEntries = eventEntryService.listEventEntries(event2.id, EventEntry.EntryStatus.CONFIRMED)
+			
+		then:
+			eventEntries.size() == 15
+			
 	}
 }

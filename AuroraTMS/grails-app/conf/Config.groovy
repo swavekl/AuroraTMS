@@ -169,6 +169,12 @@ log4j.main = {
 //			'grails.app.services.grails.plugin.springsecurity',
 //			'org.pac4j',
 //			'org.springframework.security'
+
+		   
+//		   debug  'com.bloomhealthco.jasypt.*'
+		   
+		   // to debug URL mappings
+		   //debug  'org.codehaus.groovy.grails.web.mapping'
 		   
 		   // Enable Hibernate SQL logging with param values,
 		   // this is in addition to 'logSql = true' in DataSource for development environment data source
@@ -307,3 +313,13 @@ grails {
 
 // staging directory where ratings file will be downloaded
 ratingsStagingDir="c:\\grails\\data\\ratings"
+
+//def configFilePath = System.getenv('ENCRYPTION_CONFIG_LOCATION') ?: "file:${userHome}"
+//configFilePath += "/.jasypt.groovy"
+//grails.config.locations = [configFilePath]
+jasypt {
+	algorithm = "PBEWITHSHA256AND256BITAES-CBC-BC"
+	providerName = "BC"
+	password = "Misiaczek&1998&"
+	keyObtentionIterations = 1000
+}
