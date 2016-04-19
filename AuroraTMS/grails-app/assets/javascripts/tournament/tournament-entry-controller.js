@@ -467,11 +467,15 @@
 		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10, forDisplay: 1 },
 		                          ];
 
-		// option selected by the user or defaulted to
+		// default to the first option in case the member has a current membership
 		$scope.selectedMembershipOption = $scope.membershipOptions[0];
 		
-		// reselect previous user selection
+		// select an option if the user needs to pay for the membership
 		if ($scope.needToPayMembership == true) {
+			// if you need to pay for the membership, the second option must be defaulted to
+			$scope.selectedMembershipOption = $scope.membershipOptions[1];
+			
+			// if the user already selected an option during the current session, reselect it now
 			if ($scope.tournamentEntry.membershipOption >=0 && $scope.tournamentEntry.membershipOption <= $scope.membershipOptions.length) {
 				for (var i = 0; i < $scope.membershipOptions.length; i++) {
 					if ($scope.tournamentEntry.membershipOption == $scope.membershipOptions[i].membershipType) {
@@ -484,8 +488,6 @@
 					}
 				}
 			}
-			else
-				$scope.selectedMembershipOption = $scope.membershipOptions[1];
 		}
 
 		//
