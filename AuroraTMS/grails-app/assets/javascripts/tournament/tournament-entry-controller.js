@@ -163,7 +163,7 @@
 			$scope.membershipWillExpire = isExpirationDateBeforeTournamentDate && !isExpirationDateBeforeToday; 
 		}
 		
-		$scope.needToPayMembership = ($scope.membershipExpired || $scope.membershipWillExpire);
+		$scope.needToPayMembership = ($scope.membershipExpired || $scope.membershipWillExpire || $scope.isNewMember);
 		
 		var isTournamentDirector = session.isInRole ('TOURNAMENT_DIRECTOR');
 		var isAdmin = session.isInRole ('ADMIN');
@@ -454,27 +454,38 @@
 		// -------------------------------------------------------------------------------------------------------------------
 
 		$scope.membershipOptions = [
-		                          {membershipName: 'Membership is current', fee: 0, availableToMembers: 1, availableToAdults: 1, membershipType: 0},
-		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1},
-		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2},
-		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3},
-		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, availableToAdults: 0, membershipType: 4},
-		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, availableToAdults: 0, membershipType: 5},
-		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6},
-		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7},
-		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8},
-// {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1,
-// availableToAdults: 1, membershipType: 9},
-		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10},
+		                          {membershipName: 'Membership is current', fee: 0, availableToMembers: 1, availableToAdults: 1, membershipType: 0, forDisplay: 0 },
+		                          {membershipName: 'Adult 1-year (G)', fee: 75, availableToMembers: 1, availableToAdults: 1, membershipType: 1, forDisplay: 1 },
+		                          {membershipName: 'Adult 3-year (G)', fee: 210, availableToMembers: 1, availableToAdults: 1, membershipType: 2, forDisplay: 1 },
+		                          {membershipName: 'Adult 5-year (G)', fee: 325, availableToMembers: 1, availableToAdults: 1, membershipType: 3, forDisplay: 1 },
+		                          {membershipName: 'Junior 1-year (G)', fee: 45, availableToMembers: 1, availableToAdults: 0, membershipType: 4, forDisplay: 1 },
+		                          {membershipName: 'Junior 3-year (G)', fee: 125, availableToMembers: 1, availableToAdults: 0, membershipType: 5, forDisplay: 1 },
+		                          {membershipName: 'Collegiate 1-Year (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 6, forDisplay: 1 },
+		                          {membershipName: 'Household 1-Year (G)', fee: 150, availableToMembers: 1, availableToAdults: 1, membershipType: 7, forDisplay: 1 },
+		                          {membershipName: 'Lifetime (G)', fee: 1300, availableToMembers: 1, availableToAdults: 1, membershipType: 8, forDisplay: 1 },
+		                          // {membershipName: 'Contributor (G)', fee: 45, availableToMembers: 1, availableToAdults: 1, membershipType: 9, forDisplay: 1 },
+		                          {membershipName: 'Tournament Pass (per tournament) (A)', fee: 20, availableToMembers: 0, availableToAdults: 1, membershipType: 10, forDisplay: 1 },
 		                          ];
 
 		// option selected by the user or defaulted to
-		$scope.selectedMembershipOption = $scope.membershipOptions[0];	
-		for (var i = 0; i < $scope.membershipOptions.length; i++) {
-			if ($scope.tournamentEntry.membershipOption == $scope.membershipOptions[i].membershipType) {
-				$scope.selectedMembershipOption = $scope.membershipOptions[i];
-				break;
+		$scope.selectedMembershipOption = $scope.membershipOptions[0];
+		
+		// reselect previous user selection
+		if ($scope.needToPayMembership == true) {
+			if ($scope.tournamentEntry.membershipOption >=0 && $scope.tournamentEntry.membershipOption <= $scope.membershipOptions.length) {
+				for (var i = 0; i < $scope.membershipOptions.length; i++) {
+					if ($scope.tournamentEntry.membershipOption == $scope.membershipOptions[i].membershipType) {
+						
+						if ($scope.tournamentEntry.membershipOption != 0)
+							$scope.selectedMembershipOption = $scope.membershipOptions[i];
+						else
+							$scope.selectedMembershipOption = $scope.membershipOptions[1];
+						break;
+					}
+				}
 			}
+			else
+				$scope.selectedMembershipOption = $scope.membershipOptions[1];
 		}
 
 		//

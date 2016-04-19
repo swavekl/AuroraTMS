@@ -3,28 +3,52 @@
 
 
 		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
-		<md-content layout="column" layout-gt-sm="row" layout-wrap>
-		<md-input-container flex="auto" md-is-error="tournamentPaymentForm.stripePublicKey.$invalid && !tournamentPaymentForm.stripePublicKey.$pristine">
-		<label>Stripe Public Key</label>
-		<input name="stripePublicKey" ng-model="account.stripePublicKey" required size="50" maxlength="50" />
-		<div ng-messages="tournamentPaymentForm.stripePublicKey.$error" ng-show="tournamentPaymentForm.stripePublicKey.$dirty">
-			<div ng-message="required">Public key is required.</div>
-		</div>
-		</md-input-container> 
-		<md-input-container flex="auto" md-is-error="tournamentPaymentForm.stripeSecretKey.$invalid && !tournamentPaymentForm.stripeSecretKey.$pristine">
-		<label>Stripe Secret Key</label>
-		<input name="stripeSecretKey" ng-model="account.stripeSecretKey" required size="50" maxlength="50" />
-		<div ng-messages="tournamentPaymentForm.stripeSecretKey.$error" ng-show="tournamentPaymentForm.stripeSecretKey.$dirty">
-			<div ng-message="required">Secret key is required.</div>
-		</div>
-		</md-input-container> </md-content> </md-whiteframe>
-
-		<md-whiteframe class="md-whiteframe-2dp" layout-padding layout-margin>
 		<md-content layout="column" layout-gt-sm="row">
 		<md-input-container flex="auto">
-			<md-button class="md-raised md-primary" ng-click="testPayment()">Test Payment</md-button>
+			<label>Gateway Type</label>
+			<md-select name="gatewayType" ng-model="account.gatewayType.name" ng-change="gatewayTypeSelected(account.gatewayType.name)" required>
+				<md-option ng-repeat="gatewayType in gatewayTypesArray" value="{{ gatewayType }}">{{ gatewayType }}</md-option>
+			</md-select>
 		</md-input-container>
 		</md-content> 
+		</md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" ng-show="account.gatewayType.name == 'Stripe'" layout-padding layout-margin>
+			<md-content layout="column" layout-gt-sm="row" layout-wrap>
+			<md-input-container flex="auto" md-is-error="tournamentPaymentForm.stripePublicKey.$invalid && !tournamentPaymentForm.stripePublicKey.$pristine">
+			<label>Stripe Public Key</label>
+			<input name="stripePublicKey" ng-model="account.stripePublicKey" required size="50" maxlength="50" />
+			<div ng-messages="tournamentPaymentForm.stripePublicKey.$error" ng-show="tournamentPaymentForm.stripePublicKey.$dirty">
+				<div ng-message="required">Public key is required.</div>
+			</div>
+			</md-input-container> 
+			<md-input-container flex="auto" md-is-error="tournamentPaymentForm.stripeSecretKey.$invalid && !tournamentPaymentForm.stripeSecretKey.$pristine">
+			<label>Stripe Secret Key</label>
+			<input name="stripeSecretKey" ng-model="account.stripeSecretKey" required size="50" maxlength="50" />
+			<div ng-messages="tournamentPaymentForm.stripeSecretKey.$error" ng-show="tournamentPaymentForm.stripeSecretKey.$dirty">
+				<div ng-message="required">Secret key is required.</div>
+			</div>
+			</md-input-container>
+			</md-content>
+		</md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" ng-show="account.gatewayType.name == 'PayPal'" layout-padding layout-margin>
+			<md-content layout="column" layout-gt-sm="row" layout-wrap>
+			PayPal Info is not implemented
+			</md-content>
+		</md-whiteframe>
+
+		<md-whiteframe class="md-whiteframe-5dp" layout-padding layout-margin>
+			<md-content layout="column" layout-gt-sm="row" layout-wrap>
+				<md-input-container flex="auto">
+					<md-button class="md-raised md-primary" ng-click="testTransaction($event)" ng-dblclick="return" ng-disabled="testInProgress">Test $0.10 Transaction</md-button>
+				</md-input-container>
+
+				<md-input-container flex="auto">
+				This will run a payment followed by a refund transaction on a $0.10 amount.
+				</md-input-container>
+			</md-content>
+		
 		</md-whiteframe>
 
 		<md-content layout="row" layout-align="center center" layout-padding
